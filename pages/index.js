@@ -1,11 +1,11 @@
-function Home({data}) {
+function Home({users}) {
     return (
         <div className="container">
             <main>
                 <h1 className="title">
                     Users List
                 </h1>
-                {data && (
+                {users && (
                     <table cellspacing="2" border="1" cellpadding="5">
                         <thead>
                         <tr>
@@ -16,7 +16,7 @@ function Home({data}) {
                         </tr>
                         </thead>
                         <tbody>
-                        {data.map(user => (
+                        {users.map(user => (
                             <tr key={user.id}>
                                 <th>
                                     {user.id}
@@ -42,9 +42,9 @@ function Home({data}) {
 
 export async function getStaticProps() {
     const res = await fetch(`http://127.0.0.1:8000/api/users`)
-    const data = await res.json()
+    const users = await res.json()
 
-    return {props: {data}}
+    return {props: {users}}
 }
 
 export default Home
