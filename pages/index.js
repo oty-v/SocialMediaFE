@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import PostForm from "./components/postForm";
+import EditPanel from "./components/editPanel";
 
 function Home() {
     const [error, setError] = useState(null);
@@ -35,6 +36,7 @@ function Home() {
                                 <b>{post.title}</b>
                                 <hr/>
                                 <p>{post.description}</p>
+                                <EditPanel postID={post.id}/>
                             </li>
                         ))}
                     </ul>

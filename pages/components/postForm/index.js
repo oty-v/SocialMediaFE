@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { pushPostData } from '../../api';
+import { pushPostData, editPostData } from '../../api';
 
-function PostForm() {
+function PostForm({postID}) {
     const [postTitle, setPostTitle] = useState('');
     const [postDesc, setPostDesc] = useState('');
     const sendPost = (event) => {
@@ -11,12 +11,12 @@ function PostForm() {
             title: postTitle,
             description: postDesc
         }
-        pushPostData(postData)
+        { postID ? editPostData(postID,postData) : pushPostData(postData) }
     };
 
     return (
         <>
-            <h2>Create post</h2>
+            { !postID && <h2>Create post</h2> }
             <form onSubmit={sendPost}>
                 <input
                     value={postTitle}
@@ -30,7 +30,7 @@ function PostForm() {
                     type="text"
                     placeholder="Enter description"
                 />
-                <button type="submit" disabled={ !postTitle||!postDesc }>Save</button>
+                <button type="submit" disabled={ !postID && (!postTitle||!postDesc) }>Save</button>
             </form>
         </>
     )
