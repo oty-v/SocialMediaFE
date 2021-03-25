@@ -1,50 +1,48 @@
-function Home({users}) {
+import { useState, useEffect } from 'react';
+
+import PostForm from "./components/postForm";
+
+function Home() {
+    const [error, setError] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:8000/api/posts/")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setIsLoaded(true);
+                    setPosts(result);
+                },
+                (error) => {
+                    setIsLoaded(true);
+                    setError(error);
+                }
+            )
+    }, [])
     return (
-        <div className="container">
+        <div>
             <main>
-                <h1 className="title">
-                    Users List
-                </h1>
-                {users && (
-                    <table cellspacing="2" border="1" cellpadding="5">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {users.map(user => (
-                            <tr key={user.id}>
-                                <th>
-                                    {user.id}
-                                </th>
-                                <td>
-                                    {user.name}
-                                </td>
-                                <td className="table-item-name">
-                                    {user.email}
-                                </td>
-                                <td>
-                                    {user.phone}
-                                </td>
-                            </tr>
+                <PostForm/>
+                {error && (<div>Error: {error.message}</div>)}
+                {isLoaded && (
+                    <>
+                    <h2>Posts List</h2>
+                    <ul>
+                        {posts.map(post => (
+                            <li key={post.id}>
+                                <b>{post.title}</b>
+                                <hr/>
+                                <p>{post.description}</p>
+                            </li>
                         ))}
-                        </tbody>
-                    </table>
+                    </ul>
+                    </>
                 )}
             </main>
         </div>
     )
 }
 
-export async function getStaticProps() {
-    const res = await fetch(`http://127.0.0.1:8000/api/users`)
-    const users = await res.json()
-
-    return {props: {users}}
-}
-
-export default Home
+export default Home;
