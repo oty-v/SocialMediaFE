@@ -1,11 +1,9 @@
 import Link from 'next/link'
-import {getApiData} from "../../api";
-import BasePage from "../../components/basePage";
-import PostDelBtn from "../../components/postDelBtn";
+import { getApiData } from "../../api";
 
 function Posts({posts}) {
     return (
-        <BasePage pageTitle={'Posts list'}>
+        <>
             {posts && (
                 <>
                     <h2>Posts List</h2>
@@ -20,7 +18,6 @@ function Posts({posts}) {
                                         <button>Edit post</button>
                                     </a>
                                 </Link>
-                                <PostDelBtn postID={post.id}/>
                             </li>
                         ))}
                     </ul>
@@ -32,7 +29,7 @@ function Posts({posts}) {
                     </style>
                 </>
             )}
-        </BasePage>
+        </>
     )
 }
 

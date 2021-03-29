@@ -1,14 +1,13 @@
-import {getApiData} from "../../api";
-import BasePage from "../../components/basePage";
+import { getApiData } from "../../api";
 import PostForm from "../../components/postForm";
 import PostDelBtn from "../../components/postDelBtn";
 
 const Post = ({post}) => {
     return (
-        <BasePage pageTitle={`Post: ${post.id}`}>
+        <>
             <PostForm post={post}/>
             <PostDelBtn postID={post.id}/>
-        </BasePage>
+        </>
     )
 }
 

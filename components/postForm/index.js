@@ -1,8 +1,10 @@
-import {useState} from 'react';
+import { useRouter } from 'next/router'
+import { useState } from 'react';
 
-import {pushCreatePost, pushEditPost} from '../../api';
+import { pushCreatePost, pushEditPost } from '../../api';
 
 function PostForm({post}) {
+    const router = useRouter()
     const [postUsername, setPostUsername] = useState(post && post.username);
     const [postContent, setPostContent] = useState(post && post.content);
     const sendPost = (event) => {
@@ -12,7 +14,9 @@ function PostForm({post}) {
             content: postContent,
         }
         if(post){
-            return pushEditPost(post.id, postData)
+            const res = pushEditPost(post.id, postData);
+            if(!res.error)router.push('/posts');
+            return
         }
         pushCreatePost(postData);
         setPostUsername('');
