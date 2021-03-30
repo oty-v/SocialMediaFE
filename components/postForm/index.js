@@ -8,7 +8,7 @@ function PostForm({methodSendPost, sendPost={}}) {
         if (event) {
             event.preventDefault();
         }
-        const res = await methodSendPost(inputs);
+        const res = await methodSendPost('/posts', inputs);
         if (!res.error) router.push('/posts');
     }
     const handleInputChange = (event) => {
