@@ -1,44 +1,23 @@
-import { useRouter } from 'next/router'
-import { useState } from 'react';
-
-import { pushCreatePost, pushEditPost } from '../../api';
-
-function PostForm({post}) {
-    const router = useRouter()
-    const [postUsername, setPostUsername] = useState(post && post.username);
-    const [postContent, setPostContent] = useState(post && post.content);
-    const sendPost = (event) => {
-        event.preventDefault();
-        const postData = {
-            username: postUsername,
-            content: postContent,
-        }
-        if(post){
-            const res = pushEditPost(post.id, postData);
-            if(!res.error)router.push('/posts');
-            return
-        }
-        pushCreatePost(postData);
-        setPostUsername('');
-        setPostContent('');
-    };
+function PostForm({sendPost}) {
+    const {inputs, handleInputChange, handleSubmit} = sendPost();
 
     return (
         <>
-            {!post && <h2>Create post</h2>}
-            <form onSubmit={sendPost}>
+            <form onSubmit={handleSubmit}>
                 <label>Username</label>
                 <input
-                    value={postUsername}
-                    onChange={(event) => setPostUsername(event.target.value)}
+                    name="username"
+                    onChange={handleInputChange}
+                    value={inputs.username}
                     type="text"
                     placeholder="Enter Username"
                     required
                 />
                 <label>Post Content</label>
                 <textarea
-                    value={postContent}
-                    onChange={(event) => setPostContent(event.target.value)}
+                    name="content"
+                    onChange={handleInputChange}
+                    value={inputs.content}
                     rows="5"
                     cols="30"
                     placeholder="Enter post text"
@@ -46,7 +25,6 @@ function PostForm({post}) {
                 />
                 <button
                     type="submit"
-                    disabled={!post && (!postUsername || !postContent)}
                 >
                     Save
                 </button>

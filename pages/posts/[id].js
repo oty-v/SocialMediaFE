@@ -1,11 +1,36 @@
-import { getApiData } from "../../api";
+import { useState } from "react";
+import { editPost, getApiData } from "../../api";
 import PostForm from "../../components/postForm";
 import PostDelBtn from "../../components/postDelBtn";
 
 const Post = ({post}) => {
+    const [inputs, setInputs] = useState({
+        username: post.username,
+        content: post.content
+    });
+    const useEditForm = () => {
+        const handleSubmit = (event) => {
+            if (event) {
+                event.preventDefault();
+            }
+            editPost(post.id, inputs);
+        }
+        const handleInputChange = (event) => {
+            event.persist();
+            setInputs(inputs => ({
+                ...inputs,
+                [event.target.name]: event.target.value
+            }));
+        }
+        return {
+            handleSubmit,
+            handleInputChange,
+            inputs
+        };
+    }
     return (
         <>
-            <PostForm post={post}/>
+            <PostForm sendPost={useEditForm}/>
             <PostDelBtn postID={post.id}/>
         </>
     )
@@ -16,7 +41,10 @@ export const getStaticPaths = async () => {
     const paths = res.data.map((post) => ({
         params: { id: post.id.toString() }
     }))
-    return { paths, fallback: false }
+    return {
+        paths,
+        fallback: false
+    }
 }
 
 export const getStaticProps = async ({ params }) => {
@@ -26,9 +54,11 @@ export const getStaticProps = async ({ params }) => {
             notFound: true,
         }
     }
-
-
-    return {props: {post: res.data}};
+    return {
+        props: {
+            post: res.data
+        }
+    };
 }
 
 export default Post

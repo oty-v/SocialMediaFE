@@ -40,9 +40,11 @@ export const getServerSideProps = async () => {
             notFound: true,
         }
     }
-
-
-    return {props: {posts: res.data}};
+    return {
+        props: {
+            posts: res.data
+        }
+    };
 }
 
 export default Posts;
