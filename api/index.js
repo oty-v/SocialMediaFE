@@ -7,8 +7,9 @@ export const getApiData = async (route) => await axios.get(route)
         error: false,
         data: res.data,
     }))
-    .catch(err => ({
-            error: err,
+    .catch(error => ({
+            error,
+            data: null,
         }),
     );
 
@@ -17,8 +18,9 @@ export const createPost = async (postData) => await axios.post("/posts", postDat
         error: false,
         post: res.data,
     }))
-    .catch(err => ({
-            error: err,
+    .catch(error => ({
+            error,
+            data: null,
         }),
     );
 
@@ -27,8 +29,9 @@ export const editPost = async (postID, postData) => await axios.put(`/posts/${po
         error: false,
         post: res.data,
     }))
-    .catch(err => ({
-            error: err,
+    .catch(error => ({
+            error,
+            data: null,
         }),
     );
 
@@ -36,7 +39,8 @@ export const deletePost = async (postID) => await axios.delete(`/posts/${postID}
     .then((res) => ({
         error: false,
     }))
-    .catch(err => ({
-            error: err,
+    .catch(error => ({
+            error,
+            data: null,
         }),
     );
