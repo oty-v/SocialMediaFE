@@ -20,7 +20,7 @@ export const createPost = async (postData) => await axios.post("/posts", postDat
     }))
     .catch(error => ({
             error,
-            data: null,
+            post: null,
         }),
     );
 
@@ -31,7 +31,7 @@ export const editPost = async (postID, postData) => await axios.put(`/posts/${po
     }))
     .catch(error => ({
             error,
-            data: null,
+            post: null,
         }),
     );
 
@@ -40,7 +40,6 @@ export const deletePost = async (postID) => await axios.delete(`/posts/${postID}
         error: false,
     }))
     .catch(error => ({
-            error,
-            data: null,
+            error
         }),
     );
