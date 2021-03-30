@@ -1,6 +1,19 @@
-function PostForm({sendPost}) {
-    const {inputs, handleInputChange, handleSubmit} = sendPost();
+import {useRouter} from 'next/router';
+import {useState} from "react";
 
+function PostForm({methodSendPost, sendPost={}}) {
+    const router = useRouter()
+    const [inputs, setInputs] = useState(sendPost);
+    const handleSubmit = async (event) => {
+        if (event) {
+            event.preventDefault();
+        }
+        const res = await methodSendPost(inputs);
+        if (!res.error) router.push('/posts');
+    }
+    const handleInputChange = (event) => {
+        setInputs(inputs => ({...inputs, [event.target.name]: event.target.value}));
+    }
     return (
         <>
             <form onSubmit={handleSubmit}>

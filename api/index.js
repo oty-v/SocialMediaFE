@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
+axios.defaults.baseURL = process.env.API_URL;
 
 export const getApiData = async (route) => await axios.get(route)
     .then(res => ({
@@ -24,7 +24,7 @@ export const createPost = async (postData) => await axios.post("/posts", postDat
         }),
     );
 
-export const editPost = async (postID, postData) => await axios.put(`/posts/${postID}`, postData)
+export const editPost = async (postData) => await axios.put(`/posts/${postData.id}`, postData)
     .then(res => ({
         error: false,
         post: res.data,
@@ -35,7 +35,7 @@ export const editPost = async (postID, postData) => await axios.put(`/posts/${po
         }),
     );
 
-export const deletePost = async (postID) => await axios.delete(`/posts/${postID}`)
+export const deleteData = async (route, postID) => await axios.delete(`${route}/${postID}`)
     .then((res) => ({
         error: false,
     }))

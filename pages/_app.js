@@ -8,12 +8,12 @@ function MyApp({Component, pageProps}) {
                 <ul className="nav">
                     <li>
                         <Link href="/">
-                            <a>Home</a>
+                            <span>Home</span>
                         </Link>
                     </li>
                     <li>
                         <Link href="/posts">
-                            <a>Posts list</a>
+                            <span>Posts list</span>
                         </Link>
                     </li>
                 </ul>

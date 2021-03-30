@@ -13,7 +13,7 @@ function Posts({posts}) {
                                 <b>User: {post.username}</b>
                                 <hr/>
                                 <p>{post.content}</p>
-                                <Link href={`/posts/${encodeURIComponent(post.id)}`}>
+                                <Link href={`/posts/${post.id}`}>
                                     <a>
                                         <button>Edit post</button>
                                     </a>

@@ -1,36 +1,11 @@
-import {useState} from "react";
 import {editPost, getApiData} from "../../api";
 import PostForm from "../../components/postForm";
 import DelBtn from "../../components/delBtn";
 
 const Post = ({post}) => {
-    const [inputs, setInputs] = useState({
-        username: post.username,
-        content: post.content
-    });
-    const useEditForm = () => {
-        const handleSubmit = (event) => {
-            if (event) {
-                event.preventDefault();
-            }
-            editPost(post.id, inputs);
-        }
-        const handleInputChange = (event) => {
-            event.persist();
-            setInputs(inputs => ({
-                ...inputs,
-                [event.target.name]: event.target.value
-            }));
-        }
-        return {
-            handleSubmit,
-            handleInputChange,
-            inputs
-        };
-    }
     return (
         <>
-            <PostForm sendPost={useEditForm}/>
+            <PostForm  methodSendPost={editPost} sendPost={post}/>
             <DelBtn route={"/posts"} elementID={post.id}/>
         </>
     )

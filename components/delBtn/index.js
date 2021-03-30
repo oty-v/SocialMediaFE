@@ -1,11 +1,11 @@
 import {useRouter} from 'next/router';
 
-import {deletePost} from '../../api';
+import {deleteData} from '../../api';
 
 function DelBtn({route, elementID}) {
     const router = useRouter()
     const removePost = async () => {
-        const res = await deletePost(elementID);
+        const res = await deleteData(route, elementID);
         if (!res.error) router.push(route);
     }
     return <button onClick={() => {
