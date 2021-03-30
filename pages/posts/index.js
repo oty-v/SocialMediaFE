@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getApiData } from "../../api";
+import {getApiData} from "../../api";
 
 function Posts({posts}) {
     return (

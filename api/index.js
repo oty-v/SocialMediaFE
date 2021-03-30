@@ -1,4 +1,5 @@
 import axios from "axios";
+
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 
 export const getApiData = async (route) => await axios.get(route)
@@ -11,7 +12,7 @@ export const getApiData = async (route) => await axios.get(route)
         }),
     );
 
-export const createPost = async (postData) => await axios.post("/posts",postData)
+export const createPost = async (postData) => await axios.post("/posts", postData)
     .then(res => ({
         error: false,
         post: res.data,
@@ -21,7 +22,7 @@ export const createPost = async (postData) => await axios.post("/posts",postData
         }),
     );
 
-export const editPost = async (postID,postData) => await axios.put(`/posts/${postID}`,postData)
+export const editPost = async (postID, postData) => await axios.put(`/posts/${postID}`, postData)
     .then(res => ({
         error: false,
         post: res.data,

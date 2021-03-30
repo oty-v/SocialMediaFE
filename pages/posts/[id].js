@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { editPost, getApiData } from "../../api";
+import {useState} from "react";
+import {editPost, getApiData} from "../../api";
 import PostForm from "../../components/postForm";
-import PostDelBtn from "../../components/postDelBtn";
+import DelBtn from "../../components/delBtn";
 
 const Post = ({post}) => {
     const [inputs, setInputs] = useState({
@@ -31,7 +31,7 @@ const Post = ({post}) => {
     return (
         <>
             <PostForm sendPost={useEditForm}/>
-            <PostDelBtn postID={post.id}/>
+            <DelBtn route={"/posts"} elementID={post.id}/>
         </>
     )
 }
@@ -39,7 +39,7 @@ const Post = ({post}) => {
 export const getStaticPaths = async () => {
     const res = await getApiData('/posts');
     const paths = res.data.map((post) => ({
-        params: { id: post.id.toString() }
+        params: {id: post.id.toString()}
     }))
     return {
         paths,
@@ -47,7 +47,7 @@ export const getStaticPaths = async () => {
     }
 }
 
-export const getStaticProps = async ({ params }) => {
+export const getStaticProps = async ({params}) => {
     const res = await getApiData(`/posts/${params.id}`);
     if (res.error) {
         return {

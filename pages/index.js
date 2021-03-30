@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createPost } from "../api";
+import {useState} from "react";
+import {createPost} from "../api";
 import PostForm from "../components/postForm";
 
 export default function Home() {
