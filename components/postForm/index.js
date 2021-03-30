@@ -1,7 +1,13 @@
 import {useRouter} from 'next/router';
 import {useState} from "react";
 
-function PostForm({methodSendPost, sendPost={}}) {
+function PostForm({
+                      methodSendPost,
+                      sendPost = {
+                          username: '',
+                          content: ''
+                      }
+                  }) {
     const router = useRouter()
     const [inputs, setInputs] = useState(sendPost);
     const handleSubmit = async (event) => {
