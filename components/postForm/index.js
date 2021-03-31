@@ -14,8 +14,7 @@ function PostForm({
         if (event) {
             event.preventDefault();
         }
-        const res = await methodSendPost('/posts', inputs);
-        if (!res.error) router.push('/posts');
+        methodSendPost(inputs);
     }
     const handleInputChange = (event) => {
         setInputs(inputs => ({...inputs, [event.target.name]: event.target.value}));

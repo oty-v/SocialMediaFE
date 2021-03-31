@@ -13,7 +13,7 @@ export const getApiData = async (route) => await axios.get(route)
         }),
     );
 
-export const createPost = async (route, postData) => await axios.post(route, postData)
+export const createPost = async (postData) => await axios.post('/posts', postData)
     .then(res => ({
         error: false,
         post: res.data,
@@ -24,7 +24,7 @@ export const createPost = async (route, postData) => await axios.post(route, pos
         }),
     );
 
-export const editPost = async (route, elementData) => await axios.put(`${route}/${elementData.id}`, elementData)
+export const editPost = async (postData) => await axios.put(`/posts/${postData.id}`, postData)
     .then(res => ({
         error: false,
         post: res.data,
@@ -35,7 +35,7 @@ export const editPost = async (route, elementData) => await axios.put(`${route}/
         }),
     );
 
-export const deleteData = async (route, elementID) => await axios.delete(`${route}/${elementID}`)
+export const deletePost = async (postID) => await axios.delete(`/posts/${postID}`)
     .then((res) => ({
         error: false,
     }))
