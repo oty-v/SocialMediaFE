@@ -1,5 +1,6 @@
-import {useRouter} from 'next/router';
 import {useState} from "react";
+
+import styles from '../../styles/postForm.module.css';
 
 function PostForm({
                       methodSendPost,
@@ -8,7 +9,6 @@ function PostForm({
                           content: ''
                       }
                   }) {
-    const router = useRouter()
     const [inputs, setInputs] = useState(sendPost);
     const handleSubmit = async (event) => {
         if (event) {
@@ -20,46 +20,37 @@ function PostForm({
         setInputs(inputs => ({...inputs, [event.target.name]: event.target.value}));
     }
     return (
-        <>
-            <form onSubmit={handleSubmit}>
-                <label>Username</label>
-                <input
-                    name="username"
-                    onChange={handleInputChange}
-                    value={inputs.username}
-                    type="text"
-                    placeholder="Enter Username"
-                    required
-                />
-                <label>Post Content</label>
-                <textarea
-                    name="content"
-                    onChange={handleInputChange}
-                    value={inputs.content}
-                    rows="5"
-                    cols="30"
-                    placeholder="Enter post text"
-                    required
-                />
-                <button
-                    type="submit"
-                >
-                    Save
-                </button>
-            </form>
-            <style jsx>{`
-                form {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                }
-                input, textarea {
-                    margin: 1rem;
-                }
-            `}
-            </style>
-        </>
+        <form
+            onSubmit={handleSubmit}
+            className={styles.form}
+        >
+            <label>Username</label>
+            <input
+                className={styles.input}
+                name="username"
+                onChange={handleInputChange}
+                value={inputs.username}
+                type="text"
+                placeholder="Enter Username"
+                required
+            />
+            <label>Post Content</label>
+            <textarea
+                className={styles.textarea}
+                name="content"
+                onChange={handleInputChange}
+                value={inputs.content}
+                rows="5"
+                cols="30"
+                placeholder="Enter post text"
+                required
+            />
+            <button
+                type="submit"
+            >
+                Save
+            </button>
+        </form>
     )
 }
 

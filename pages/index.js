@@ -1,4 +1,5 @@
 import {useRouter} from "next/router";
+import Head from 'next/head';
 
 import {createPost} from "../api";
 import PostForm from "../components/postForm";
@@ -9,5 +10,12 @@ export default function Home() {
         const res = await createPost(inputs);
         if (!res.error) router.reload();
     }
-    return <PostForm methodSendPost={methodSendPost}/>
+    return (
+        <>
+            <Head>
+                <title>Home</title>
+            </Head>
+            <PostForm methodSendPost={methodSendPost}/>
+        </>
+    )
 }

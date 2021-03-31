@@ -1,4 +1,5 @@
 import {useRouter} from "next/router";
+import Head from "next/head";
 
 import {deletePost, editPost, getApiData} from "../../api";
 import PostForm from "../../components/postForm";
@@ -15,6 +16,9 @@ const PostPage = ({post}) => {
     }
     return (
         <>
+            <Head>
+                <title>Post: {post.id}</title>
+            </Head>
             <PostForm methodSendPost={methodSendPost} sendPost={post}/>
             <button onClick={() => {
                 removePost()
