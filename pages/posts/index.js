@@ -33,17 +33,17 @@ function Posts({posts}) {
 }
 
 export const getServerSideProps = async () => {
-    const {data, status} = await getApiData('/posts');
-    if (status===404) {
+    const {data, error} = await getApiData('/posts');
+    if (!!error) {
         return {
-            notFound: true,
+            notFound: true
         }
     }
     return {
         props: {
             posts: data
         }
-    };
+    }
 }
 
 export default Posts;
