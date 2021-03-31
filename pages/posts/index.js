@@ -1,6 +1,5 @@
-import Link from 'next/link'
-
 import {getApiData} from "../../api";
+import Post from "../../components/post";
 
 function Posts({posts}) {
     return (
@@ -10,16 +9,7 @@ function Posts({posts}) {
                     <h2>Posts List</h2>
                     <ul>
                         {posts.map(post => (
-                            <li key={post.id}>
-                                <b>User: {post.username}</b>
-                                <hr/>
-                                <p>{post.content}</p>
-                                <Link href={`/posts/${post.id}`}>
-                                    <a>
-                                        <button>Edit post</button>
-                                    </a>
-                                </Link>
-                            </li>
+                            <Post post={post}/>
                         ))}
                     </ul>
                     <style jsx>{`

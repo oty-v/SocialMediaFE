@@ -9,5 +9,5 @@ export default function Home() {
         const res = await createPost(inputs);
         if (!res.error) router.reload();
     }
-    return <PostForm  methodSendPost={methodSendPost}/>
+    return <PostForm methodSendPost={methodSendPost}/>
 }

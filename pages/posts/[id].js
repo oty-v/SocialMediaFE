@@ -3,7 +3,7 @@ import {useRouter} from "next/router";
 import {deletePost, editPost, getApiData} from "../../api";
 import PostForm from "../../components/postForm";
 
-const Post = ({post}) => {
+const PostPage = ({post}) => {
     const router = useRouter();
     const removePost = async () => {
         const res = await deletePost(post.id);
@@ -40,4 +40,4 @@ export const getServerSideProps = async (context) => {
     };
 }
 
-export default Post
+export default PostPage
