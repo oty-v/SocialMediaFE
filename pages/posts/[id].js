@@ -25,19 +25,9 @@ const Post = ({post}) => {
     )
 }
 
-export const getStaticPaths = async () => {
-    const res = await getApiData('/posts');
-    const paths = res.data.map((post) => ({
-        params: {id: post.id.toString()}
-    }))
-    return {
-        paths,
-        fallback: false
-    }
-}
-
-export const getStaticProps = async ({params}) => {
-    const res = await getApiData(`/posts/${params.id}`);
+export const getServerSideProps = async (context) => {
+    const {id} = context.query;
+    const res = await getApiData(`/posts/${id}`);
     if (res.error) {
         return {
             notFound: true,
