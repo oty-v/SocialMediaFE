@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Post = ({post}) => {
     return (
-        <li key={post.id}>
+        <li>
             <b>User: {post.username}</b>
             <hr/>
             <p>{post.content}</p>

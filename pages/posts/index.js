@@ -9,7 +9,7 @@ function Posts({posts}) {
                     <h2>Posts List</h2>
                     <ul>
                         {posts.map(post => (
-                            <Post post={post}/>
+                            <Post post={post} key={post.id}/>
                         ))}
                     </ul>
                     <style jsx>{`
