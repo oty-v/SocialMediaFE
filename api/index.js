@@ -36,7 +36,7 @@ export const editPost = async (postData) => await axios.put(`/posts/${postData.i
     );
 
 export const deletePost = async (postID) => await axios.delete(`/posts/${postID}`)
-    .then((res) => ({
+    .then(() => ({
         error: false,
     }))
     .catch(error => ({
