@@ -33,15 +33,15 @@ function Posts({posts}) {
 }
 
 export const getServerSideProps = async () => {
-    const res = await getApiData('/posts');
-    if (res.error) {
+    const {data, status} = await getApiData('/posts');
+    if (status===404) {
         return {
             notFound: true,
         }
     }
     return {
         props: {
-            posts: res.data
+            posts: data
         }
     };
 }

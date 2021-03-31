@@ -7,8 +7,8 @@ import PostForm from "../components/postForm";
 export default function Home() {
     const router = useRouter();
     const methodSendPost = async (inputs) => {
-        const res = await createPost(inputs);
-        if (!res.error) router.reload();
+        const {status} = await createPost(inputs);
+        if (status===201) router.reload();
     }
     return (
         <>

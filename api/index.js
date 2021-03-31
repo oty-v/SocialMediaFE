@@ -3,15 +3,9 @@ import axios from "axios";
 axios.defaults.baseURL = process.env.API_URL;
 
 axios.interceptors.response.use((response) => {
-    return {
-        data: response.data,
-        error: false
-    }
+    return response
 }, (error) => {
-    return {
-        data: null,
-        error: error.message
-    }
+    return error.response
 });
 
 export const getApiData = async (route) => await axios.get(route)

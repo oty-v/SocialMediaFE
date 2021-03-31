@@ -7,12 +7,12 @@ import PostForm from "../../components/postForm";
 const PostPage = ({post}) => {
     const router = useRouter();
     const removePost = async () => {
-        const res = await deletePost(post.id);
-        if (!res.error) router.push('/posts');
+        const {status} = await deletePost(post.id);
+        if (status===204) router.push('/posts');
     }
     const methodSendPost = async (inputs) => {
-        const res = await editPost(inputs);
-        if (!res.error) router.push('/posts');
+        const {status} = await editPost(inputs);
+        if (status===202) router.push('/posts');
     }
     return (
         <>
@@ -31,15 +31,15 @@ const PostPage = ({post}) => {
 
 export const getServerSideProps = async (context) => {
     const {id} = context.query;
-    const res = await getApiData(`/posts/${id}`);
-    if (res.error) {
+    const {data, status} = await getApiData(`/posts/${id}`);
+    if (status===404) {
         return {
             notFound: true,
         }
     }
     return {
         props: {
-            post: res.data
+            post: data
         }
     };
 }
