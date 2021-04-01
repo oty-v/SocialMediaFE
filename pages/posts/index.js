@@ -5,28 +5,22 @@ import {getApiData} from "../../api";
 import Post from "../../components/post";
 
 function Posts({posts}) {
-    const postsList = () => {
-        if (!!posts.length) {
-            return (
-                <ul className={styles.list}>
-                    {posts.map(post => (
-                        <li key={post.id}>
-                            <Post post={post}/>
-                        </li>
-                    ))}
-                </ul>
-            )
-        }
-        return <span>No posts</span>
-
-    }
     return (
         <>
             <Head>
                 <title>Posts</title>
             </Head>
             <h2>Posts List</h2>
-            {postsList()}
+            {!!posts.length ? (
+                    <ul className={styles.list}>
+                        {posts.map(post => (
+                            <li key={post.id}>
+                                <Post post={post}/>
+                            </li>
+                        ))}
+                    </ul>
+                ) : <span>No posts</span>
+            }
         </>
     )
 
@@ -34,7 +28,7 @@ function Posts({posts}) {
 
 export const getServerSideProps = async () => {
     const {data, status} = await getApiData('/posts');
-    if (status===404) {
+    if (status === 404) {
         return {
             notFound: true,
         }

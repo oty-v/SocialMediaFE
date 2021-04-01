@@ -6,22 +6,29 @@ import PostForm from "../../components/postForm";
 
 const PostPage = ({post}) => {
     const router = useRouter();
-    const removePost = async () => {
+    const removePost = async (post) => {
         const {status} = await deletePost(post.id);
-        if (status===204) router.push('/posts');
+        if (status === 204) {
+            router.push('/posts');
+        }
     }
-    const methodSendPost = async (inputs) => {
+    const onEdit = async (inputs) => {
         const {status} = await editPost(inputs);
-        if (status===200) router.push('/posts');
+        if (status === 200) {
+            router.push('/posts');
+        }
     }
     return (
         <>
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
-            <PostForm methodSendPost={methodSendPost} sendPost={post}/>
+            <PostForm
+                methodSendPost={onEdit}
+                initialPost={post}
+            />
             <button onClick={() => {
-                removePost()
+                removePost(post)
             }}>
                 Remove
             </button>
@@ -32,7 +39,7 @@ const PostPage = ({post}) => {
 export const getServerSideProps = async (context) => {
     const {id} = context.query;
     const {data, status} = await getApiData(`/posts/${id}`);
-    if (status===404) {
+    if (status === 404) {
         return {
             notFound: true,
         }
