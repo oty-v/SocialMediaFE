@@ -12,7 +12,7 @@ const PostPage = ({post}) => {
     }
     const methodSendPost = async (inputs) => {
         const {status} = await editPost(inputs);
-        if (status==200) router.push('/posts');
+        if (status===200) router.push('/posts');
     }
     return (
         <>
