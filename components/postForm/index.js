@@ -3,7 +3,7 @@ import {useState} from "react";
 import styles from '../../styles/postForm.module.css';
 
 function PostForm({
-                      onSubmitForm,
+                      onSubmit,
                       initialPost = {
                           username: '',
                           content: ''
@@ -14,7 +14,7 @@ function PostForm({
         if (event) {
             event.preventDefault();
         }
-        onSubmitForm(post);
+        onSubmit(post);
     }
     const handleInputChange = (key, value) => {
         setInputsPost(inputsPost => ({...inputsPost, [key]: value}));

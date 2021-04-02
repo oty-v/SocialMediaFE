@@ -17,7 +17,7 @@ export default function Home() {
             <Head>
                 <title>Home</title>
             </Head>
-            <PostForm onSubmitForm={onCreate}/>
+            <PostForm onSubmit={onCreate}/>
         </>
     )
 }

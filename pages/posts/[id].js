@@ -24,7 +24,7 @@ const PostPage = ({post}) => {
                 <title>Post: {post.id}</title>
             </Head>
             <PostForm
-                onSubmitForm={onEdit}
+                onSubmit={onEdit}
                 initialPost={post}
             />
             <button onClick={() => {

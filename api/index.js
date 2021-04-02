@@ -2,6 +2,7 @@ import axios from "axios";
 
 axios.defaults.baseURL = process.env.API_URL;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
+axios.defaults.headers.common['Authorization'] = 'Bearer 5|MjsOLkmbhBbA6KW9kkrzlFpRzJrP35qooWUyHwy2';
 
 axios.interceptors.response.use((response) => {
     return response
