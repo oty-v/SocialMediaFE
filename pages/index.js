@@ -7,9 +7,9 @@ import PostForm from "../components/postForm";
 export default function Home() {
     const router = useRouter();
     const onCreate = async (inputs) => {
-        const {status} = await createPost(inputs);
+        const {data, status} = await createPost(inputs);
         if (status===201) {
-            router.reload();
+            router.push(`/posts/${data.id}`);
         }
     }
     return (
@@ -17,7 +17,7 @@ export default function Home() {
             <Head>
                 <title>Home</title>
             </Head>
-            <PostForm methodSendPost={onCreate}/>
+            <PostForm onSubmitForm={onCreate}/>
         </>
     )
 }

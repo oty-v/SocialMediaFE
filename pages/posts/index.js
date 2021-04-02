@@ -3,8 +3,13 @@ import Head from "next/head";
 import styles from '../../styles/posts.module.css';
 import {getApiData} from "../../api";
 import Post from "../../components/post";
+import {useRouter} from "next/router";
 
 function Posts({posts}) {
+    const router = useRouter()
+    const handleClickEdit = (post) => {
+        router.push(`/posts/${post.id}`)
+    }
     return (
         <>
             <Head>
@@ -15,7 +20,7 @@ function Posts({posts}) {
                     <ul className={styles.list}>
                         {posts.map(post => (
                             <li key={post.id}>
-                                <Post post={post}/>
+                                <Post handleClickEdit={()=>handleClickEdit(post)} post={post}/>
                             </li>
                         ))}
                     </ul>

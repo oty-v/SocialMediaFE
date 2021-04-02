@@ -1,12 +1,6 @@
-import {useRouter} from 'next/router'
-
 import styles from '../../styles/post.module.css';
 
-const Post = ({post}) => {
-    const router = useRouter()
-    const handleClickEdit = () => {
-        router.push(`/posts/${post.id}`)
-    }
+const Post = ({handleClickEdit, post}) => {
     return (
         <div className={styles.container}>
             <b>User: {post.username}</b>
