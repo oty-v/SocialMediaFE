@@ -1,50 +1,23 @@
-function Home({users}) {
+import {useRouter} from "next/router";
+import Head from 'next/head';
+
+import {createPost} from "../api";
+import PostForm from "../components/postForm";
+
+export default function Home() {
+    const router = useRouter();
+    const onCreate = async (inputs) => {
+        const {data, status} = await createPost(inputs);
+        if (status===201) {
+            router.push(`/posts/${data.id}`);
+        }
+    }
     return (
-        <div className="container">
-            <main>
-                <h1 className="title">
-                    Users List
-                </h1>
-                {users && (
-                    <table cellspacing="2" border="1" cellpadding="5">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {users.map(user => (
-                            <tr key={user.id}>
-                                <th>
-                                    {user.id}
-                                </th>
-                                <td>
-                                    {user.name}
-                                </td>
-                                <td className="table-item-name">
-                                    {user.email}
-                                </td>
-                                <td>
-                                    {user.phone}
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                )}
-            </main>
-        </div>
+        <>
+            <Head>
+                <title>Home</title>
+            </Head>
+            <PostForm onSubmit={onCreate}/>
+        </>
     )
 }
-
-export async function getStaticProps() {
-    const res = await fetch(`http://127.0.0.1:8000/api/users`)
-    const users = await res.json()
-
-    return {props: {users}}
-}
-
-export default Home
