@@ -1,26 +1,49 @@
-import Link from "next/link";
-
+import {useState, useEffect} from "react";
+import {useRouter} from "next/router";
+import {logoutUser} from "../lib/api";
+import Cookie from "js-cookie";
+import Header from "../components/header";
 import '../styles/globals.css';
 
 function MyApp({Component, pageProps}) {
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [authUser, setAuthUser] = useState(null);
+    const router = useRouter();
+    useEffect(async () => {
+        const token = Cookie.get("token");
+        const username = Cookie.get("username");
+        if (token && username) {
+            setIsLoggedIn(true);
+            setAuthUser(username);
+        }
+    });
+    const handleClickSignIn = () => {
+        router.push(`/login`)
+    }
+    const handleClickSignUp = () => {
+        router.push(`/register`)
+    }
+    const handleClickLogOut = async () => {
+        await logoutUser();
+        await Cookie.remove("token");
+        await Cookie.remove("username");
+        setIsLoggedIn(false);
+        setAuthUser(null);
+    }
     return (
         <div className="container">
-            <header>
-                <ul className="nav">
-                    <li>
-                        <Link href="/">
-                            <span>Home</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/posts">
-                            <span>Posts list</span>
-                        </Link>
-                    </li>
-                </ul>
-            </header>
+            <Header
+                authUser={authUser}
+                isLoggedIn={isLoggedIn}
+                handleClickSignIn={handleClickSignIn}
+                handleClickSignUp={handleClickSignUp}
+                handleClickLogOut={handleClickLogOut}
+            />
             <main>
-                <Component {...pageProps} />
+                <Component
+                    {...pageProps}
+                    isLoggedIn={isLoggedIn}
+                />
             </main>
             <footer>
                 <p>2021 @oty-v</p>
