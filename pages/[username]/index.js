@@ -3,8 +3,8 @@ import Head from "next/head";
 import {parseCookies} from "../../lib/parseCookies";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
-import {getProfile, getUser} from "../../lib/api";
-import Cookie from "js-cookie";
+import {getUser} from "../../lib/api";
+import Link from "next/link";
 
 function Profile({profile, isLoggedIn}) {
     const router = useRouter();
@@ -25,6 +25,9 @@ function Profile({profile, isLoggedIn}) {
                 <span>Data registration:</span>
                 <p>{profile.created_at}</p>
             </div>
+            <Link href={`/${profile.username}/posts`}>
+                <b>{profile.username} posts</b>
+            </Link>
         </>
     )
 

@@ -6,6 +6,7 @@ import Post from "../../../components/post";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
 import {parseCookies} from "../../../lib/parseCookies";
+import PostsList from "../../../components/postsList";
 
 function Posts({username, posts, isLoggedIn}) {
     const router = useRouter();
@@ -24,15 +25,10 @@ function Posts({username, posts, isLoggedIn}) {
             </Head>
             <h2>Posts List</h2>
             {!!posts.length ? (
-                <ul className={styles.list}>
-                    {posts.map(post => (
-                        <li key={post.id}>
-                            <Post handleClickEdit={() => handleClickEdit(post)} post={post}/>
-                        </li>
-                    ))}
-                </ul>
-            ) : <span>No posts</span>
-            }
+                <PostsList posts={posts} handleClickEdit={handleClickEdit}/>
+            ) : (
+                <span>No posts</span>
+            )}
         </>
     )
 
