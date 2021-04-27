@@ -5,6 +5,7 @@ import RegisterForm from "../components/auth/registerForm";
 import {registerUser} from "../lib/api";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
+import {parseCookies} from "../lib/parseCookies";
 
 
 export default function Register({isLoggedIn}) {
@@ -16,9 +17,6 @@ export default function Register({isLoggedIn}) {
     });
     const onRegister = async (inputs) => {
         const {status} = await registerUser(inputs);
-        if (status === 200) {
-            router.push(`/`);
-        }
     }
     return (
         <>
@@ -33,4 +31,20 @@ export default function Register({isLoggedIn}) {
             </Link>
         </>
     );
+}
+
+export const getServerSideProps = async ({req}) => {
+    const {token} = parseCookies(req);
+    if(!token){
+        return {
+            props: {
+                isLoggedIn: false
+            }
+        };
+    }
+    return {
+        props: {
+            isLoggedIn: true
+        }
+    };
 }

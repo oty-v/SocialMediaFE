@@ -1,11 +1,12 @@
+import {useRouter} from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import Cookie from "js-cookie";
 
 import LoginForm from "../components/auth/loginForm";
-import {loginUser, getProfile} from "../lib/api";
-import {useRouter} from "next/router";
+import {loginUser, getProfile, api, getUsers} from "../lib/api";
 import {useEffect} from "react";
+import {parseCookies} from "../lib/parseCookies";
 
 export default function Login({isLoggedIn}) {
     const router = useRouter();
@@ -16,10 +17,16 @@ export default function Login({isLoggedIn}) {
     });
     const onLogin = async (inputs) => {
         const token = await loginUser(inputs);
+        api.interceptors.request.use((config) => {
+            config.headers.authorization = `Bearer ${token.data.data.access_token}`;
+            return config;
+        }, (error) => {
+            return error.response
+        });
+        const {data} = await getProfile();
+        Cookie.set('username', data.data.username);
         Cookie.set("token", token.data.data.access_token);
-        const {data} = await getProfile(token.data.data.access_token);
-        Cookie.set("username", data.data.username);
-        router.push("/");
+        router.push(`/`);
     }
     return (
         <>
@@ -33,4 +40,20 @@ export default function Login({isLoggedIn}) {
             </Link>
         </>
     );
+}
+
+export const getServerSideProps = async ({req}) => {
+    const {token} = parseCookies(req);
+    if(!token){
+        return {
+            props: {
+                isLoggedIn: false
+            }
+        };
+    }
+    return {
+        props: {
+            isLoggedIn: true
+        }
+    };
 }

@@ -1,8 +1,7 @@
 import Head from "next/head";
 
 import styles from '../../../styles/posts.module.css';
-import {getUserPosts} from "../../../lib/api";
-import Post from "../../../components/post";
+import {api, getUserPosts} from "../../../lib/api";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
 import {parseCookies} from "../../../lib/parseCookies";
@@ -24,7 +23,7 @@ function Posts({username, posts, isLoggedIn}) {
                 <title>Posts</title>
             </Head>
             <h2>Posts List</h2>
-            {!!posts.length ? (
+            {!!posts?.length ? (
                 <PostsList posts={posts} handleClickEdit={handleClickEdit}/>
             ) : (
                 <span>No posts</span>
@@ -35,8 +34,21 @@ function Posts({username, posts, isLoggedIn}) {
 }
 
 export const getServerSideProps = async ({req, query}) => {
-    const cookies = parseCookies(req);
-    const {data, status} = await getUserPosts(cookies.token, query.username);
+    const {token} = parseCookies(req);
+    if(!token){
+        return {
+            props: {
+                isLoggedIn: false
+            }
+        };
+    }
+    api.interceptors.request.use((config) => {
+        config.headers.authorization = `Bearer ${token}`;
+        return config;
+    }, (error) => {
+        return error.response
+    });
+    const {data, status} = await getUserPosts(query.username);
     if (status === 404) {
         return {
             notFound: true,
@@ -44,6 +56,7 @@ export const getServerSideProps = async ({req, query}) => {
     }
     return {
         props: {
+            isLoggedIn: true,
             username: query.username,
             posts: data.data
         }

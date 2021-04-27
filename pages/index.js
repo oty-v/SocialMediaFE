@@ -1,13 +1,13 @@
 import {useRouter} from "next/router";
 import Head from 'next/head';
 
-import {createPost, getUsers} from "../lib/api";
+import {api, createPost, getUsers} from "../lib/api";
 import PostForm from "../components/postForm";
-import {useEffect} from "react";
 import UserList from "../components/usersList";
 import {parseCookies} from "../lib/parseCookies";
+import {useEffect} from "react";
 
-export default function Home({users, isLoggedIn}) {
+export default function Home({isLoggedIn, token, users}) {
     const router = useRouter();
     useEffect(() => {
         if (!isLoggedIn) {
@@ -15,9 +15,13 @@ export default function Home({users, isLoggedIn}) {
         }
     });
     const onCreate = async (inputs) => {
+        api.interceptors.request.use((config) => {
+            config.headers.authorization = `Bearer ${token}`;
+            return config;
+        });
         const {data, status} = await createPost(inputs);
         if (status === 201) {
-            router.push(`/posts/${data.id}`);
+            router.push(`${data.data.author.username}/posts/${data.data.id}`);
         }
     }
     return (
@@ -26,14 +30,29 @@ export default function Home({users, isLoggedIn}) {
                 <title>Home</title>
             </Head>
             <PostForm onSubmit={onCreate}/>
-            <UserList users={users}/>
+            {!!users?.length && (
+                <UserList users={users}/>
+            )}
         </>
     )
 }
 
-export const getServerSideProps = async ({req, query}) => {
-    const cookies = parseCookies(req);
-    const {data, status} = await getUsers(cookies.token);
+export const getServerSideProps = async ({req}) => {
+    const {token} = parseCookies(req);
+    if(!token){
+        return {
+            props: {
+                isLoggedIn: false
+            }
+        };
+    }
+    api.interceptors.request.use((config) => {
+        config.headers.authorization = `Bearer ${token}`;
+        return config;
+    }, (error) => {
+        return error.response
+    });
+    const {data, status} = await getUsers();
     if (status === 404) {
         return {
             notFound: true,
@@ -41,6 +60,8 @@ export const getServerSideProps = async ({req, query}) => {
     }
     return {
         props: {
+            isLoggedIn: true,
+            token,
             users: data.data
         }
     };

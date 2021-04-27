@@ -13,11 +13,6 @@ const Header = ({
         <header>
             <nav>
                 <ul className="nav">
-                    <li>
-                        <Link href="/">
-                            <span>Home</span>
-                        </Link>
-                    </li>
                     {!isLoggedIn ? (
                         <>
                             <li>
@@ -30,8 +25,13 @@ const Header = ({
                     ) : (
                         <>
                             <li>
+                                <Link href="/">
+                                    <span>Home</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href={`/${authUser}`}>
-                                    <span>{authUser}</span>
+                                    <span>Profile</span>
                                 </Link>
                             </li>
                             <li>

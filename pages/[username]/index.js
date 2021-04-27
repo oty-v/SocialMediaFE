@@ -3,17 +3,17 @@ import Head from "next/head";
 import {parseCookies} from "../../lib/parseCookies";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
-import {getUser} from "../../lib/api";
+import {api, getUser} from "../../lib/api";
 import Link from "next/link";
 
-function Profile({profile, isLoggedIn}) {
+function Profile({isLoggedIn, profile}) {
     const router = useRouter();
     useEffect(() => {
         if (!isLoggedIn) {
             router.push(`/login`);
         }
     });
-    return (
+    return (profile ? (
         <>
             <Head>
                 <title>{profile.username}</title>
@@ -29,13 +29,27 @@ function Profile({profile, isLoggedIn}) {
                 <b>{profile.username} posts</b>
             </Link>
         </>
-    )
-
+    ) : (
+        <span>Loading...</span>
+    ))
 }
 
 export const getServerSideProps = async ({req, query}) => {
-    const cookies = parseCookies(req);
-    const {data, status} = await getUser(cookies.token, query.username);
+    const {token} = parseCookies(req);
+    if (!token) {
+        return {
+            props: {
+                isLoggedIn: false
+            }
+        };
+    }
+    api.interceptors.request.use((config) => {
+        config.headers.authorization = `Bearer ${token}`;
+        return config;
+    }, (error) => {
+        return error.response
+    });
+    const {data, status} = await getUser(query.username);
     if (status === 404) {
         return {
             notFound: true,
@@ -43,6 +57,7 @@ export const getServerSideProps = async ({req, query}) => {
     }
     return {
         props: {
+            isLoggedIn: true,
             profile: data.data
         }
     };

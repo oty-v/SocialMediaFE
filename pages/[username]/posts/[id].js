@@ -1,7 +1,7 @@
 import {useRouter} from "next/router";
 import Head from "next/head";
 
-import {deletePost, editPost, getPost} from "../../../lib/api";
+import {api, deletePost, editPost, getPost} from "../../../lib/api";
 import PostForm from "../../../components/postForm";
 import {useEffect} from "react";
 import {parseCookies} from "../../../lib/parseCookies";
@@ -14,18 +14,28 @@ const PostPage = ({token, username, post, isLoggedIn}) => {
         }
     });
     const removePost = async (post) => {
-        const {status} = await deletePost(token, post.id);
+        api.interceptors.request.use((config) => {
+            config.headers.authorization = `Bearer ${token}`;
+            return config;
+        }, (error) => {
+            return error.response
+        });
+        const {status} = await deletePost(post.id);
         if (status === 204) {
             router.push(`/${username}/posts`);
         }
     }
     const onEdit = async (inputs) => {
-        const {status} = await editPost(token, inputs);
+        api.interceptors.request.use((config) => {
+            config.headers.authorization = `Bearer ${token}`;
+            return config;
+        });
+        const {status} = await editPost(inputs);
         if (status === 200) {
             router.push(`/${username}/posts`);
         }
     }
-    return (
+    return (post ? (
         <>
             <Head>
                 <title>Post: {post.id}</title>
@@ -40,12 +50,27 @@ const PostPage = ({token, username, post, isLoggedIn}) => {
                 Remove
             </button>
         </>
-    )
+    ) : (
+        <span>Loading...</span>
+    ))
 }
 
 export const getServerSideProps = async ({req, query}) => {
-    const cookies = parseCookies(req);
-    const {data, status} = await getPost(cookies.token, query.id);
+    const {token} = parseCookies(req);
+    if (!token) {
+        return {
+            props: {
+                isLoggedIn: false
+            }
+        };
+    }
+    api.interceptors.request.use((config) => {
+        config.headers.authorization = `Bearer ${token}`;
+        return config;
+    }, (error) => {
+        return error.response
+    });
+    const {data, status} = await getPost(query.id);
     if (status === 404) {
         return {
             notFound: true,
@@ -53,7 +78,8 @@ export const getServerSideProps = async ({req, query}) => {
     }
     return {
         props: {
-            token: cookies.token,
+            isLoggedIn: true,
+            token: token,
             username: query.username,
             post: data.data
         }

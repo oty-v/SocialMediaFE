@@ -6,8 +6,8 @@ import Header from "../components/header";
 import '../styles/globals.css';
 
 function MyApp({Component, pageProps}) {
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
-    const [authUser, setAuthUser] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [authUser, setAuthUser] = useState('');
     const router = useRouter();
     useEffect(async () => {
         const token = Cookie.get("token");
@@ -25,8 +25,8 @@ function MyApp({Component, pageProps}) {
     }
     const handleClickLogOut = async () => {
         await logoutUser();
-        await Cookie.remove("token");
-        await Cookie.remove("username");
+        Cookie.remove("token");
+        Cookie.remove("username");
         setIsLoggedIn(false);
         setAuthUser(null);
     }
@@ -40,10 +40,7 @@ function MyApp({Component, pageProps}) {
                 handleClickLogOut={handleClickLogOut}
             />
             <main>
-                <Component
-                    {...pageProps}
-                    isLoggedIn={isLoggedIn}
-                />
+                <Component {...pageProps}/>
             </main>
             <footer>
                 <p>2021 @oty-v</p>
