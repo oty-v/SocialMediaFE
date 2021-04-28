@@ -6,8 +6,10 @@ import {useRouter} from "next/router";
 import {useEffect} from "react";
 import {parseCookies} from "../../../lib/parseCookies";
 import PostsList from "../../../components/postsList";
+import Cookie from "js-cookie";
 
 function Posts({username, posts, isLoggedIn}) {
+    const authUser = Cookie.get("username");
     const router = useRouter();
     useEffect(() => {
         if (!isLoggedIn) {
@@ -24,7 +26,7 @@ function Posts({username, posts, isLoggedIn}) {
             </Head>
             <h2>Posts List</h2>
             {!!posts?.length ? (
-                <PostsList posts={posts} handleClickEdit={handleClickEdit}/>
+                <PostsList posts={posts} handleClickEdit={handleClickEdit} authUser={authUser}/>
             ) : (
                 <span>No posts</span>
             )}
