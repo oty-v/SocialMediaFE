@@ -1,5 +1,5 @@
 import {useRouter} from "next/router";
-import {logoutUser} from "../../lib/api";
+import {deletePost, logoutUser} from "../../lib/api";
 import Cookie from "js-cookie";
 import Header from "./header";
 
@@ -13,10 +13,12 @@ function Layout({isLoggedIn, children}) {
         router.push(`/register`);
     }
     const handleClickLogOut = async () => {
-        await logoutUser();
-        Cookie.remove("token");
-        Cookie.remove("username");
-        router.push('/login');
+        const {status} = await logoutUser();
+        if (status === 204) {
+            Cookie.remove("token");
+            Cookie.remove("username");
+            router.push('/login');
+        }
     }
     return (
         <div className="container">
