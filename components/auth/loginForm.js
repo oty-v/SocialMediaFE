@@ -2,7 +2,7 @@ import {useState} from "react";
 
 const LoginForm = ({onSubmit}) => {
     const [inputsUser, setInputsUser] = useState({});
-    const handleSubmit = async (event, user) => {
+    const handleSubmit = (event, user) => {
         if (event) {
             event.preventDefault();
         }

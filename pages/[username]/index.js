@@ -12,7 +12,7 @@ function Profile({isLoggedIn, profile}) {
         if (!isLoggedIn) {
             router.push(`/login`);
         }
-    });
+    }, [isLoggedIn]);
     return (profile ? (
         <>
             <Head>
@@ -43,12 +43,7 @@ export const getServerSideProps = async ({req, query}) => {
             }
         };
     }
-    api.interceptors.request.use((config) => {
-        config.headers.authorization = `Bearer ${token}`;
-        return config;
-    }, (error) => {
-        return error.response
-    });
+    api.setToken(token);
     const {data, status} = await getUser(query.username);
     if (status === 404) {
         return {

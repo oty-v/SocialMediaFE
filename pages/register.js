@@ -14,7 +14,7 @@ export default function Register({isLoggedIn}) {
         if (isLoggedIn) {
             router.push(`/`);
         }
-    });
+    }, [isLoggedIn]);
     const onRegister = async (inputs) => {
         const {status} = await registerUser(inputs);
     }

@@ -7,18 +7,14 @@ import UserList from "../components/usersList";
 import {parseCookies} from "../lib/parseCookies";
 import {useEffect} from "react";
 
-export default function Home({isLoggedIn, token, users}) {
+export default function Home({isLoggedIn, users}) {
     const router = useRouter();
     useEffect(() => {
         if (!isLoggedIn) {
             router.push(`/login`);
         }
-    });
+    },[isLoggedIn]);
     const onCreate = async (inputs) => {
-        api.interceptors.request.use((config) => {
-            config.headers.authorization = `Bearer ${token}`;
-            return config;
-        });
         const {data, status} = await createPost(inputs);
         if (status === 201) {
             router.push(`${data.data.author.username}/posts/${data.data.id}`);
@@ -46,12 +42,7 @@ export const getServerSideProps = async ({req}) => {
             }
         };
     }
-    api.interceptors.request.use((config) => {
-        config.headers.authorization = `Bearer ${token}`;
-        return config;
-    }, (error) => {
-        return error.response
-    });
+    api.setToken(token);
     const {data, status} = await getUsers();
     if (status === 404) {
         return {
@@ -61,7 +52,6 @@ export const getServerSideProps = async ({req}) => {
     return {
         props: {
             isLoggedIn: true,
-            token,
             users: data.data
         }
     };

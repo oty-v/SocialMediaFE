@@ -13,7 +13,7 @@ function Posts({username, posts, isLoggedIn}) {
         if (!isLoggedIn) {
             router.push(`/login`);
         }
-    });
+    }, [isLoggedIn]);
     const handleClickEdit = (post) => {
         router.push(`/${username}/posts/${post.id}`)
     }
@@ -42,12 +42,7 @@ export const getServerSideProps = async ({req, query}) => {
             }
         };
     }
-    api.interceptors.request.use((config) => {
-        config.headers.authorization = `Bearer ${token}`;
-        return config;
-    }, (error) => {
-        return error.response
-    });
+    api.setToken(token);
     const {data, status} = await getUserPosts(query.username);
     if (status === 404) {
         return {

@@ -6,30 +6,20 @@ import PostForm from "../../../components/postForm";
 import {useEffect} from "react";
 import {parseCookies} from "../../../lib/parseCookies";
 
-const PostPage = ({token, username, post, isLoggedIn}) => {
+const PostPage = ({username, post, isLoggedIn}) => {
     const router = useRouter();
     useEffect(() => {
         if (!isLoggedIn) {
             router.push(`/login`);
         }
-    });
+    }, [isLoggedIn]);
     const removePost = async (post) => {
-        api.interceptors.request.use((config) => {
-            config.headers.authorization = `Bearer ${token}`;
-            return config;
-        }, (error) => {
-            return error.response
-        });
         const {status} = await deletePost(post.id);
         if (status === 204) {
             router.push(`/${username}/posts`);
         }
     }
     const onEdit = async (inputs) => {
-        api.interceptors.request.use((config) => {
-            config.headers.authorization = `Bearer ${token}`;
-            return config;
-        });
         const {status} = await editPost(inputs);
         if (status === 200) {
             router.push(`/${username}/posts`);
@@ -64,12 +54,7 @@ export const getServerSideProps = async ({req, query}) => {
             }
         };
     }
-    api.interceptors.request.use((config) => {
-        config.headers.authorization = `Bearer ${token}`;
-        return config;
-    }, (error) => {
-        return error.response
-    });
+    api.setToken(token);
     const {data, status} = await getPost(query.id);
     if (status === 404) {
         return {
@@ -79,7 +64,6 @@ export const getServerSideProps = async ({req, query}) => {
     return {
         props: {
             isLoggedIn: true,
-            token: token,
             username: query.username,
             post: data.data
         }

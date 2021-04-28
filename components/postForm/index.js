@@ -9,7 +9,7 @@ function PostForm({
                       }
                   }) {
     const [inputsPost, setInputsPost] = useState(initialPost);
-    const handleSubmit = async (event, post) => {
+    const handleSubmit = (event, post) => {
         if (event) {
             event.preventDefault();
         }

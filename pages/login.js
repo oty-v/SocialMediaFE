@@ -14,15 +14,10 @@ export default function Login({isLoggedIn}) {
         if (isLoggedIn) {
             router.push(`/`);
         }
-    });
+    }, [isLoggedIn]);
     const onLogin = async (inputs) => {
         const token = await loginUser(inputs);
-        api.interceptors.request.use((config) => {
-            config.headers.authorization = `Bearer ${token.data.data.access_token}`;
-            return config;
-        }, (error) => {
-            return error.response
-        });
+        api.setToken(token.data.data.access_token);
         const {data} = await getProfile();
         Cookie.set('username', data.data.username);
         Cookie.set("token", token.data.data.access_token);
@@ -44,7 +39,7 @@ export default function Login({isLoggedIn}) {
 
 export const getServerSideProps = async ({req}) => {
     const {token} = parseCookies(req);
-    if(!token){
+    if (!token) {
         return {
             props: {
                 isLoggedIn: false
