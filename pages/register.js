@@ -2,10 +2,11 @@ import Head from "next/head";
 import Link from "next/link";
 
 import RegisterForm from "../components/auth/registerForm";
-import {registerUser} from "../lib/api";
+import {api, getProfile, registerUser} from "../lib/api";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
 import {parseCookies} from "../lib/parseCookies";
+import Cookie from "js-cookie";
 
 
 export default function Register({isLoggedIn}) {
@@ -16,7 +17,12 @@ export default function Register({isLoggedIn}) {
         }
     }, [isLoggedIn]);
     const onRegister = async (inputs) => {
-        const {status} = await registerUser(inputs);
+        const token = await registerUser(inputs);;
+        api.setToken(token.data.data.access_token);
+        const {data} = await getProfile();
+        Cookie.set('username', data.data.username);
+        Cookie.set("token", token.data.data.access_token);
+        router.push(`/`);
     }
     return (
         <>
