@@ -52,3 +52,13 @@ footer {
 button {
     margin: .5rem;
 }
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.error {
+    position: absolute;
+    color: #dc3545;
+    font-size: .6rem;
+}
