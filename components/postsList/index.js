@@ -6,7 +6,11 @@ const PostsList = ({posts, handleClickEdit, authUser}) => {
         <ul className={styles.list}>
             {posts.map(post => (
                 <li key={post.id}>
-                    <Post handleClickEdit={() => handleClickEdit(post)} post={post} author={authUser===post.author.username}/>
+                    <Post
+                        handleClickEdit={() => handleClickEdit(post)}
+                        post={post}
+                        showPostControls={authUser === post.author.username}
+                    />
                 </li>
             ))}
         </ul>

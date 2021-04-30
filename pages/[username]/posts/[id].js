@@ -1,10 +1,11 @@
 import {useRouter} from "next/router";
 import Head from "next/head";
 
-import {api, deletePost, editPost, getPost} from "../../../lib/api";
+import {axiosController} from "../../../lib/axiosController";
+import {deletePost, editPost, getPost} from "../../../api/posts";
 import PostForm from "../../../components/postForm";
 import {useEffect} from "react";
-import {parseCookies} from "../../../lib/parseCookies";
+import {parseCookies} from "../../../helpers/parseCookies";
 
 const PostPage = ({username, post, isLoggedIn}) => {
     const router = useRouter();
@@ -54,7 +55,7 @@ export const getServerSideProps = async ({req, query}) => {
             }
         };
     }
-    api.setToken(token);
+    axiosController.setToken(token);
     const {data, status} = await getPost(query.id);
     if (status === 404) {
         return {

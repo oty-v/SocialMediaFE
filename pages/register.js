@@ -2,10 +2,11 @@ import Head from "next/head";
 import Link from "next/link";
 
 import RegisterForm from "../components/auth/registerForm";
-import {api, getProfile, registerUser} from "../lib/api";
+import {axiosController} from "../lib/axiosController";
+import {getProfile, registerUser} from "../api/auth";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
-import {parseCookies} from "../lib/parseCookies";
+import {parseCookies} from "../helpers/parseCookies";
 import Cookie from "js-cookie";
 
 
@@ -17,8 +18,8 @@ export default function Register({isLoggedIn}) {
         }
     }, [isLoggedIn]);
     const onRegister = async (inputs) => {
-        const token = await registerUser(inputs);;
-        api.setToken(token.data.data.access_token);
+        const token = await registerUser(inputs);
+        axiosController.setToken(token.data.data.access_token);
         const {data} = await getProfile();
         Cookie.set('username', data.data.username);
         Cookie.set("token", token.data.data.access_token);
@@ -41,7 +42,7 @@ export default function Register({isLoggedIn}) {
 
 export const getServerSideProps = async ({req}) => {
     const {token} = parseCookies(req);
-    if(!token){
+    if (!token) {
         return {
             props: {
                 isLoggedIn: false

@@ -4,9 +4,10 @@ import Link from "next/link";
 import Cookie from "js-cookie";
 
 import LoginForm from "../components/auth/loginForm";
-import {loginUser, getProfile, api, getUsers} from "../lib/api";
+import {axiosController} from "../lib/axiosController";
+import {loginUser, getProfile} from "../api/auth";
 import {useEffect} from "react";
-import {parseCookies} from "../lib/parseCookies";
+import {parseCookies} from "../helpers/parseCookies";
 
 export default function Login({isLoggedIn}) {
     const router = useRouter();
@@ -17,7 +18,7 @@ export default function Login({isLoggedIn}) {
     }, [isLoggedIn]);
     const onLogin = async (inputs) => {
         const token = await loginUser(inputs);
-        api.setToken(token.data.data.access_token);
+        axiosController.setToken(token.data.data.access_token);
         const {data} = await getProfile();
         Cookie.set('username', data.data.username);
         Cookie.set("token", token.data.data.access_token);

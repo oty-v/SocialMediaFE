@@ -1,11 +1,14 @@
 import '../styles/globals.css';
 import Layout from "../components/layout";
+import {AuthTokenChecker} from "../components/hoc/authTokenChecker";
 
 function MyApp({Component, pageProps}) {
     return (
-        <Layout {...pageProps}>
-            <Component {...pageProps}/>
-        </Layout>
+        <AuthTokenChecker>
+            <Layout {...pageProps}>
+                <Component {...pageProps}/>
+            </Layout>
+        </AuthTokenChecker>
     )
 }
 

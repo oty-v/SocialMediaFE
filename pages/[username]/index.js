@@ -1,9 +1,10 @@
 import Head from "next/head";
 
-import {parseCookies} from "../../lib/parseCookies";
+import {parseCookies} from "../../helpers/parseCookies";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
-import {api, getUser} from "../../lib/api";
+import {axiosController} from "../../lib/axiosController";
+import {getUser} from "../../api/users";
 import Link from "next/link";
 
 function Profile({isLoggedIn, profile}) {
@@ -43,7 +44,7 @@ export const getServerSideProps = async ({req, query}) => {
             }
         };
     }
-    api.setToken(token);
+    axiosController.setToken(token);
     const {data, status} = await getUser(query.username);
     if (status === 404) {
         return {

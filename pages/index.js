@@ -1,10 +1,12 @@
 import {useRouter} from "next/router";
 import Head from 'next/head';
 
-import {api, createPost, getUsers} from "../lib/api";
+import {axiosController} from "../lib/axiosController";
+import {createPost} from "../api/posts";
+import {getUsers} from "../api/users";
 import PostForm from "../components/postForm";
 import UserList from "../components/usersList";
-import {parseCookies} from "../lib/parseCookies";
+import {parseCookies} from "../helpers/parseCookies";
 import {useEffect} from "react";
 
 export default function Home({isLoggedIn, users}) {
@@ -13,7 +15,7 @@ export default function Home({isLoggedIn, users}) {
         if (!isLoggedIn) {
             router.push(`/login`);
         }
-    },[isLoggedIn]);
+    }, [isLoggedIn]);
     const onCreate = async (inputs) => {
         const {data, status} = await createPost(inputs);
         if (status === 201) {
@@ -35,14 +37,14 @@ export default function Home({isLoggedIn, users}) {
 
 export const getServerSideProps = async ({req}) => {
     const {token} = parseCookies(req);
-    if(!token){
+    if (!token) {
         return {
             props: {
                 isLoggedIn: false
             }
         };
     }
-    api.setToken(token);
+    axiosController.setToken(token);
     const {data, status} = await getUsers();
     if (status === 404) {
         return {
