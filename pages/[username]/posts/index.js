@@ -1,12 +1,11 @@
 import Head from "next/head";
 
-import {axiosController} from "../../../lib/axiosController";
 import {getUserPosts} from "../../../api/posts";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
-import {parseCookies} from "../../../helpers/parseCookies";
 import PostsList from "../../../components/postsList";
 import Cookie from "js-cookie";
+import {withAuth} from "../../../lib/withAuth";
 
 function Posts({username, posts, isLoggedIn}) {
     const authUser = Cookie.get("username");
@@ -35,17 +34,8 @@ function Posts({username, posts, isLoggedIn}) {
 
 }
 
-export const getServerSideProps = async ({req, query}) => {
-    const {token} = parseCookies(req);
-    if (!token) {
-        return {
-            props: {
-                isLoggedIn: false
-            }
-        };
-    }
-    axiosController.setToken(token);
-    const {data, status} = await getUserPosts(query.username);
+export const getServerSideProps = withAuth(async (ctx, token) => {
+    const {data, status} = await getUserPosts(ctx.query.username);
     if (status === 404) {
         return {
             notFound: true,
@@ -53,11 +43,10 @@ export const getServerSideProps = async ({req, query}) => {
     }
     return {
         props: {
-            isLoggedIn: true,
-            username: query.username,
+            username: ctx.query.username,
             posts: data.data
         }
     };
-}
+})
 
 export default Posts;

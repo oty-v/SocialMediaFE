@@ -1,11 +1,10 @@
 import {useRouter} from "next/router";
 import Head from "next/head";
 
-import {axiosController} from "../../../lib/axiosController";
 import {deletePost, editPost, getPost} from "../../../api/posts";
 import PostForm from "../../../components/postForm";
 import {useEffect} from "react";
-import {parseCookies} from "../../../helpers/parseCookies";
+import {withAuth} from "../../../lib/withAuth";
 
 const PostPage = ({username, post, isLoggedIn}) => {
     const router = useRouter();
@@ -46,17 +45,8 @@ const PostPage = ({username, post, isLoggedIn}) => {
     ))
 }
 
-export const getServerSideProps = async ({req, query}) => {
-    const {token} = parseCookies(req);
-    if (!token) {
-        return {
-            props: {
-                isLoggedIn: false
-            }
-        };
-    }
-    axiosController.setToken(token);
-    const {data, status} = await getPost(query.id);
+export const getServerSideProps = withAuth(async (ctx, token) => {
+    const {data, status} = await getPost(ctx.query.id);
     if (status === 404) {
         return {
             notFound: true,
@@ -64,11 +54,10 @@ export const getServerSideProps = async ({req, query}) => {
     }
     return {
         props: {
-            isLoggedIn: true,
-            username: query.username,
+            username: ctx.query.username,
             post: data.data
         }
     };
-}
+})
 
 export default PostPage

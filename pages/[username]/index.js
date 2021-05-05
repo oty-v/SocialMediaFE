@@ -1,11 +1,10 @@
 import Head from "next/head";
 
-import {parseCookies} from "../../helpers/parseCookies";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
-import {axiosController} from "../../lib/axiosController";
 import {getUser} from "../../api/users";
 import Link from "next/link";
+import {withAuth} from "../../lib/withAuth";
 
 function Profile({isLoggedIn, profile}) {
     const router = useRouter();
@@ -35,17 +34,8 @@ function Profile({isLoggedIn, profile}) {
     ))
 }
 
-export const getServerSideProps = async ({req, query}) => {
-    const {token} = parseCookies(req);
-    if (!token) {
-        return {
-            props: {
-                isLoggedIn: false
-            }
-        };
-    }
-    axiosController.setToken(token);
-    const {data, status} = await getUser(query.username);
+export const getServerSideProps = withAuth(async (ctx, token) => {
+    const {data, status} = await getUser(ctx.query.username);
     if (status === 404) {
         return {
             notFound: true,
@@ -53,10 +43,9 @@ export const getServerSideProps = async ({req, query}) => {
     }
     return {
         props: {
-            isLoggedIn: true,
             profile: data.data
         }
     };
-}
+})
 
 export default Profile;
