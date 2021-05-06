@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import {useRouter} from 'next/router'
 
 const Header = ({
                     authUser,
@@ -8,7 +7,6 @@ const Header = ({
                     handleClickSignUp,
                     handleClickLogOut
                 }) => {
-    const router = useRouter()
     return (
         <header>
             <nav>

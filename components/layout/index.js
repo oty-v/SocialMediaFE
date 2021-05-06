@@ -3,9 +3,8 @@ import {logoutUser} from "../../api/auth";
 import Cookie from "js-cookie";
 import Header from "./header";
 
-function Layout({isLoggedIn, children}) {
+function Layout({auth, isLoggedIn, children}) {
     const router = useRouter();
-    const authUser = Cookie.get("username");
     const handleClickSignIn = () => {
         router.push(`/login`);
     }
@@ -14,9 +13,8 @@ function Layout({isLoggedIn, children}) {
     }
     const handleClickLogOut = async () => {
         try {
-            const {status} = await logoutUser();
+            await logoutUser();
             Cookie.remove("token");
-            Cookie.remove("username");
             router.push('/login');
         } catch (error) {
             console.log(error)
@@ -25,7 +23,7 @@ function Layout({isLoggedIn, children}) {
     return (
         <div className="container">
             <Header
-                authUser={authUser}
+                authUser={auth?.user.username}
                 isLoggedIn={isLoggedIn}
                 handleClickSignIn={handleClickSignIn}
                 handleClickSignUp={handleClickSignUp}

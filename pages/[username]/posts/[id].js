@@ -2,7 +2,7 @@ import {useRouter} from "next/router";
 import Head from "next/head";
 
 import {deletePost, editPost, getPost} from "../../../api/posts";
-import PostForm from "../../../components/postForm";
+import PostForm from "../../../components/posts/postForm";
 import {withAuth} from "../../../lib/withAuth";
 
 const PostPage = ({username, post}) => {
@@ -43,14 +43,22 @@ const PostPage = ({username, post}) => {
     ))
 }
 
-export const getServerSideProps = withAuth(async (ctx, token) => {
-    const {data} = await getPost(ctx.query.id);
-    return {
-        props: {
-            username: ctx.query.username,
-            post: data.data
+export const getServerSideProps = withAuth(async (ctx, auth) => {
+    try {
+        const {data} = await getPost(ctx.query.id);
+        return {
+            props: {
+                username: ctx.query.username,
+                post: data.data
+            }
+        };
+    } catch (e) {
+        if (e.response.status === 404) {
+            return {
+                notFound: true,
+            }
         }
-    };
+    }
 })
 
 export default PostPage

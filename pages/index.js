@@ -3,8 +3,8 @@ import Head from 'next/head';
 
 import {createPost} from "../api/posts";
 import {getUsers} from "../api/users";
-import PostForm from "../components/postForm";
-import UserList from "../components/usersList";
+import PostForm from "../components/posts/postForm";
+import UserList from "../components/users/usersList";
 import {withAuth} from "../lib/withAuth";
 
 export default function Home({users}) {
@@ -30,11 +30,19 @@ export default function Home({users}) {
     )
 }
 
-export const getServerSideProps = withAuth(async (ctx, token) => {
-    const {data} = await getUsers();
-    return {
-        props: {
-            users: data.data
+export const getServerSideProps = withAuth(async (ctx, auth) => {
+    try {
+        const {data} = await getUsers();
+        return {
+            props: {
+                users: data.data
+            }
+        };
+    } catch (e) {
+        if (e.response.status === 404) {
+            return {
+                notFound: true,
+            }
         }
-    };
+    }
 })

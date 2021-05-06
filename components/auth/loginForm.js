@@ -3,9 +3,7 @@ import {useState} from "react";
 const LoginForm = ({onSubmit}) => {
     const [inputsUser, setInputsUser] = useState({});
     const handleSubmit = (event, user) => {
-        if (event) {
-            event.preventDefault();
-        }
+        event.preventDefault();
         onSubmit(user);
     }
     const handleInputChange = (key, value) => {

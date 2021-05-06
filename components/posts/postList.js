@@ -1,5 +1,5 @@
 import styles from "../../styles/posts.module.css";
-import Post from "../post";
+import Post from "./post";
 
 const PostsList = ({posts, handleClickEdit, authUser}) => {
     return (

@@ -2,12 +2,10 @@ import Head from "next/head";
 
 import {getUserPosts} from "../../../api/posts";
 import {useRouter} from "next/router";
-import PostsList from "../../../components/postsList";
-import Cookie from "js-cookie";
+import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
 
-function Posts({username, posts}) {
-    const authUser = Cookie.get("username");
+function Posts({auth, username, posts}) {
     const router = useRouter();
     const handleClickEdit = (post) => {
         router.push(`/${username}/posts/${post.id}`)
@@ -19,7 +17,11 @@ function Posts({username, posts}) {
             </Head>
             <h2>Posts List</h2>
             {!!posts?.length ? (
-                <PostsList posts={posts} handleClickEdit={handleClickEdit} authUser={authUser}/>
+                <PostsList
+                    posts={posts}
+                    handleClickEdit={handleClickEdit}
+                    authUser={auth.user.username}
+                />
             ) : (
                 <span>No posts</span>
             )}
@@ -28,14 +30,22 @@ function Posts({username, posts}) {
 
 }
 
-export const getServerSideProps = withAuth(async (ctx, token) => {
-    const {data} = await getUserPosts(ctx.query.username);
-    return {
-        props: {
-            username: ctx.query.username,
-            posts: data.data
+export const getServerSideProps = withAuth(async (ctx, auth) => {
+    try {
+        const {data} = await getUserPosts(ctx.query.username);
+        return {
+            props: {
+                username: ctx.query.username,
+                posts: data.data
+            }
+        };
+    } catch (e) {
+        if (e.response.status === 404) {
+            return {
+                notFound: true,
+            }
         }
-    };
+    }
 })
 
 export default Posts;

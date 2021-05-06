@@ -26,13 +26,21 @@ function Profile({profile}) {
     ))
 }
 
-export const getServerSideProps = withAuth(async (ctx, token) => {
-    const {data} = await getUser(ctx.query.username);
-    return {
-        props: {
-            profile: data.data
+export const getServerSideProps = withAuth(async (ctx, auth) => {
+    try {
+        const {data} = await getUser(ctx.query.username);
+        return {
+            props: {
+                profile: data.data
+            }
+        };
+    } catch (e) {
+        if (e.response.status === 404) {
+            return {
+                notFound: true,
+            }
         }
-    };
+    }
 })
 
 export default Profile;

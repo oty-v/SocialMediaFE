@@ -3,9 +3,7 @@ import {useState} from "react";
 const RegisterForm = ({onSubmit}) => {
     const [inputsUser, setInputsUser] = useState({});
     const handleSubmit = (event, User) => {
-        if (event) {
-            event.preventDefault();
-        }
+        event.preventDefault();
         onSubmit(User);
     }
     const handleInputChange = (key, value) => {
