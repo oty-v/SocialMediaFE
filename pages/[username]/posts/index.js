@@ -2,19 +2,13 @@ import Head from "next/head";
 
 import {getUserPosts} from "../../../api/posts";
 import {useRouter} from "next/router";
-import {useEffect} from "react";
 import PostsList from "../../../components/postsList";
 import Cookie from "js-cookie";
 import {withAuth} from "../../../lib/withAuth";
 
-function Posts({username, posts, isLoggedIn}) {
+function Posts({username, posts}) {
     const authUser = Cookie.get("username");
     const router = useRouter();
-    useEffect(() => {
-        if (!isLoggedIn) {
-            router.push(`/login`);
-        }
-    }, [isLoggedIn]);
     const handleClickEdit = (post) => {
         router.push(`/${username}/posts/${post.id}`)
     }
@@ -35,12 +29,7 @@ function Posts({username, posts, isLoggedIn}) {
 }
 
 export const getServerSideProps = withAuth(async (ctx, token) => {
-    const {data, status} = await getUserPosts(ctx.query.username);
-    if (status === 404) {
-        return {
-            notFound: true,
-        }
-    }
+    const {data} = await getUserPosts(ctx.query.username);
     return {
         props: {
             username: ctx.query.username,

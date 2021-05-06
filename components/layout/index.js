@@ -13,11 +13,13 @@ function Layout({isLoggedIn, children}) {
         router.push(`/register`);
     }
     const handleClickLogOut = async () => {
-        const {status} = await logoutUser();
-        if (status === 204) {
+        try {
+            const {status} = await logoutUser();
             Cookie.remove("token");
             Cookie.remove("username");
             router.push('/login');
+        } catch (error) {
+            console.log(error)
         }
     }
     return (

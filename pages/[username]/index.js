@@ -1,18 +1,10 @@
 import Head from "next/head";
 
-import {useRouter} from "next/router";
-import {useEffect} from "react";
 import {getUser} from "../../api/users";
 import Link from "next/link";
 import {withAuth} from "../../lib/withAuth";
 
-function Profile({isLoggedIn, profile}) {
-    const router = useRouter();
-    useEffect(() => {
-        if (!isLoggedIn) {
-            router.push(`/login`);
-        }
-    }, [isLoggedIn]);
+function Profile({profile}) {
     return (profile ? (
         <>
             <Head>
@@ -35,12 +27,7 @@ function Profile({isLoggedIn, profile}) {
 }
 
 export const getServerSideProps = withAuth(async (ctx, token) => {
-    const {data, status} = await getUser(ctx.query.username);
-    if (status === 404) {
-        return {
-            notFound: true,
-        }
-    }
+    const {data} = await getUser(ctx.query.username);
     return {
         props: {
             profile: data.data

@@ -3,26 +3,24 @@ import Head from "next/head";
 
 import {deletePost, editPost, getPost} from "../../../api/posts";
 import PostForm from "../../../components/postForm";
-import {useEffect} from "react";
 import {withAuth} from "../../../lib/withAuth";
 
-const PostPage = ({username, post, isLoggedIn}) => {
+const PostPage = ({username, post}) => {
     const router = useRouter();
-    useEffect(() => {
-        if (!isLoggedIn) {
-            router.push(`/login`);
-        }
-    }, [isLoggedIn]);
     const removePost = async (post) => {
-        const {status} = await deletePost(post.id);
-        if (status === 204) {
+        try {
+            await deletePost(post.id);
             router.push(`/${username}/posts`);
+        } catch (error) {
+            console.log(error)
         }
     }
     const onEdit = async (inputs) => {
-        const {status} = await editPost(inputs);
-        if (status === 200) {
+        try {
+            await editPost(inputs);
             router.push(`/${username}/posts`);
+        } catch (error) {
+            console.log(error)
         }
     }
     return (post ? (
@@ -46,12 +44,7 @@ const PostPage = ({username, post, isLoggedIn}) => {
 }
 
 export const getServerSideProps = withAuth(async (ctx, token) => {
-    const {data, status} = await getPost(ctx.query.id);
-    if (status === 404) {
-        return {
-            notFound: true,
-        }
-    }
+    const {data} = await getPost(ctx.query.id);
     return {
         props: {
             username: ctx.query.username,

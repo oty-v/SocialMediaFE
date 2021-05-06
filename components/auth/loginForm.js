@@ -33,9 +33,7 @@ const LoginForm = ({onSubmit}) => {
                 />
             </fieldset>
 
-            <button
-                type="submit"
-            >
+            <button type="submit">
                 Sign in
             </button>
         </form>

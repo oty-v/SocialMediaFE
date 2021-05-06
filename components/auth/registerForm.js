@@ -17,9 +17,8 @@ const RegisterForm = ({onSubmit}) => {
                 <input
                     onChange={(event) => handleInputChange("username", event.target.value)}
                     value={inputsUser.username}
-                    className="form-control form-control-lg"
                     type="text"
-                    placeholder="Index"
+                    placeholder="Username"
                     required
                 />
             </fieldset>
@@ -27,7 +26,6 @@ const RegisterForm = ({onSubmit}) => {
                 <input
                     onChange={(event) => handleInputChange("email", event.target.value)}
                     value={inputsUser.email}
-                    className="form-control form-control-lg"
                     type="email"
                     placeholder="Email"
                     required
@@ -37,7 +35,6 @@ const RegisterForm = ({onSubmit}) => {
                 <input
                     onChange={(event) => handleInputChange("password", event.target.value)}
                     value={inputsUser.password}
-                    className="form-control form-control-lg"
                     type="password"
                     placeholder="Password"
                     required
@@ -47,16 +44,12 @@ const RegisterForm = ({onSubmit}) => {
                 <input
                     onChange={(event) => handleInputChange("password_confirmation", event.target.value)}
                     value={inputsUser.password_confirmation}
-                    className="form-control form-control-lg"
                     type="password"
                     placeholder="Confirm password"
                     required
                 />
             </fieldset>
-            <button
-                className="btn btn-lg btn-primary pull-xs-right"
-                type="submit"
-            >
+            <button type="submit">
                 Sign up
             </button>
         </form>

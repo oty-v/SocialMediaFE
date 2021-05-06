@@ -7,12 +7,14 @@ import PostForm from "../components/postForm";
 import UserList from "../components/usersList";
 import {withAuth} from "../lib/withAuth";
 
-export default function Home({ users}) {
+export default function Home({users}) {
     const router = useRouter();
     const onCreate = async (inputs) => {
-        const {data, status} = await createPost(inputs);
-        if (status === 201) {
+        try {
+            const {data} = await createPost(inputs);
             router.push(`${data.data.author.username}/posts/${data.data.id}`);
+        } catch (error) {
+            console.log(error)
         }
     }
     return (
@@ -29,12 +31,7 @@ export default function Home({ users}) {
 }
 
 export const getServerSideProps = withAuth(async (ctx, token) => {
-    const {data, status} = await getUsers();
-    if (status === 404) {
-        return {
-            notFound: true,
-        }
-    }
+    const {data} = await getUsers();
     return {
         props: {
             users: data.data

@@ -13,7 +13,6 @@ function PostForm({
         if (event) {
             event.preventDefault();
         }
-        console.log(post);
         onSubmit(post);
     }
     const handleInputChange = (key, value) => {
