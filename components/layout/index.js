@@ -11,8 +11,14 @@ function Layout({auth, isLoggedIn, children}) {
     const handleClickSignUp = () => {
         router.push(`/register`);
     }
-    const handleClickLogOut = () => {
-        router.push(`/logout`);
+    const handleClickLogOut = async () => {
+        try {
+            await logoutUser();
+            Cookie.remove("token");
+            router.push('/login');
+        } catch (error) {
+            console.log(error)
+        }
     }
     return (
         <div className="container">
