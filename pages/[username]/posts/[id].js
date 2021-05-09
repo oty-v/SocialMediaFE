@@ -45,11 +45,11 @@ const PostPage = ({username, post}) => {
 
 export const getServerSideProps = withAuth(async (ctx, auth) => {
     try {
-        const {data} = await getPost(ctx.query.id);
+        const {data: {data: post}} = await getPost(ctx.query.id);
         return {
             props: {
                 username: ctx.query.username,
-                post: data.data
+                post
             }
         };
     } catch (e) {

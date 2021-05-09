@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import RegisterForm from "../components/auth/registerForm";
-import {registerUser} from "../api/auth";
+import {loginUser, registerUser} from "../api/auth";
 import {useRouter} from "next/router";
 import Cookie from "js-cookie";
 import {withoutAuth} from "../lib/withoutAuth";
@@ -12,8 +12,8 @@ export default function Register() {
     const router = useRouter();
     const onRegister = async (inputs) => {
         try {
-            const {data} = await registerUser(inputs);
-            Cookie.set("token", data.data.access_token);
+            const {data: {data: {access_token: accessToken}}} = await loginUser(inputs);
+            Cookie.set("token", accessToken);
             router.push(`/`);
         } catch (error) {
             console.log(error)

@@ -32,11 +32,11 @@ function Posts({auth, username, posts}) {
 
 export const getServerSideProps = withAuth(async (ctx, auth) => {
     try {
-        const {data} = await getUserPosts(ctx.query.username);
+        const {data: {data: posts}} = await getUserPosts(ctx.query.username);
         return {
             props: {
                 username: ctx.query.username,
-                posts: data.data
+                posts
             }
         };
     } catch (e) {

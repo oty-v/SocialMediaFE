@@ -11,8 +11,8 @@ export default function Login() {
     const router = useRouter();
     const onLogin = async (inputs) => {
         try {
-            const {data} = await loginUser(inputs);
-            Cookie.set("token", data.data.access_token);
+            const {data: {data: {access_token: accessToken}}} = await loginUser(inputs);
+            Cookie.set("token", accessToken);
             router.push(`/`);
         } catch (error) {
             console.log(error);

@@ -11,8 +11,8 @@ export default function Home({users}) {
     const router = useRouter();
     const onCreate = async (inputs) => {
         try {
-            const {data} = await createPost(inputs);
-            router.push(`${data.data.author.username}/posts/${data.data.id}`);
+            const {data: {data: post}} = await createPost(inputs);
+            router.push(`${post.author.username}/posts/${post.id}`);
         } catch (error) {
             console.log(error)
         }
@@ -32,10 +32,10 @@ export default function Home({users}) {
 
 export const getServerSideProps = withAuth(async (ctx, auth) => {
     try {
-        const {data} = await getUsers();
+        const {data: {data: users}} = await getUsers();
         return {
             props: {
-                users: data.data
+                users
             }
         };
     } catch (e) {

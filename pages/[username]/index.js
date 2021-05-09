@@ -28,10 +28,10 @@ function Profile({profile}) {
 
 export const getServerSideProps = withAuth(async (ctx, auth) => {
     try {
-        const {data} = await getUser(ctx.query.username);
+        const {data: {data: profile}} = await getUser(ctx.query.username);
         return {
             props: {
-                profile: data.data
+                profile
             }
         };
     } catch (e) {
