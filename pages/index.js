@@ -25,7 +25,11 @@ export default function Home({users}) {
             <Head>
                 <title>Home</title>
             </Head>
-            <ToastMessage type='error' message={error} handleClick={()=>setError('')}/>
+            <ToastMessage
+                type='error'
+                message={error}
+                handleClick={()=>setError('')}
+            />
             <PostForm onSubmit={onCreate}/>
             {!!users?.length && (
                 <UserList users={users}/>

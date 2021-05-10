@@ -9,7 +9,7 @@ function PostForm({
                           content: ''
                       }
                   }) {
-    const validate = Yup.object({
+    const validationSchema = Yup.object({
         content: Yup.string()
             .max(280, 'Must be 280 characters or less')
             .required('Required'),
@@ -17,7 +17,7 @@ function PostForm({
     return (
         <Formik
             initialValues={initialPost}
-            validationSchema={validate}
+            validationSchema={validationSchema}
             onSubmit={values => {
                 onSubmit(values)
             }}

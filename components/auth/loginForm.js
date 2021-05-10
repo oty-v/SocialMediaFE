@@ -3,7 +3,7 @@ import {InputField} from '../common/field/inputField';
 import * as Yup from 'yup';
 
 const LoginForm = ({onSubmit}) => {
-    const validate = Yup.object({
+    const validationSchema = Yup.object({
         email: Yup.string()
             .email('Email is invalid')
             .required('Email is required'),
@@ -17,10 +17,8 @@ const LoginForm = ({onSubmit}) => {
                 email: '',
                 password: ''
             }}
-            validationSchema={validate}
-            onSubmit={values => {
-                onSubmit(values)
-            }}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
         >
             <Form>
                 <InputField

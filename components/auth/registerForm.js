@@ -3,7 +3,7 @@ import {InputField} from '../common/field/inputField';
 import * as Yup from 'yup';
 
 const RegisterForm = ({onSubmit}) => {
-    const validate = Yup.object({
+    const validationSchema = Yup.object({
         username: Yup.string()
             .max(25, 'Must be 25 characters or less')
             .required('Required'),
@@ -25,10 +25,8 @@ const RegisterForm = ({onSubmit}) => {
                 password: '',
                 password_confirmation: ''
             }}
-            validationSchema={validate}
-            onSubmit={values => {
-                onSubmit(values)
-            }}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
         >
             <Form>
                 <InputField

@@ -69,7 +69,7 @@ button {
 .error {
     position: absolute;
     color: #dc3545;
-    font-size: .6rem;
+    font-size: .8rem;
 }
 
 .toast-message {
@@ -81,7 +81,7 @@ button {
 }
 
 .toast-message-error {
-    background: #ff0000;
+    background: #dc3545;
     color: #fff;
 }
 
