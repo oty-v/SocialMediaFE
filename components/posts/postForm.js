@@ -5,15 +5,12 @@ import styles from '../../styles/postForm.module.css';
 function PostForm({
                       onSubmit,
                       initialPost = {
-                          username: '',
                           content: ''
                       }
                   }) {
     const [inputsPost, setInputsPost] = useState(initialPost);
-    const handleSubmit = async (event, post) => {
-        if (event) {
-            event.preventDefault();
-        }
+    const handleSubmit = (event, post) => {
+        event.preventDefault();
         onSubmit(post);
     }
     const handleInputChange = (key, value) => {
@@ -21,18 +18,9 @@ function PostForm({
     }
     return (
         <form
-            onSubmit={(event)=> handleSubmit(event, inputsPost)}
+            onSubmit={(event) => handleSubmit(event, inputsPost)}
             className={styles.form}
         >
-            <label>Username</label>
-            <input
-                className={styles.input}
-                onChange={(event) => handleInputChange("username", event.target.value)}
-                value={inputsPost.username}
-                type="text"
-                placeholder="Enter Username"
-                required
-            />
             <label>Post Content</label>
             <textarea
                 className={styles.textarea}
@@ -43,9 +31,7 @@ function PostForm({
                 placeholder="Enter post text"
                 required
             />
-            <button
-                type="submit"
-            >
+            <button type="submit">
                 Save
             </button>
         </form>
