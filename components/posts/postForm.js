@@ -1,5 +1,6 @@
-import {useState} from "react";
-
+import {Formik, Form} from 'formik';
+import {TextField} from '../common/field/textField';
+import * as Yup from 'yup';
 import styles from '../../styles/postForm.module.css';
 
 function PostForm({
@@ -8,33 +9,28 @@ function PostForm({
                           content: ''
                       }
                   }) {
-    const [inputsPost, setInputsPost] = useState(initialPost);
-    const handleSubmit = (event, post) => {
-        event.preventDefault();
-        onSubmit(post);
-    }
-    const handleInputChange = (key, value) => {
-        setInputsPost(inputsPost => ({...inputsPost, [key]: value}));
-    }
+    const validate = Yup.object({
+        content: Yup.string()
+            .max(280, 'Must be 280 characters or less')
+            .required('Required'),
+    })
     return (
-        <form
-            onSubmit={(event) => handleSubmit(event, inputsPost)}
-            className={styles.form}
+        <Formik
+            initialValues={initialPost}
+            validationSchema={validate}
+            onSubmit={values => {
+                onSubmit(values)
+            }}
         >
-            <label>Post Content</label>
-            <textarea
-                className={styles.textarea}
-                onChange={(event) => handleInputChange("content", event.target.value)}
-                value={inputsPost.content}
-                rows="5"
-                cols="30"
-                placeholder="Enter post text"
-                required
-            />
-            <button type="submit">
-                Save
-            </button>
-        </form>
+            <Form className={styles.form}>
+                <TextField
+                    label="Write your post"
+                    name="content"
+                    type="text"
+                />
+                <button type="submit">Save</button>
+            </Form>
+        </Formik>
     )
 }
 

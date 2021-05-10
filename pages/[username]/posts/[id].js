@@ -4,15 +4,17 @@ import Head from "next/head";
 import {deletePost, editPost, getPost} from "../../../api/posts";
 import PostForm from "../../../components/posts/postForm";
 import {withAuth} from "../../../lib/withAuth";
+import ToastMessage from "../../../components/common/toastMessage";
 
 const PostPage = ({username, post}) => {
+    const [error, setError] = useState('');
     const router = useRouter();
     const removePost = async (post) => {
         try {
             await deletePost(post.id);
             router.push(`/${username}/posts`);
         } catch (error) {
-            console.log(error)
+            setError(error.toString())
         }
     }
     const onEdit = async (inputs) => {
@@ -20,7 +22,7 @@ const PostPage = ({username, post}) => {
             await editPost(inputs);
             router.push(`/${username}/posts`);
         } catch (error) {
-            console.log(error)
+            setError(error.toString())
         }
     }
     return (post ? (
@@ -28,6 +30,7 @@ const PostPage = ({username, post}) => {
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
+            <ToastMessage type='error' message={error} handleClick={()=>setError('')}/>
             <PostForm
                 onSubmit={onEdit}
                 initialPost={post}

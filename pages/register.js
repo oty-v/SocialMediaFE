@@ -6,9 +6,11 @@ import {loginUser, registerUser} from "../api/auth";
 import {useRouter} from "next/router";
 import Cookie from "js-cookie";
 import {withoutAuth} from "../lib/withoutAuth";
+import ToastMessage from "../components/common/toastMessage";
 
 
 export default function Register() {
+    const [error, setError] = useState('');
     const router = useRouter();
     const onRegister = async (inputs) => {
         try {
@@ -16,7 +18,7 @@ export default function Register() {
             Cookie.set("token", accessToken);
             router.push(`/`);
         } catch (error) {
-            console.log(error)
+            setError(error.toString())
         }
     }
     return (
@@ -25,6 +27,7 @@ export default function Register() {
                 <title>Register</title>
                 <meta name="description" content="Please register before login"/>
             </Head>
+            <ToastMessage type='error' message={error} handleClick={()=>setError('')}/>
             <h1>Sign Up</h1>
             <RegisterForm onSubmit={onRegister}/>
             <Link href="/login">

@@ -1,5 +1,5 @@
 import '../styles/globals.css';
-import Layout from "../components/layout";
+import Layout from "../components/common/layout";
 import {AuthTokenChecker} from "../components/hoc/authTokenChecker";
 
 function MyApp({Component, pageProps}) {

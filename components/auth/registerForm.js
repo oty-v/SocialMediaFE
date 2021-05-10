@@ -1,56 +1,60 @@
-import {useState} from "react";
+import {Formik, Form} from 'formik';
+import {InputField} from '../common/field/inputField';
+import * as Yup from 'yup';
 
 const RegisterForm = ({onSubmit}) => {
-    const [inputsUser, setInputsUser] = useState({});
-    const handleSubmit = (event, User) => {
-        event.preventDefault();
-        onSubmit(User);
-    }
-    const handleInputChange = (key, value) => {
-        setInputsUser(inputsUser => ({...inputsUser, [key]: value}));
-    }
+    const validate = Yup.object({
+        username: Yup.string()
+            .max(25, 'Must be 25 characters or less')
+            .required('Required'),
+        email: Yup.string()
+            .email('Email is invalid')
+            .required('Email is required'),
+        password: Yup.string()
+            .min(8, 'Password must be at least 8 characters')
+            .required('Password is required'),
+        password_confirmation: Yup.string()
+            .oneOf([Yup.ref('password'), null], 'Password must match')
+            .required('Confirm password is required'),
+    })
     return (
-        <form onSubmit={(event) => handleSubmit(event, inputsUser)}>
-            <fieldset>
-                <input
-                    onChange={(event) => handleInputChange("username", event.target.value)}
-                    value={inputsUser.username}
+        <Formik
+            initialValues={{
+                username: '',
+                email: '',
+                password: '',
+                password_confirmation: ''
+            }}
+            validationSchema={validate}
+            onSubmit={values => {
+                onSubmit(values)
+            }}
+        >
+            <Form>
+                <InputField
+                    label="Username"
+                    name="username"
                     type="text"
-                    placeholder="Username"
-                    required
                 />
-            </fieldset>
-            <fieldset>
-                <input
-                    onChange={(event) => handleInputChange("email", event.target.value)}
-                    value={inputsUser.email}
+                <InputField
+                    label="Email"
+                    name="email"
                     type="email"
-                    placeholder="Email"
-                    required
                 />
-            </fieldset>
-            <fieldset>
-                <input
-                    onChange={(event) => handleInputChange("password", event.target.value)}
-                    value={inputsUser.password}
+                <InputField
+                    label="Password"
+                    name="password"
                     type="password"
-                    placeholder="Password"
-                    required
                 />
-            </fieldset>
-            <fieldset>
-                <input
-                    onChange={(event) => handleInputChange("password_confirmation", event.target.value)}
-                    value={inputsUser.password_confirmation}
+                <InputField
+                    label="Confirm Password"
+                    name="password_confirmation"
                     type="password"
-                    placeholder="Confirm password"
-                    required
                 />
-            </fieldset>
-            <button type="submit">
-                Sign up
-            </button>
-        </form>
+                <button type="submit">Sign Up</button>
+                <button type="reset">Reset</button>
+            </Form>
+        </Formik>
     );
 };
 

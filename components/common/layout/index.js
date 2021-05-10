@@ -1,5 +1,5 @@
 import {useRouter} from "next/router";
-import {logoutUser} from "../../api/auth";
+import {logoutUser} from "../../../api/auth";
 import Cookie from "js-cookie";
 import Header from "./header";
 

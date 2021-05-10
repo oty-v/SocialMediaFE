@@ -52,3 +52,48 @@ footer {
 button {
     margin: .5rem;
 }
+
+.field-container {
+    margin: 1rem 0;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.error {
+    position: absolute;
+    color: #dc3545;
+    font-size: .6rem;
+}
+
+.toast-message {
+    top: 0rem;
+    right: 0rem;
+    position: fixed;
+    margin: 2rem;
+    padding: 1rem;
+}
+
+.toast-message-error {
+    background: #ff0000;
+    color: #fff;
+}
+
+.toast-message-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.toast-message-btn {
+    margin: 0;
+    background: none;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+}

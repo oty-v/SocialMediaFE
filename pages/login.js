@@ -6,8 +6,10 @@ import Cookie from "js-cookie";
 import LoginForm from "../components/auth/loginForm";
 import {loginUser} from "../api/auth";
 import {withoutAuth} from "../lib/withoutAuth";
+import ToastMessage from "../components/common/toastMessage";
 
 export default function Login() {
+    const [error, setError] = useState('');
     const router = useRouter();
     const onLogin = async (inputs) => {
         try {
@@ -15,7 +17,7 @@ export default function Login() {
             Cookie.set("token", accessToken);
             router.push(`/`);
         } catch (error) {
-            console.log(error);
+            setError(error.toString())
         }
     }
     return (
@@ -23,6 +25,7 @@ export default function Login() {
             <Head>
                 <title>Login</title>
             </Head>
+            <ToastMessage type='error' message={error} handleClick={()=>setError('')}/>
             <h1>Sign in</h1>
             <LoginForm onSubmit={onLogin}/>
             <Link href="/register">
