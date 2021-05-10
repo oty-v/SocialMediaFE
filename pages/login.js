@@ -1,16 +1,15 @@
-import {useState} from "react";
 import {useRouter} from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import Cookie from "js-cookie";
+import {ToastContainer, toast, Bounce} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import LoginForm from "../components/auth/loginForm";
 import {loginUser} from "../api/auth";
 import {withoutAuth} from "../lib/withoutAuth";
-import ToastMessage from "../components/common/toastMessage";
 
 export default function Login() {
-    const [error, setError] = useState('');
     const router = useRouter();
     const onLogin = async (inputs) => {
         try {
@@ -18,7 +17,7 @@ export default function Login() {
             Cookie.set("token", accessToken);
             router.push(`/`);
         } catch (error) {
-            setError(error.toString())
+            toast.error(error.toString())
         }
     }
     return (
@@ -26,7 +25,11 @@ export default function Login() {
             <Head>
                 <title>Login</title>
             </Head>
-            <ToastMessage type='error' message={error} handleClick={()=>setError('')}/>
+            <ToastContainer
+                draggable={false}
+                transition={Bounce}
+                autoClose={5000}
+            />
             <h1>Sign in</h1>
             <LoginForm onSubmit={onLogin}/>
             <Link href="/register">

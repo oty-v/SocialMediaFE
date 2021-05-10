@@ -1,25 +1,24 @@
-import {useState} from "react";
 import Head from "next/head";
 import Link from "next/link";
+import {ToastContainer, toast, Bounce} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import RegisterForm from "../components/auth/registerForm";
-import {loginUser, registerUser} from "../api/auth";
+import {registerUser} from "../api/auth";
 import {useRouter} from "next/router";
 import Cookie from "js-cookie";
 import {withoutAuth} from "../lib/withoutAuth";
-import ToastMessage from "../components/common/toastMessage";
 
 
 export default function Register() {
-    const [error, setError] = useState('');
     const router = useRouter();
     const onRegister = async (inputs) => {
         try {
-            const {data: {data: {access_token: accessToken}}} = await loginUser(inputs);
+            const {data: {data: {access_token: accessToken}}} = await registerUser(inputs);
             Cookie.set("token", accessToken);
             router.push(`/`);
         } catch (error) {
-            setError(error.toString())
+            toast.error(error.toString())
         }
     }
     return (
@@ -28,7 +27,11 @@ export default function Register() {
                 <title>Register</title>
                 <meta name="description" content="Please register before login"/>
             </Head>
-            <ToastMessage type='error' message={error} handleClick={()=>setError('')}/>
+            <ToastContainer
+                draggable={false}
+                transition={Bounce}
+                autoClose={5000}
+            />
             <h1>Sign Up</h1>
             <RegisterForm onSubmit={onRegister}/>
             <Link href="/login">
