@@ -1,5 +1,7 @@
 import {useRouter} from "next/router";
 import Head from "next/head";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {deletePost, editPost, getPost} from "../../../api/posts";
 import PostForm from "../../../components/posts/postForm";
@@ -12,7 +14,7 @@ const PostPage = ({username, post}) => {
             await deletePost(post.id);
             router.push(`/${username}/posts`);
         } catch (error) {
-            console.log(error)
+            toast.error(error.toString())
         }
     }
     const onEdit = async (inputs) => {
@@ -20,7 +22,7 @@ const PostPage = ({username, post}) => {
             await editPost(inputs);
             router.push(`/${username}/posts`);
         } catch (error) {
-            console.log(error)
+            toast.error(error.toString())
         }
     }
     return (post ? (
@@ -32,7 +34,7 @@ const PostPage = ({username, post}) => {
                 onSubmit={onEdit}
                 initialPost={post}
             />
-            <button onClick={() => {
+            <button className="btn btn-danger" onClick={() => {
                 removePost(post)
             }}>
                 Remove

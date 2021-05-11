@@ -2,6 +2,8 @@ import {useRouter} from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import Cookie from "js-cookie";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import LoginForm from "../components/auth/loginForm";
 import {loginUser} from "../api/auth";
@@ -15,7 +17,7 @@ export default function Login() {
             Cookie.set("token", accessToken);
             router.push(`/`);
         } catch (error) {
-            console.log(error);
+            toast.error(error.toString())
         }
     }
     return (

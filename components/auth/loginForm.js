@@ -1,40 +1,40 @@
-import {useState} from "react";
+import {Formik, Form} from 'formik';
+import {InputField} from '../common/field/inputField';
+import * as Yup from 'yup';
 
 const LoginForm = ({onSubmit}) => {
-    const [inputsUser, setInputsUser] = useState({});
-    const handleSubmit = (event, user) => {
-        event.preventDefault();
-        onSubmit(user);
-    }
-    const handleInputChange = (key, value) => {
-        setInputsUser(inputsUser => ({...inputsUser, [key]: value}));
-    }
+    const validationSchema = Yup.object({
+        email: Yup.string()
+            .email('Email is invalid')
+            .required('Email is required'),
+        password: Yup.string()
+            .min(8, 'Password must be at least 8 characters')
+            .required('Password is required'),
+    })
     return (
-        <form onSubmit={(event) => handleSubmit(event, inputsUser)}>
-            <fieldset>
-                <input
-                    onChange={(event) => handleInputChange("email", event.target.value)}
-                    value={inputsUser.email}
+        <Formik
+            initialValues={{
+                email: '',
+                password: ''
+            }}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
+        >
+            <Form>
+                <InputField
+                    label="Email"
+                    name="email"
                     type="email"
-                    placeholder="Email"
-                    required
                 />
-            </fieldset>
-
-            <fieldset>
-                <input
-                    onChange={(event) => handleInputChange("password", event.target.value)}
-                    value={inputsUser.password}
+                <InputField
+                    label="Password"
+                    name="password"
                     type="password"
-                    placeholder="Password"
-                    required
                 />
-            </fieldset>
-
-            <button type="submit">
-                Sign in
-            </button>
-        </form>
+                <button className="btn btn-primary" type="submit">Sign In</button>
+                <button className="btn btn-light" type="reset">Reset</button>
+            </Form>
+        </Formik>
     );
 };
 

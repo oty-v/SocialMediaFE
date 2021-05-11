@@ -1,5 +1,7 @@
 import {useRouter} from "next/router";
 import Head from 'next/head';
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {createPost} from "../api/posts";
 import {getUsers} from "../api/users";
@@ -14,7 +16,7 @@ export default function Home({users}) {
             const {data: {data: post}} = await createPost(inputs);
             router.push(`${post.author.username}/posts/${post.id}`);
         } catch (error) {
-            console.log(error)
+            toast.error(error.toString())
         }
     }
     return (
@@ -22,6 +24,7 @@ export default function Home({users}) {
             <Head>
                 <title>Home</title>
             </Head>
+            <h2>Home</h2>
             <PostForm onSubmit={onCreate}/>
             {!!users?.length && (
                 <UserList users={users}/>

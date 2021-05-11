@@ -1,7 +1,8 @@
 import {useRouter} from "next/router";
-import {logoutUser} from "../../api/auth";
+import {logoutUser} from "../../../api/auth";
 import Cookie from "js-cookie";
 import Header from "./header";
+import {Bounce, ToastContainer} from "react-toastify";
 
 function Layout({auth, isLoggedIn, children}) {
     const router = useRouter();
@@ -21,7 +22,7 @@ function Layout({auth, isLoggedIn, children}) {
         }
     }
     return (
-        <div className="container">
+        <div className="container-fluid d-flex flex-row">
             <Header
                 authUser={auth?.user.username}
                 isLoggedIn={isLoggedIn}
@@ -30,11 +31,13 @@ function Layout({auth, isLoggedIn, children}) {
                 handleClickLogOut={handleClickLogOut}
             />
             <main>
+                <ToastContainer
+                    draggable={false}
+                    transition={Bounce}
+                    autoClose={5000}
+                />
                 {children}
             </main>
-            <footer>
-                <p>2021 @oty-v</p>
-            </footer>
         </div>
     )
 }
