@@ -1,6 +1,6 @@
 import {useRouter} from "next/router";
 import Head from 'next/head';
-import {ToastContainer, toast, Bounce} from "react-toastify";
+import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import {createPost} from "../api/posts";
@@ -24,11 +24,7 @@ export default function Home({users}) {
             <Head>
                 <title>Home</title>
             </Head>
-            <ToastContainer
-                draggable={false}
-                transition={Bounce}
-                autoClose={5000}
-            />
+            <h2>Home</h2>
             <PostForm onSubmit={onCreate}/>
             {!!users?.length && (
                 <UserList users={users}/>

@@ -18,7 +18,7 @@ function Profile({profile}) {
                 <p>{profile.created_at}</p>
             </div>
             <Link href={`/${profile.username}/posts`}>
-                <b>{profile.username} posts</b>
+                <b className="btn btn-primary">{profile.username} posts</b>
             </Link>
         </>
     ) : (

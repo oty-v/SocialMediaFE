@@ -1,6 +1,6 @@
 import {useRouter} from "next/router";
 import Head from "next/head";
-import {ToastContainer, toast, Bounce} from "react-toastify";
+import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import {deletePost, editPost, getPost} from "../../../api/posts";
@@ -30,16 +30,11 @@ const PostPage = ({username, post}) => {
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
-            <ToastContainer
-                draggable={false}
-                transition={Bounce}
-                autoClose={5000}
-            />
             <PostForm
                 onSubmit={onEdit}
                 initialPost={post}
             />
-            <button onClick={() => {
+            <button className="btn btn-danger" onClick={() => {
                 removePost(post)
             }}>
                 Remove

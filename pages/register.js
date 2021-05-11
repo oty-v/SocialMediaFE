@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import {ToastContainer, toast, Bounce} from "react-toastify";
+import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import RegisterForm from "../components/auth/registerForm";
@@ -27,11 +27,6 @@ export default function Register() {
                 <title>Register</title>
                 <meta name="description" content="Please register before login"/>
             </Head>
-            <ToastContainer
-                draggable={false}
-                transition={Bounce}
-                autoClose={5000}
-            />
             <h1>Sign Up</h1>
             <RegisterForm onSubmit={onRegister}/>
             <Link href="/login">

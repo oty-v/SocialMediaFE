@@ -2,7 +2,7 @@ import {useRouter} from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import Cookie from "js-cookie";
-import {ToastContainer, toast, Bounce} from "react-toastify";
+import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import LoginForm from "../components/auth/loginForm";
@@ -25,11 +25,6 @@ export default function Login() {
             <Head>
                 <title>Login</title>
             </Head>
-            <ToastContainer
-                draggable={false}
-                transition={Bounce}
-                autoClose={5000}
-            />
             <h1>Sign in</h1>
             <LoginForm onSubmit={onLogin}/>
             <Link href="/register">

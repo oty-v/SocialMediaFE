@@ -31,8 +31,8 @@ const LoginForm = ({onSubmit}) => {
                     name="password"
                     type="password"
                 />
-                <button type="submit">Sign In</button>
-                <button type="reset">Reset</button>
+                <button className="btn btn-primary" type="submit">Sign In</button>
+                <button className="btn btn-light" type="reset">Reset</button>
             </Form>
         </Formik>
     );

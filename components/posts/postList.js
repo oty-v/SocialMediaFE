@@ -3,9 +3,9 @@ import Post from "./post";
 
 const PostsList = ({posts, handleClickEdit, authUser}) => {
     return (
-        <ul className={styles.list}>
+        <ul className={`list-group ${styles.list}`}>
             {posts.map(post => (
-                <li key={post.id}>
+                <li className="list-group-item list-group-item-action" key={post.id}>
                     <Post
                         handleClickEdit={() => handleClickEdit(post)}
                         post={post}

@@ -49,8 +49,8 @@ const RegisterForm = ({onSubmit}) => {
                     name="password_confirmation"
                     type="password"
                 />
-                <button type="submit">Sign Up</button>
-                <button type="reset">Reset</button>
+                <button className="btn btn-primary" type="submit">Sign Up</button>
+                <button className="btn btn-light" type="reset">Reset</button>
             </Form>
         </Formik>
     );

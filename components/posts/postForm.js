@@ -28,7 +28,7 @@ function PostForm({
                     name="content"
                     type="text"
                 />
-                <button type="submit">Save</button>
+                <button className="btn btn-primary" type="submit">Save</button>
             </Form>
         </Formik>
     )
