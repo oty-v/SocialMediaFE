@@ -1,9 +1,9 @@
-import {STORE_POSTS_LIST} from "../actions/ActionConstants";
+import {STORE_POST} from "../actions/ActionConstants";
 
 
 const postsListReducer = (state=[], action) => {
     switch (action.type) {
-        case STORE_POSTS_LIST:
+        case STORE_POST:
             return action.payload;
         default:
             return state;

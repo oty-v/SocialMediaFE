@@ -9,12 +9,13 @@ import {withAuth} from "../../../lib/withAuth";
 import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
-import {useSelector} from "react-redux";
-import {storeCommentsListAction} from "../../../redux/actions/ActionCreator";
+import {useDispatch, useSelector} from "react-redux";
+import {storeCommentsListAction, storePostAction} from "../../../redux/actions/ActionCreator";
 
-const PostPage = ({auth, post, comments}) => {
+const PostPage = () => {
     const router = useRouter();
-    const state = useSelector((state) => state);
+    const {auth, post, comments} = useSelector((state) => state);
+    const dispatch = useDispatch();
     const removePost = async (post) => {
         try {
             await deletePost(post.id);
@@ -26,28 +27,36 @@ const PostPage = ({auth, post, comments}) => {
     const onEdit = async (inputs) => {
         try {
             await editPost(inputs);
-            router.push(`/${post.author.username}/posts`);
+            dispatch(storePostAction(inputs));
         } catch (error) {
             toast.error(error.toString())
         }
     }
-    const removeComment = async (comment) => {
+    const removeComment = async (modifiedComment) => {
         try {
-            await deleteComment(comment.id);
+            await deleteComment(modifiedComment.id);
+            const index = comments.findIndex(comment => comment.id === modifiedComment.id);
+            comments.splice(index, 1)
+            dispatch(storeCommentsListAction([...comments]));
         } catch (error) {
             toast.error(error.toString())
         }
     }
-    const onEditComment = async (inputs) => {
+    const onEditComment = async (modifiedComment) => {
         try {
-            await editComment(inputs);
+            await editComment(modifiedComment);
+            const index = comments.findIndex(comment => comment.id === modifiedComment.id);
+            comments.splice(index, 1, modifiedComment)
+            dispatch(storeCommentsListAction([...comments]));
         } catch (error) {
             toast.error(error.toString())
         }
     }
     const onCreateComment = async (inputs) => {
         try {
-            await createComment(post.id, inputs);
+            const {data: {data: comment}} = await createComment(post.id, inputs);
+            comments.push(comment)
+            dispatch(storeCommentsListAction([...comments]));
         } catch (error) {
             toast.error(error.toString())
         }
@@ -57,8 +66,6 @@ const PostPage = ({auth, post, comments}) => {
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
-
-            <code>{JSON.stringify(state, null, 4)}</code>
             <ul className="list-group w-75">
                 <li className="list-group-item list-group-item-action">
                     <Post
@@ -92,7 +99,8 @@ const PostPage = ({auth, post, comments}) => {
 export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
     try {
         const {data: {data: post}} = await getPost(ctx.query.id);
-        const {data: {data: comments}} = await getPostComments(ctx.query.id)
+        const {data: {data: comments}} = await getPostComments(ctx.query.id);
+        dispatch(storePostAction(post));
         dispatch(storeCommentsListAction(comments));
         return {
             props: {

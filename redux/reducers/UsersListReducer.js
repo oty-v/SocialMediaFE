@@ -1,7 +1,7 @@
 import {STORE_USERS_LIST} from "../actions/ActionConstants";
 
 
-const usersListReducer = (state = [], action) => {
+const usersListReducer = (state=[], action) => {
     switch (action.type) {
         case STORE_USERS_LIST:
             return action.payload;

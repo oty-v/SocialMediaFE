@@ -5,9 +5,16 @@ import thunkMiddleware from 'redux-thunk'
 import AuthReducer from "./reducers/AuthReducer";
 import UsersListReducer from "./reducers/UsersListReducer";
 import PostsListReducer from "./reducers/PostsListReducer";
+import PostReducer from "./reducers/PostReducer";
 import CommentsListReducer from "./reducers/CommentsListReducer";
 
-const reducers = combineReducers({auth: AuthReducer, users: UsersListReducer, posts: PostsListReducer, comments: CommentsListReducer});
+const reducers = combineReducers({
+    auth: AuthReducer,
+    users: UsersListReducer,
+    posts: PostsListReducer,
+    post: PostReducer,
+    comments: CommentsListReducer,
+});
 
 let store
 

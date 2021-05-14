@@ -3,11 +3,12 @@ import {TextField} from '../common/field/textField';
 import * as Yup from 'yup';
 
 function CommentForm({
-                      onSubmit,
-                      initialComment = {
-                          body: ''
-                      }
-                  }) {
+                         onSubmit,
+                         setEditMode,
+                         initialComment = {
+                             body: ''
+                         }
+                     }) {
     const validationSchema = Yup.object({
         body: Yup.string()
             .max(280, 'Must be 280 characters or less')
@@ -19,6 +20,7 @@ function CommentForm({
             validationSchema={validationSchema}
             onSubmit={values => {
                 onSubmit(values)
+                setEditMode(false)
             }}
         >
             <Form>
