@@ -11,9 +11,9 @@ import UserList from "../components/users/usersList";
 import {withAuth} from "../lib/withAuth";
 import {storeUsersListAction} from "../redux/actions/ActionCreator";
 
-export default function Home({users}) {
+export default function Home() {
     const router = useRouter();
-    const state = useSelector((state) => state);
+    const {users} = useSelector((state) => state);
     const onCreate = async (inputs) => {
         try {
             const {data: {data: post}} = await createPost(inputs);
@@ -32,7 +32,6 @@ export default function Home({users}) {
             {!!users?.length && (
                 <UserList users={users}/>
             )}
-            <code>{JSON.stringify(state, null, 4)}</code>
         </>
     )
 }

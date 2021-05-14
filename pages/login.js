@@ -8,11 +8,9 @@ import "react-toastify/dist/ReactToastify.css";
 import LoginForm from "../components/auth/loginForm";
 import {loginUser} from "../api/auth";
 import {withoutAuth} from "../lib/withoutAuth";
-import {useSelector} from "react-redux";
 
 export default function Login() {
     const router = useRouter();
-    const state = useSelector((state) => state);
     const onLogin = async (inputs) => {
         try {
             const {data: {data: {access_token: accessToken}}} = await loginUser(inputs);
@@ -32,7 +30,6 @@ export default function Login() {
             <Link href="/register">
                 <span>Need an account?</span>
             </Link>
-            <code>{JSON.stringify(state, null, 4)}</code>
         </>
     );
 }

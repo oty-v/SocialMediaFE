@@ -40,7 +40,6 @@ function Posts() {
             <Head>
                 <title>Posts</title>
             </Head>
-            <code>{JSON.stringify(posts, null, 4)}</code>
             <h2>Posts List</h2>
             {!!posts?.length ? (
                 <PostsList
