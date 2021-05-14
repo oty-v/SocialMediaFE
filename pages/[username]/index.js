@@ -10,16 +10,16 @@ function Profile({profile}) {
             <Head>
                 <title>{profile.username}</title>
             </Head>
-            <h2>{profile.username}</h2>
-            <div>
-                <span>ID:</span>
-                <p>{profile.id}</p>
-                <span>Data registration:</span>
-                <p>{profile.created_at}</p>
+            <div className="card text-center w-75">
+                <h5 className="card-header">{profile.username}</h5>
+                <div className="card-body">
+                    <h5 className="card-title">ID: {profile.id}</h5>
+                    <p className="card-text">Data registration: {profile.created_at}</p>
+                    <Link href={`/${profile.username}/posts`}>
+                        <span className="btn btn-primary">{profile.username} posts</span>
+                    </Link>
+                </div>
             </div>
-            <Link href={`/${profile.username}/posts`}>
-                <b className="btn btn-primary">{profile.username} posts</b>
-            </Link>
         </>
     ) : (
         <span>Loading...</span>

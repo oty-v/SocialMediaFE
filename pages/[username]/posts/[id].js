@@ -4,15 +4,21 @@ import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import {deletePost, editPost, getPost} from "../../../api/posts";
-import PostForm from "../../../components/posts/postForm";
+import {createComment, deleteComment, editComment, getPostComments} from "../../../api/comments";
 import {withAuth} from "../../../lib/withAuth";
+import CommentsList from "../../../components/comments/commentsList";
+import Post from "../../../components/posts/post";
+import CommentForm from "../../../components/comments/commentForm";
+import {useSelector} from "react-redux";
+import {storeCommentsListAction} from "../../../redux/actions/ActionCreator";
 
-const PostPage = ({username, post}) => {
+const PostPage = ({auth, post, comments}) => {
     const router = useRouter();
+    const state = useSelector((state) => state);
     const removePost = async (post) => {
         try {
             await deletePost(post.id);
-            router.push(`/${username}/posts`);
+            router.push(`/${post.author.username}/posts`);
         } catch (error) {
             toast.error(error.toString())
         }
@@ -20,7 +26,28 @@ const PostPage = ({username, post}) => {
     const onEdit = async (inputs) => {
         try {
             await editPost(inputs);
-            router.push(`/${username}/posts`);
+            router.push(`/${post.author.username}/posts`);
+        } catch (error) {
+            toast.error(error.toString())
+        }
+    }
+    const removeComment = async (comment) => {
+        try {
+            await deleteComment(comment.id);
+        } catch (error) {
+            toast.error(error.toString())
+        }
+    }
+    const onEditComment = async (inputs) => {
+        try {
+            await editComment(inputs);
+        } catch (error) {
+            toast.error(error.toString())
+        }
+    }
+    const onCreateComment = async (inputs) => {
+        try {
+            await createComment(post.id, inputs);
         } catch (error) {
             toast.error(error.toString())
         }
@@ -30,28 +57,47 @@ const PostPage = ({username, post}) => {
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
-            <PostForm
-                onSubmit={onEdit}
-                initialPost={post}
-            />
-            <button className="btn btn-danger" onClick={() => {
-                removePost(post)
-            }}>
-                Remove
-            </button>
+
+            <code>{JSON.stringify(state, null, 4)}</code>
+            <ul className="list-group w-75">
+                <li className="list-group-item list-group-item-action">
+                    <Post
+                        onEdit={onEdit}
+                        removePost={removePost}
+                        post={post}
+                        showPostControls={auth.user.username === post.author.username}
+                    />
+                    <li className="list-group-item list-group-item-action">
+                        <h6>Comments:</h6>
+                        <CommentForm onSubmit={onCreateComment}/>
+                        {!!comments?.length ? (
+                            <CommentsList
+                                comments={comments}
+                                authUser={auth.user.username}
+                                onEditComment={onEditComment}
+                                removeComment={removeComment}
+                            />
+                        ) : (
+                            <span>No Comments</span>
+                        )}
+                    </li>
+                </li>
+            </ul>
         </>
     ) : (
         <span>Loading...</span>
     ))
 }
 
-export const getServerSideProps = withAuth(async (ctx, auth) => {
+export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
     try {
         const {data: {data: post}} = await getPost(ctx.query.id);
+        const {data: {data: comments}} = await getPostComments(ctx.query.id)
+        dispatch(storeCommentsListAction(comments));
         return {
             props: {
-                username: ctx.query.username,
-                post
+                post,
+                comments
             }
         };
     } catch (e) {

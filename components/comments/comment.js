@@ -1,40 +1,32 @@
-import PostForm from "./postForm";
 import {useState} from "react";
+import CommentForm from "./commentForm";
 
-const Post = ({onEdit, removePost, handleClickComments, post, showPostControls}) => {
+const Comment = ({removeComment, onEditComment, comment, showCommentControls}) => {
     const [editMod, setEditMod] = useState(false);
     return (
         <div className="card">
-            <h5 className="card-header">User: {post.author.username}</h5>
+            <h5 className="card-header">User: {comment.author.username}</h5>
             <div className="card-body">
                 {editMod ? (
                     <>
-                        <PostForm
-                            onSubmit={onEdit}
-                            initialPost={post}
+                        <CommentForm
+                            onSubmit={onEditComment}
+                            initialComment={comment}
                         />
                         <button className="btn btn-danger" onClick={() => {
-                            removePost(post)
+                            removeComment(comment)
                         }}>
                             Remove
                         </button>
                     </>
                 ) : (
-                    <p className="card-text">{post.content}</p>
+                    <p className="card-text">{comment.body}</p>
                 )}
-                {showPostControls && (
+                {showCommentControls && (
                     <button className="btn btn-primary" onClick={() => {
                         setEditMod(!editMod)
                     }}>
                         {editMod ? "Cancel" : "Edit post"}
-                    </button>
-                )}
-                {handleClickComments && (
-                    <button
-                        className="btn btn-light"
-                        onClick={handleClickComments}
-                    >
-                        Comments
                     </button>
                 )}
             </div>
@@ -42,4 +34,4 @@ const Post = ({onEdit, removePost, handleClickComments, post, showPostControls})
     )
 }
 
-export default Post
+export default Comment
