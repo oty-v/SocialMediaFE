@@ -10,7 +10,7 @@ function MyApp({Component, pageProps}) {
     return (
         <Provider store={store}>
             <AuthTokenChecker>
-                <Layout {...pageProps}>
+                <Layout>
                     <Component {...pageProps}/>
                 </Layout>
             </AuthTokenChecker>

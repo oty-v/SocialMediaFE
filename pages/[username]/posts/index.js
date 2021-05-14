@@ -6,33 +6,41 @@ import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
 import {toast} from "react-toastify";
 import {storePostsListAction} from "../../../redux/actions/ActionCreator";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
-function Posts({auth, username, posts}) {
+function Posts() {
     const router = useRouter();
-    const state = useSelector((state) => state);
-    const removePost = async (post) => {
+    const {auth, posts} = useSelector((state) => state);
+    const dispatch = useDispatch();
+    const removePost = async (modifiedPost) => {
         try {
-            await deletePost(post.id);
+            await deletePost(modifiedPost.id);
+            const index = posts.findIndex(post=>post.id===modifiedPost.id);
+            posts.splice(index, 1)
+            dispatch(storePostsListAction([...posts]));
         } catch (error) {
             toast.error(error.toString())
         }
     }
-    const onEdit = async (inputs) => {
+    const onEdit = async (modifiedPost) => {
         try {
-            await editPost(inputs);
+            await editPost(modifiedPost);
+            const index = posts.findIndex(post=>post.id===modifiedPost.id);
+            posts.splice(index, 1, modifiedPost)
+            dispatch(storePostsListAction([...posts]));
         } catch (error) {
             toast.error(error.toString())
         }
     }
     const handleClickComments = (post) => {
-        router.push(`/${username}/posts/${post.id}`)
+        router.push(`/${post.author.username}/posts/${post.id}`)
     }
     return (
         <>
             <Head>
                 <title>Posts</title>
             </Head>
+            <code>{JSON.stringify(posts, null, 4)}</code>
             <h2>Posts List</h2>
             {!!posts?.length ? (
                 <PostsList
@@ -45,7 +53,6 @@ function Posts({auth, username, posts}) {
             ) : (
                 <span>No posts</span>
             )}
-            <code>{JSON.stringify(state, null, 4)}</code>
         </>
     )
 
@@ -57,7 +64,6 @@ export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
         dispatch(storePostsListAction(posts));
         return {
             props: {
-                username: ctx.query.username,
                 posts
             }
         };

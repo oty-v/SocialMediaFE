@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 
 function PostForm({
                       onSubmit,
+                      setEditMode,
                       initialPost = {
                           content: ''
                       }
@@ -19,6 +20,7 @@ function PostForm({
             validationSchema={validationSchema}
             onSubmit={values => {
                 onSubmit(values)
+                setEditMode(false)
             }}
         >
             <Form>
