@@ -1,8 +1,9 @@
 import {Formik, Form} from 'formik';
 import {InputField} from '../common/field/inputField';
 import * as Yup from 'yup';
+import Loading from "../common/Loading";
 
-const RegisterForm = ({onSubmit}) => {
+const RegisterForm = ({onSubmit, waitDispatch}) => {
     const validationSchema = Yup.object({
         username: Yup.string()
             .max(25, 'Must be 25 characters or less')
@@ -49,7 +50,9 @@ const RegisterForm = ({onSubmit}) => {
                     name="password_confirmation"
                     type="password"
                 />
-                <button className="btn btn-primary" type="submit">Sign Up</button>
+                <button className="btn btn-primary" type="submit" disabled={waitDispatch}>
+                    {waitDispatch ? (<Loading/>) : ("Sign Up")}
+                </button>
                 <button className="btn btn-light" type="reset">Reset</button>
             </Form>
         </Formik>

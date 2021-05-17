@@ -1,10 +1,12 @@
 import {Formik, Form} from 'formik';
 import {TextField} from '../common/field/textField';
 import * as Yup from 'yup';
+import Loading from "../common/Loading";
 
 function PostForm({
                       onSubmit,
                       setEditMode,
+                      waitDispatch,
                       initialPost = {
                           content: ''
                       }
@@ -29,7 +31,9 @@ function PostForm({
                     name="content"
                     type="text"
                 />
-                <button className="btn btn-primary" type="submit">Save</button>
+                <button className="btn btn-primary" type="submit" disabled={waitDispatch}>
+                    {waitDispatch ? (<Loading/>) : ("Save")}
+                </button>
             </Form>
         </Formik>
     )

@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import {useRouter} from "next/router";
 import Head from "next/head";
 import Link from "next/link";
@@ -11,7 +12,9 @@ import {withoutAuth} from "../lib/withoutAuth";
 
 export default function Login() {
     const router = useRouter();
+    const [waitDispatch, setWaitDispatch] = useState(false);
     const onLogin = async (inputs) => {
+        setWaitDispatch(true);
         try {
             const {data: {data: {access_token: accessToken}}} = await loginUser(inputs);
             Cookie.set("token", accessToken);
@@ -19,6 +22,7 @@ export default function Login() {
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     return (
         <>
@@ -26,7 +30,10 @@ export default function Login() {
                 <title>Login</title>
             </Head>
             <h1>Sign in</h1>
-            <LoginForm onSubmit={onLogin}/>
+            <LoginForm
+                onSubmit={onLogin}
+                waitDispatch={waitDispatch}
+            />
             <Link href="/register">
                 <span>Need an account?</span>
             </Link>

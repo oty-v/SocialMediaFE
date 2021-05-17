@@ -11,28 +11,35 @@ import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
 import {useDispatch, useSelector} from "react-redux";
 import {storeCommentsListAction, storePostAction} from "../../../redux/actions/ActionCreator";
+import {useState} from "react";
 
 const PostPage = () => {
     const router = useRouter();
+    const [waitDispatch, setWaitDispatch] = useState(false);
     const {auth, post, comments} = useSelector((state) => state);
     const dispatch = useDispatch();
     const removePost = async (post) => {
+        setWaitDispatch(true);
         try {
             await deletePost(post.id);
             router.push(`/${post.author.username}/posts`);
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     const onEdit = async (inputs) => {
+        setWaitDispatch(true);
         try {
             await editPost(inputs);
             dispatch(storePostAction(inputs));
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     const removeComment = async (modifiedComment) => {
+        setWaitDispatch(true);
         try {
             await deleteComment(modifiedComment.id);
             const index = comments.findIndex(comment => comment.id === modifiedComment.id);
@@ -41,8 +48,10 @@ const PostPage = () => {
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     const onEditComment = async (modifiedComment) => {
+        setWaitDispatch(true);
         try {
             await editComment(modifiedComment);
             const index = comments.findIndex(comment => comment.id === modifiedComment.id);
@@ -51,8 +60,10 @@ const PostPage = () => {
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     const onCreateComment = async (inputs) => {
+        setWaitDispatch(true);
         try {
             const {data: {data: comment}} = await createComment(post.id, inputs);
             comments.push(comment)
@@ -60,6 +71,7 @@ const PostPage = () => {
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     return (post ? (
         <>
@@ -73,16 +85,16 @@ const PostPage = () => {
                         removePost={removePost}
                         post={post}
                         showPostControls={auth.user.username === post.author.username}
+                        waitDispatch={waitDispatch}
                     />
                     <li className="list-group-item list-group-item-action">
                         <h6>Comments:</h6>
                         <CommentForm onSubmit={onCreateComment}/>
                         {!!comments?.length ? (
                             <CommentsList
-                                comments={comments}
-                                authUser={auth.user.username}
                                 onEditComment={onEditComment}
                                 removeComment={removeComment}
+                                waitDispatch={waitDispatch}
                             />
                         ) : (
                             <span>No Comments</span>

@@ -1,7 +1,8 @@
 import PostForm from "./postForm";
 import {useState} from "react";
+import Loading from "../common/Loading";
 
-const Post = ({onEdit, removePost, handleClickComments, post, showPostControls}) => {
+const Post = ({onEdit, removePost, handleClickComments, post, showPostControls, waitDispatch}) => {
     const [editMode, setEditMode] = useState(false);
     return (
         <div className="card">
@@ -13,12 +14,17 @@ const Post = ({onEdit, removePost, handleClickComments, post, showPostControls})
                             onSubmit={onEdit}
                             initialPost={post}
                             setEditMode={setEditMode}
+                            waitDispatch={waitDispatch}
                         />
-                        <button className="btn btn-danger" onClick={() => {
-                            removePost(post)
-                            setEditMode(false)
-                        }}>
-                            Remove
+                        <button
+                            className="btn btn-danger"
+                            disabled={waitDispatch}
+                            onClick={() => {
+                                removePost(post)
+                                setEditMode(false)
+                            }}
+                        >
+                            {waitDispatch ? (<Loading/>) : ("Remove")}
                         </button>
                     </>
                 ) : (

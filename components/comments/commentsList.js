@@ -1,7 +1,10 @@
 import styles from "../../styles/posts.module.css";
 import Comment from "./comment";
+import {useSelector} from "react-redux";
 
-const CommentsList = ({comments,  removeComment, onEditComment, handleClickEdit, authUser}) => {
+const CommentsList = ({removeComment, onEditComment, handleClickEdit, waitDispatch}) => {
+    const {auth, comments} = useSelector((state) => state);
+    const authUser = auth.user.username;
     return (
         <ul className={`list-group ${styles.list}`}>
             {comments.map(comment => (
@@ -12,6 +15,7 @@ const CommentsList = ({comments,  removeComment, onEditComment, handleClickEdit,
                         showCommentControls={authUser === comment.author.username}
                         onEditComment={onEditComment}
                         removeComment={removeComment}
+                        waitDispatch={waitDispatch}
                     />
                 </li>
             ))}

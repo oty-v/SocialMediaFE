@@ -2,7 +2,7 @@ import {useState} from "react";
 import CommentForm from "./commentForm";
 import PostForm from "../posts/postForm";
 
-const Comment = ({removeComment, onEditComment, comment, showCommentControls}) => {
+const Comment = ({removeComment, onEditComment, comment, showCommentControls, waitDispatch}) => {
     const [editMode, setEditMode] = useState(false);
     return (
         <div className="card">
@@ -14,6 +14,7 @@ const Comment = ({removeComment, onEditComment, comment, showCommentControls}) =
                             onSubmit={onEditComment}
                             initialComment={comment}
                             setEditMode={setEditMode}
+                            waitDispatch={waitDispatch}
                         />
                         <button className="btn btn-danger" onClick={() => {
                             removeComment(comment)

@@ -1,18 +1,20 @@
+import {useState} from 'react'
 import Head from "next/head";
 import Link from "next/link";
 import {toast} from "react-toastify";
+import Cookie from "js-cookie";
 import "react-toastify/dist/ReactToastify.css";
 
 import RegisterForm from "../components/auth/registerForm";
 import {registerUser} from "../api/auth";
 import {useRouter} from "next/router";
-import Cookie from "js-cookie";
 import {withoutAuth} from "../lib/withoutAuth";
-
 
 export default function Register() {
     const router = useRouter();
+    const [waitDispatch, setWaitDispatch] = useState(false);
     const onRegister = async (inputs) => {
+        setWaitDispatch(true);
         try {
             const {data: {data: {access_token: accessToken}}} = await registerUser(inputs);
             Cookie.set("token", accessToken);
@@ -20,6 +22,7 @@ export default function Register() {
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     return (
         <>
@@ -28,7 +31,10 @@ export default function Register() {
                 <meta name="description" content="Please register before login"/>
             </Head>
             <h1>Sign Up</h1>
-            <RegisterForm onSubmit={onRegister}/>
+            <RegisterForm
+                onSubmit={onRegister}
+                waitDispatch={waitDispatch}
+            />
             <Link href="/login">
                 <span>Have an account?</span>
             </Link>

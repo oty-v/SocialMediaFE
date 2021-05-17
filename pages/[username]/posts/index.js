@@ -7,12 +7,15 @@ import {withAuth} from "../../../lib/withAuth";
 import {toast} from "react-toastify";
 import {storePostsListAction} from "../../../redux/actions/ActionCreator";
 import {useDispatch, useSelector} from "react-redux";
+import {useState} from "react";
 
 function Posts() {
     const router = useRouter();
-    const {auth, posts} = useSelector((state) => state);
+    const [waitDispatch, setWaitDispatch] = useState(false);
+    const {posts} = useSelector((state) => state);
     const dispatch = useDispatch();
     const removePost = async (modifiedPost) => {
+        setWaitDispatch(true);
         try {
             await deletePost(modifiedPost.id);
             const index = posts.findIndex(post=>post.id===modifiedPost.id);
@@ -21,8 +24,10 @@ function Posts() {
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     const onEdit = async (modifiedPost) => {
+        setWaitDispatch(true);
         try {
             await editPost(modifiedPost);
             const index = posts.findIndex(post=>post.id===modifiedPost.id);
@@ -31,6 +36,7 @@ function Posts() {
         } catch (error) {
             toast.error(error.toString())
         }
+        setWaitDispatch(false);
     }
     const handleClickComments = (post) => {
         router.push(`/${post.author.username}/posts/${post.id}`)
@@ -43,11 +49,10 @@ function Posts() {
             <h2>Posts List</h2>
             {!!posts?.length ? (
                 <PostsList
-                    posts={posts}
                     removePost={removePost}
                     onEdit={onEdit}
                     handleClickComments={handleClickComments}
-                    authUser={auth.user.username}
+                    waitDispatch={waitDispatch}
                 />
             ) : (
                 <span>No posts</span>

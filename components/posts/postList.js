@@ -1,7 +1,10 @@
 import styles from "../../styles/posts.module.css";
 import Post from "./post";
+import {useSelector} from "react-redux";
 
-const PostsList = ({posts, removePost, onEdit, handleClickComments, authUser}) => {
+const PostsList = ({removePost, onEdit, handleClickComments, waitDispatch}) => {
+    const {auth, posts} = useSelector((state) => state);
+    const authUser = auth.user.username;
     return (
         <ul className={`list-group ${styles.list}`}>
             {posts.map(post => (
@@ -12,6 +15,7 @@ const PostsList = ({posts, removePost, onEdit, handleClickComments, authUser}) =
                         handleClickComments={() => handleClickComments(post)}
                         post={post}
                         showPostControls={authUser === post.author.username}
+                        waitDispatch={waitDispatch}
                     />
                 </li>
             ))}
