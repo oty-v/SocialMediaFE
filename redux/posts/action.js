@@ -20,7 +20,9 @@ export const setPost = (post) => {
 export const updatePosts = (post, sendChanges) => {
     return async (dispatch) => {
         try {
-            await sendChanges();
+            if (sendChanges) {
+                await sendChanges();
+            }
             const {data: {data: posts}} = await getUserPosts(post.author.username);
             dispatch(setPosts(posts));
         } catch (error) {

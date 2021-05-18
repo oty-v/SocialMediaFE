@@ -12,7 +12,9 @@ export const setComments = (comments) => {
 export const updateComments = (postId, sendChanges) => {
     return async (dispatch) => {
         try {
-            await sendChanges();
+            if (sendChanges) {
+                await sendChanges();
+            }
             const {data: {data: comments}} = await getPostComments(postId);
             dispatch(setComments(comments));
         } catch (error) {
