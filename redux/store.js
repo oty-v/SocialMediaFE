@@ -2,17 +2,15 @@ import { useMemo } from 'react'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunkMiddleware from 'redux-thunk'
-import AuthReducer from "./reducers/AuthReducer";
-import UsersListReducer from "./reducers/UsersListReducer";
-import PostsListReducer from "./reducers/PostsListReducer";
-import PostReducer from "./reducers/PostReducer";
-import CommentsListReducer from "./reducers/CommentsListReducer";
+import AuthReducer from "./auth/reducer";
+import UsersListReducer from "./users/reducer";
+import PostsReducer from "./posts/reducer";
+import CommentsListReducer from "./comments/reducer";
 
 const reducers = combineReducers({
     auth: AuthReducer,
     users: UsersListReducer,
-    posts: PostsListReducer,
-    post: PostReducer,
+    posts: PostsReducer,
     comments: CommentsListReducer,
 });
 

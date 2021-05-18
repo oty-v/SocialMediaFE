@@ -3,117 +3,94 @@ import Head from "next/head";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import {deletePost, editPost, getPost} from "../../../api/posts";
-import {createComment, deleteComment, editComment, getPostComments} from "../../../api/comments";
+import {deletePost, getPost} from "../../../api/posts";
+import {deleteComment, editComment, getPostComments} from "../../../api/comments";
 import {withAuth} from "../../../lib/withAuth";
 import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
 import {useDispatch, useSelector} from "react-redux";
-import {storeCommentsListAction, storePostAction} from "../../../redux/actions/ActionCreator";
+import {setPost, updatePost, updatePosts} from "../../../redux/posts/action";
+import {addComments, setComments, updateComments} from "../../../redux/comments/action";
 import {useState} from "react";
+import {withRedux} from "../../../lib/withRedux";
 
 const PostPage = () => {
     const router = useRouter();
-    const [waitDispatch, setWaitDispatch] = useState(false);
-    const {auth, post, comments} = useSelector((state) => state);
+    const [loading, setLoading] = useState(false);
+    const auth = useSelector((state) => state.auth);
+    const post = useSelector((state) => state.posts.posts);
+    const comments = useSelector((state) => state.comments.comments);
     const dispatch = useDispatch();
-    const removePost = async (post) => {
-        setWaitDispatch(true);
+    const onRemovePost = async (post) => {
+        setLoading(true);
         try {
             await deletePost(post.id);
             router.push(`/${post.author.username}/posts`);
         } catch (error) {
             toast.error(error.toString())
         }
-        setWaitDispatch(false);
+        setLoading(false);
     }
-    const onEdit = async (inputs) => {
-        setWaitDispatch(true);
-        try {
-            await editPost(inputs);
-            dispatch(storePostAction(inputs));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setWaitDispatch(false);
+    const onEditPost = (post) => {
+        setLoading(true);
+        dispatch(updatePost(post));
+        setLoading(false);
     }
-    const removeComment = async (modifiedComment) => {
-        setWaitDispatch(true);
-        try {
-            await deleteComment(modifiedComment.id);
-            const index = comments.findIndex(comment => comment.id === modifiedComment.id);
-            comments.splice(index, 1)
-            dispatch(storeCommentsListAction([...comments]));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setWaitDispatch(false);
+    const onRemoveComment = (comment) => {
+        setLoading(true);
+        dispatch(updateComments(post.id, () => deleteComment(comment.id)));
+        setLoading(false);
     }
-    const onEditComment = async (modifiedComment) => {
-        setWaitDispatch(true);
-        try {
-            await editComment(modifiedComment);
-            const index = comments.findIndex(comment => comment.id === modifiedComment.id);
-            comments.splice(index, 1, modifiedComment)
-            dispatch(storeCommentsListAction([...comments]));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setWaitDispatch(false);
+    const onEditComment = async (comment) => {
+        setLoading(true);
+        dispatch(updateComments(post.id, () => editComment(comment.id, comment)));
+        setLoading(false);
     }
     const onCreateComment = async (inputs) => {
-        setWaitDispatch(true);
-        try {
-            const {data: {data: comment}} = await createComment(post.id, inputs);
-            comments.push(comment)
-            dispatch(storeCommentsListAction([...comments]));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setWaitDispatch(false);
+        setLoading(true);
+        dispatch(addComments(post.id, inputs));
+        setLoading(false);
     }
-    return (post ? (
+    return (
         <>
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
-            <ul className="list-group w-75">
-                <li className="list-group-item list-group-item-action">
+            <div className="list-group w-75">
+                <div className="list-group-item list-group-item-action">
                     <Post
-                        onEdit={onEdit}
-                        removePost={removePost}
+                        onEdit={onEditPost}
+                        onRemove={onRemovePost}
                         post={post}
-                        showPostControls={auth.user.username === post.author.username}
-                        waitDispatch={waitDispatch}
+                        showPostControls={auth.user.username === post.author?.username}
+                        loading={loading}
                     />
-                    <li className="list-group-item list-group-item-action">
+                    <div className="list-group-item list-group-item-action">
                         <h6>Comments:</h6>
                         <CommentForm onSubmit={onCreateComment}/>
                         {!!comments?.length ? (
                             <CommentsList
                                 onEditComment={onEditComment}
-                                removeComment={removeComment}
-                                waitDispatch={waitDispatch}
+                                onRemoveComment={onRemoveComment}
+                                loading={loading}
                             />
                         ) : (
                             <span>No Comments</span>
                         )}
-                    </li>
-                </li>
-            </ul>
+                    </div>
+                </div>
+            </div>
         </>
-    ) : (
-        <span>Loading...</span>
-    ))
+    )
 }
 
-export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
+export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
         const {data: {data: post}} = await getPost(ctx.query.id);
         const {data: {data: comments}} = await getPostComments(ctx.query.id);
-        dispatch(storePostAction(post));
-        dispatch(storeCommentsListAction(comments));
+        dispatch(setPost(post));
+        dispatch(setComments(comments));
         return {
             props: {
                 post,
@@ -127,6 +104,6 @@ export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
             }
         }
     }
-})
+}))
 
 export default PostPage

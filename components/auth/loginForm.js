@@ -1,9 +1,9 @@
 import {Formik, Form} from 'formik';
 import {InputField} from '../common/field/inputField';
 import * as Yup from 'yup';
-import Loading from "../common/Loading";
+import Loader from "../common/Loader";
 
-const LoginForm = ({onSubmit, waitDispatch}) => {
+const LoginForm = ({onSubmit, loading}) => {
     const validationSchema = Yup.object({
         email: Yup.string()
             .email('Email is invalid')
@@ -32,8 +32,8 @@ const LoginForm = ({onSubmit, waitDispatch}) => {
                     name="password"
                     type="password"
                 />
-                <button className="btn btn-primary" type="submit" disabled={waitDispatch}>
-                    {waitDispatch ? (<Loading/>) : ("Sign In")}
+                <button className="btn btn-primary" type="submit" disabled={loading}>
+                    {loading ? (<Loader/>) : ("Sign In")}
                 </button>
                 <button className="btn btn-light" type="reset">Reset</button>
             </Form>

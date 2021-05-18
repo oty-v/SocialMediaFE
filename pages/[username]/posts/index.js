@@ -4,39 +4,26 @@ import {deletePost, editPost, getUserPosts} from "../../../api/posts";
 import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
-import {toast} from "react-toastify";
-import {storePostsListAction} from "../../../redux/actions/ActionCreator";
+import "react-toastify/dist/ReactToastify.css";
+import {setPosts, updatePosts} from "../../../redux/posts/action";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
+import {withRedux} from "../../../lib/withRedux";
 
 function Posts() {
     const router = useRouter();
-    const [waitDispatch, setWaitDispatch] = useState(false);
-    const {posts} = useSelector((state) => state);
+    const [loading, setLoading] = useState(false);
+    const posts = useSelector((state) => state.posts.posts);
     const dispatch = useDispatch();
-    const removePost = async (modifiedPost) => {
-        setWaitDispatch(true);
-        try {
-            await deletePost(modifiedPost.id);
-            const index = posts.findIndex(post=>post.id===modifiedPost.id);
-            posts.splice(index, 1)
-            dispatch(storePostsListAction([...posts]));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setWaitDispatch(false);
+    const onRemovePost = async (post) => {
+        setLoading(true);
+        dispatch(updatePosts(post, () => deletePost(post.id)));
+        setLoading(false);
     }
-    const onEdit = async (modifiedPost) => {
-        setWaitDispatch(true);
-        try {
-            await editPost(modifiedPost);
-            const index = posts.findIndex(post=>post.id===modifiedPost.id);
-            posts.splice(index, 1, modifiedPost)
-            dispatch(storePostsListAction([...posts]));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setWaitDispatch(false);
+    const onEditPost = (post) => {
+        setLoading(true);
+        dispatch(updatePosts(post, () => editPost(post.id, post)));
+        setLoading(false);
     }
     const handleClickComments = (post) => {
         router.push(`/${post.author.username}/posts/${post.id}`)
@@ -49,10 +36,10 @@ function Posts() {
             <h2>Posts List</h2>
             {!!posts?.length ? (
                 <PostsList
-                    removePost={removePost}
-                    onEdit={onEdit}
+                    onRemovePost={onRemovePost}
+                    onEditPost={onEditPost}
                     handleClickComments={handleClickComments}
-                    waitDispatch={waitDispatch}
+                    loading={loading}
                 />
             ) : (
                 <span>No posts</span>
@@ -62,10 +49,10 @@ function Posts() {
 
 }
 
-export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
+export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
         const {data: {data: posts}} = await getUserPosts(ctx.query.username);
-        dispatch(storePostsListAction(posts));
+        dispatch(setPosts(posts));
         return {
             props: {
                 posts
@@ -78,6 +65,6 @@ export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
             }
         }
     }
-})
+}))
 
 export default Posts;

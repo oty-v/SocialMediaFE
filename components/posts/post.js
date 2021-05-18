@@ -1,8 +1,8 @@
 import PostForm from "./postForm";
 import {useState} from "react";
-import Loading from "../common/Loading";
+import Loader from "../common/Loader";
 
-const Post = ({onEdit, removePost, handleClickComments, post, showPostControls, waitDispatch}) => {
+const Post = ({onEdit, onRemove, onCommentClick, post, showPostControls, waitDispatch}) => {
     const [editMode, setEditMode] = useState(false);
     return (
         <div className="card">
@@ -12,7 +12,7 @@ const Post = ({onEdit, removePost, handleClickComments, post, showPostControls, 
                     <>
                         <PostForm
                             onSubmit={onEdit}
-                            initialPost={post}
+                            post={post}
                             setEditMode={setEditMode}
                             waitDispatch={waitDispatch}
                         />
@@ -20,11 +20,11 @@ const Post = ({onEdit, removePost, handleClickComments, post, showPostControls, 
                             className="btn btn-danger"
                             disabled={waitDispatch}
                             onClick={() => {
-                                removePost(post)
+                                onRemove(post)
                                 setEditMode(false)
                             }}
                         >
-                            {waitDispatch ? (<Loading/>) : ("Remove")}
+                            {waitDispatch ? (<Loader/>) : ("Remove")}
                         </button>
                     </>
                 ) : (
@@ -37,10 +37,10 @@ const Post = ({onEdit, removePost, handleClickComments, post, showPostControls, 
                         {editMode ? "Cancel" : "Edit post"}
                     </button>
                 )}
-                {handleClickComments && (
+                {onCommentClick && (
                     <button
                         className="btn btn-light"
-                        onClick={handleClickComments}
+                        onClick={onCommentClick}
                     >
                         Comments
                     </button>

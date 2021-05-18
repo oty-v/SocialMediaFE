@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/globals.css';
 import Layout from "../components/common/layout";
 import {AuthTokenChecker} from "../components/hoc/authTokenChecker";
-import Loading from '../components/common/Loading'
+import Loader from '../components/common/Loader'
 
 function useMounted() {
     const [mounted, setMounted] = useState(false)
@@ -25,7 +25,7 @@ function MyApp({Component, pageProps}) {
                         <Component {...pageProps}/>
                     ) : (
                         <div className="vh-100 d-flex flex-column  justify-content-center align-items-center">
-                            <Loading/>
+                            <Loader/>
                         </div>
                     )}
                 </Layout>

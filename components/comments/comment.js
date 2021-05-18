@@ -1,8 +1,7 @@
 import {useState} from "react";
 import CommentForm from "./commentForm";
-import PostForm from "../posts/postForm";
 
-const Comment = ({removeComment, onEditComment, comment, showCommentControls, waitDispatch}) => {
+const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
     return (
         <div className="card">
@@ -11,13 +10,13 @@ const Comment = ({removeComment, onEditComment, comment, showCommentControls, wa
                 {editMode ? (
                     <>
                         <CommentForm
-                            onSubmit={onEditComment}
-                            initialComment={comment}
+                            onSubmit={onEdit}
+                            comment={comment}
                             setEditMode={setEditMode}
-                            waitDispatch={waitDispatch}
+                            loading={loading}
                         />
                         <button className="btn btn-danger" onClick={() => {
-                            removeComment(comment)
+                            onRemove(comment)
                             setEditMode(false)
                         }}>
                             Remove

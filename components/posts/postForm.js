@@ -1,13 +1,13 @@
 import {Formik, Form} from 'formik';
 import {TextField} from '../common/field/textField';
 import * as Yup from 'yup';
-import Loading from "../common/Loading";
+import Loader from "../common/Loader";
 
 function PostForm({
                       onSubmit,
                       setEditMode,
-                      waitDispatch,
-                      initialPost = {
+                      loading,
+                      post = {
                           content: ''
                       }
                   }) {
@@ -18,7 +18,7 @@ function PostForm({
     })
     return (
         <Formik
-            initialValues={initialPost}
+            initialValues={post}
             validationSchema={validationSchema}
             onSubmit={values => {
                 onSubmit(values)
@@ -31,8 +31,8 @@ function PostForm({
                     name="content"
                     type="text"
                 />
-                <button className="btn btn-primary" type="submit" disabled={waitDispatch}>
-                    {waitDispatch ? (<Loading/>) : ("Save")}
+                <button className="btn btn-primary" type="submit" disabled={loading}>
+                    {loading ? (<Loader/>) : ("Save")}
                 </button>
             </Form>
         </Formik>

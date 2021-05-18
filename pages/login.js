@@ -12,9 +12,9 @@ import {withoutAuth} from "../lib/withoutAuth";
 
 export default function Login() {
     const router = useRouter();
-    const [waitDispatch, setWaitDispatch] = useState(false);
+    const [loading, setLoading] = useState(false);
     const onLogin = async (inputs) => {
-        setWaitDispatch(true);
+        setLoading(true);
         try {
             const {data: {data: {access_token: accessToken}}} = await loginUser(inputs);
             Cookie.set("token", accessToken);
@@ -22,7 +22,7 @@ export default function Login() {
         } catch (error) {
             toast.error(error.toString())
         }
-        setWaitDispatch(false);
+        setLoading(false);
     }
     return (
         <>
@@ -32,7 +32,7 @@ export default function Login() {
             <h1>Sign in</h1>
             <LoginForm
                 onSubmit={onLogin}
-                waitDispatch={waitDispatch}
+                loading={loading}
             />
             <Link href="/register">
                 <span>Need an account?</span>

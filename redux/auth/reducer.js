@@ -1,4 +1,4 @@
-import {AUTHENTICATE, DEAUTHENTICATE} from "../actions/ActionConstants";
+import {AUTHENTICATE, DEAUTHENTICATE} from "./types";
 
 
 const initialState = {
@@ -7,7 +7,7 @@ const initialState = {
 }
 
 
-const authReducer = (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
     switch (action.type) {
         case DEAUTHENTICATE:
             return {
@@ -24,4 +24,4 @@ const authReducer = (state = initialState, action) => {
     }
 };
 
-export default authReducer;
+export default reducer;

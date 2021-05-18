@@ -26,7 +26,7 @@ function Profile({profile}) {
     ))
 }
 
-export const getServerSideProps = withAuth(async (ctx, auth) => {
+export const getServerSideProps = withAuth(async (ctx) => {
     try {
         const {data: {data: profile}} = await getUser(ctx.query.username);
         return {

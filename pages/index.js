@@ -10,21 +10,22 @@ import {getUsers} from "../api/users";
 import PostForm from "../components/posts/postForm";
 import UserList from "../components/users/usersList";
 import {withAuth} from "../lib/withAuth";
-import {storeUsersListAction} from "../redux/actions/ActionCreator";
+import {setUsers} from "../redux/users/action";
+import {withRedux} from "../lib/withRedux";
 
 export default function Home() {
     const router = useRouter();
-    const [waitDispatch, setWaitDispatch] = useState(false);
-    const {users} = useSelector((state) => state);
-    const onCreate = async (inputs) => {
-        setWaitDispatch(true);
+    const [loading, setLoading] = useState(false);
+    const users = useSelector((state) => state.users);
+    const onCreatePost = async (inputs) => {
+        setLoading(true);
         try {
             const {data: {data: post}} = await createPost(inputs);
             router.push(`${post.author.username}/posts/${post.id}`);
         } catch (error) {
             toast.error(error.toString())
         }
-        setWaitDispatch(false);
+        setLoading(false);
     }
     return (
         <>
@@ -33,8 +34,8 @@ export default function Home() {
             </Head>
             <h2>Home</h2>
             <PostForm
-                onSubmit={onCreate}
-                waitDispatch={waitDispatch}
+                onSubmit={onCreatePost}
+                loading={loading}
             />
             {!!users?.length && (
                 <UserList users={users}/>
@@ -43,10 +44,10 @@ export default function Home() {
     )
 }
 
-export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
+export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
         const {data: {data: users}} = await getUsers();
-        dispatch(storeUsersListAction(users));
+        dispatch(setUsers(users));
         return {
             props: {
                 users
@@ -59,4 +60,4 @@ export const getServerSideProps = withAuth(async (ctx, dispatch, auth) => {
             }
         }
     }
-})
+}))

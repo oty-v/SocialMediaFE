@@ -1,13 +1,13 @@
 import {Formik, Form} from 'formik';
 import {TextField} from '../common/field/textField';
 import * as Yup from 'yup';
-import Loading from "../common/Loading";
+import Loader from "../common/Loader";
 
 function CommentForm({
                          onSubmit,
                          setEditMode,
-                         waitDispatch,
-                         initialComment = {
+                         loading,
+                         comment = {
                              body: ''
                          }
                      }) {
@@ -18,7 +18,7 @@ function CommentForm({
     })
     return (
         <Formik
-            initialValues={initialComment}
+            initialValues={comment}
             validationSchema={validationSchema}
             onSubmit={values => {
                 onSubmit(values)
@@ -31,8 +31,8 @@ function CommentForm({
                     name="body"
                     type="text"
                 />
-                <button className="btn btn-primary" type="submit" disabled={waitDispatch}>
-                    {waitDispatch ? (<Loading/>) : ("Send")}
+                <button className="btn btn-primary" type="submit" disabled={loading}>
+                    {loading ? (<Loader/>) : ("Send")}
                 </button>
             </Form>
         </Formik>

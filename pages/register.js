@@ -12,9 +12,9 @@ import {withoutAuth} from "../lib/withoutAuth";
 
 export default function Register() {
     const router = useRouter();
-    const [waitDispatch, setWaitDispatch] = useState(false);
+    const [loading, setLoading] = useState(false);
     const onRegister = async (inputs) => {
-        setWaitDispatch(true);
+        setLoading(true);
         try {
             const {data: {data: {access_token: accessToken}}} = await registerUser(inputs);
             Cookie.set("token", accessToken);
@@ -22,7 +22,7 @@ export default function Register() {
         } catch (error) {
             toast.error(error.toString())
         }
-        setWaitDispatch(false);
+        setLoading(false);
     }
     return (
         <>
@@ -33,7 +33,7 @@ export default function Register() {
             <h1>Sign Up</h1>
             <RegisterForm
                 onSubmit={onRegister}
-                waitDispatch={waitDispatch}
+                loading={loading}
             />
             <Link href="/login">
                 <span>Have an account?</span>
