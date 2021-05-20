@@ -1,10 +1,10 @@
 import {useRouter} from "next/router";
 import {useDispatch, useSelector} from "react-redux";
-import {logoutUser} from "../../../api/auth";
-import Cookie from "js-cookie";
 import Header from "./header";
-import {Bounce, ToastContainer} from "react-toastify";
-import {deAuthenticateAction} from "../../../redux/auth/action";
+import {Bounce, toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import {logout} from "../../../redux/auth/action";
 
 function Layout({children}) {
     const router = useRouter();
@@ -18,16 +18,19 @@ function Layout({children}) {
     }
     const handleClickLogOut = async () => {
         try {
-            await logoutUser();
-            Cookie.remove("token");
-            dispatch(deAuthenticateAction());
+            dispatch(logout());
             router.push('/login');
         } catch (error) {
-            console.log(error)
+            toast.error(error.toString())
         }
     }
     return (
         <div className="container-fluid d-flex flex-row">
+            <ToastContainer
+                draggable={false}
+                transition={Bounce}
+                autoClose={5000}
+            />
             <Header
                 authUser={auth.user.username}
                 isLoggedIn={auth.isLoggedIn}
@@ -36,11 +39,6 @@ function Layout({children}) {
                 handleClickLogOut={handleClickLogOut}
             />
             <main>
-                <ToastContainer
-                    draggable={false}
-                    transition={Bounce}
-                    autoClose={5000}
-                />
                 {children}
             </main>
         </div>

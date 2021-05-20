@@ -32,14 +32,22 @@ export default function Home() {
             <Head>
                 <title>Home</title>
             </Head>
-            <h2>Home</h2>
-            <PostForm
-                onSubmit={onCreatePost}
-                loading={loading}
-            />
-            {!!users?.length && (
-                <UserList users={users}/>
-            )}
+            <div className="card central-column">
+                <div className="card-header central-column-header">
+                    <h3 className="mb-0">Home</h3>
+                </div>
+                <div className="card-body">
+                    <PostForm
+                        onSubmit={onCreatePost}
+                        loading={loading}
+                    />
+                </div>
+            </div>
+            <div>
+                {!!users?.length && (
+                    <UserList users={users}/>
+                )}
+            </div>
         </>
     )
 }

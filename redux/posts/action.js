@@ -1,6 +1,5 @@
 import {SET_POST, SET_POSTS} from "./types";
-import {editPost, getUserPosts} from "../../api/posts";
-import {toast} from "react-toastify";
+import {deletePost, editPost, getUserPosts} from "../../api/posts";
 
 export const setPosts = (posts) => {
     return ({
@@ -9,7 +8,6 @@ export const setPosts = (posts) => {
     });
 }
 
-
 export const setPost = (post) => {
     return {
         type: SET_POST,
@@ -17,27 +15,23 @@ export const setPost = (post) => {
     };
 }
 
-export const updatePosts = (post, sendChanges) => {
+export const updatePosts = (authorUsername) => {
     return async (dispatch) => {
-        try {
-            if (sendChanges) {
-                await sendChanges();
-            }
-            const {data: {data: posts}} = await getUserPosts(post.author.username);
-            dispatch(setPosts(posts));
-        } catch (error) {
-            toast.error(error.toString())
-        }
+        const {data: {data: posts}} = await getUserPosts(authorUsername);
+        dispatch(setPosts(posts));
     }
 }
 
-export const updatePost = (post) => {
+export const updatePost = (postId, updatedData) => {
     return async (dispatch) => {
-        try {
-            await editPost(post.id, post);
-            dispatch(setPost(post));
-        } catch (error) {
-            toast.error(error.toString())
-        }
+        await editPost(postId, updatedData);
+        dispatch(setPost(updatedData));
+    }
+}
+
+export const removePost = (postId, authorUsername) => {
+    return async (dispatch) => {
+        await deletePost(postId);
+        dispatch(updatePosts(authorUsername))
     }
 }

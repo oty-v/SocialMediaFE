@@ -1,7 +1,8 @@
 import {Formik, Form} from 'formik';
-import {InputField} from '../common/field/inputField';
 import * as Yup from 'yup';
+
 import Loader from "../common/Loader";
+import {InputField} from '../common/field/inputField';
 
 const LoginForm = ({onSubmit, loading}) => {
     const validationSchema = Yup.object({
@@ -32,10 +33,12 @@ const LoginForm = ({onSubmit, loading}) => {
                     name="password"
                     type="password"
                 />
-                <button className="btn btn-primary" type="submit" disabled={loading}>
-                    {loading ? (<Loader/>) : ("Sign In")}
-                </button>
-                <button className="btn btn-light" type="reset">Reset</button>
+                <div className="field-container">
+                    <button className="btn btn-primary" type="submit" disabled={loading}>
+                        {loading ? (<Loader/>) : ("Sign In")}
+                    </button>
+                    <button className="btn btn-light" type="reset">Reset</button>
+                </div>
             </Form>
         </Formik>
     );

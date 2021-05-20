@@ -1,11 +1,11 @@
 import {Formik, Form} from 'formik';
-import {TextField} from '../common/field/textField';
 import * as Yup from 'yup';
+
 import Loader from "../common/Loader";
+import {TextField} from '../common/field/textField';
 
 function PostForm({
                       onSubmit,
-                      setEditMode,
                       loading,
                       post = {
                           content: ''
@@ -20,9 +20,11 @@ function PostForm({
         <Formik
             initialValues={post}
             validationSchema={validationSchema}
-            onSubmit={values => {
-                onSubmit(values)
-                setEditMode(false)
+            onSubmit={async values => {
+                await onSubmit(values)
+                if(!post.content) {
+                    values.body = ''
+                }
             }}
         >
             <Form>

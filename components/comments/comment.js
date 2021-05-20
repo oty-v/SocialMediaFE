@@ -1,8 +1,12 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+
 import CommentForm from "./commentForm";
 
 const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
+    useEffect(() => {
+        setEditMode(false);
+    }, [comment])
     return (
         <div className="card">
             <h5 className="card-header">User: {comment.author.username}</h5>

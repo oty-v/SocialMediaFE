@@ -1,6 +1,5 @@
 import {SET_COMMENTS, ADD_COMMENTS} from "./types";
-import {toast} from "react-toastify";
-import {createComment, getPostComments} from "../../api/comments";
+import {createComment, deleteComment, editComment, getPostComments} from "../../api/comments";
 
 export const setComments = (comments) => {
     return {
@@ -9,32 +8,36 @@ export const setComments = (comments) => {
     };
 }
 
-export const updateComments = (postId, sendChanges) => {
+export const updateComments = (postId) => {
     return async (dispatch) => {
-        try {
-            if (sendChanges) {
-                await sendChanges();
-            }
-            const {data: {data: comments}} = await getPostComments(postId);
-            dispatch(setComments(comments));
-        } catch (error) {
-            toast.error(error.toString())
-        }
+        const {data: {data: comments}} = await getPostComments(postId);
+        dispatch(setComments(comments));
+    }
+}
+
+export const updateComment = (commentId, updatedData, postId) => {
+    return async (dispatch) => {
+        await editComment(commentId, updatedData);
+        dispatch(updateComments(postId));
+    }
+}
+
+export const removeComment = (commentId, postId) => {
+    return async (dispatch) => {
+        await deleteComment(commentId);
+        dispatch(updateComments(postId));
     }
 }
 
 export const addComments = (postId, inputs) => {
     return async (dispatch) => {
-        try {
-            const {data: {data: comment}} = await createComment(postId, inputs);
-            dispatch({
-                type: ADD_COMMENTS,
-                payload: {
-                    ...comment
-                }
-            });
-        } catch (error) {
-            toast.error(error.toString())
-        }
+        const {data: {data: comment}} = await createComment(postId, inputs);
+        dispatch({
+            type: ADD_COMMENTS,
+            payload: {
+                ...comment
+            }
+        });
     }
 }
+

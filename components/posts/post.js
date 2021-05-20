@@ -1,9 +1,13 @@
+import {useEffect, useState} from "react";
+
 import PostForm from "./postForm";
-import {useState} from "react";
 import Loader from "../common/Loader";
 
-const Post = ({onEdit, onRemove, onCommentClick, post, showPostControls, waitDispatch}) => {
+const Post = ({onEdit, onRemove, onCommentsClick, post, showPostControls, waitDispatch}) => {
     const [editMode, setEditMode] = useState(false);
+    useEffect(() => {
+        setEditMode(false);
+    }, [post])
     return (
         <div className="card">
             <h5 className="card-header">User: {post.author.username}</h5>
@@ -37,10 +41,10 @@ const Post = ({onEdit, onRemove, onCommentClick, post, showPostControls, waitDis
                         {editMode ? "Cancel" : "Edit post"}
                     </button>
                 )}
-                {onCommentClick && (
+                {onCommentsClick && (
                     <button
                         className="btn btn-light"
-                        onClick={onCommentClick}
+                        onClick={onCommentsClick}
                     >
                         Comments
                     </button>

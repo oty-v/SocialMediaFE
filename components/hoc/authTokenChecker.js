@@ -1,4 +1,5 @@
 import Cookie from "js-cookie";
+
 import {axiosController} from "../../lib/axiosController";
 
 export const AuthTokenChecker = ({children}) => {
