@@ -5,7 +5,7 @@ import Comment from "./comment";
 const CommentsList = ({onRemoveComment, onEditComment, loading}) => {
     const auth = useSelector((state) => state.auth);
     const comments = useSelector((state) => state.comments.comments);
-    const authUser = auth.user.username;
+    const authUser = auth.profile.username;
     return (
         <ul className="list-group">
             {comments.map(comment => (

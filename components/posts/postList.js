@@ -5,7 +5,7 @@ import Post from "./post";
 const PostsList = ({onRemovePost, onEditPost, handleClickComments, loading}) => {
     const auth = useSelector((state) => state.auth);
     const posts = useSelector((state) => state.posts.posts);;
-    const authUser = auth.user.username;
+    const authUser = auth.profile.username;
     return (
         <ul className="list-group">
             {posts.map(post => (

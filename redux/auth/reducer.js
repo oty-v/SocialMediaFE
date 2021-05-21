@@ -3,7 +3,7 @@ import {AUTHENTICATE, DEAUTHENTICATE} from "./types";
 
 const initialState = {
     isLoggedIn: false,
-    user: {}
+    profile: {}
 }
 
 
@@ -12,12 +12,12 @@ const reducer = (state = initialState, action) => {
         case DEAUTHENTICATE:
             return {
                 isLoggedIn: false,
-                user: {}
+                profile: {}
             };
         case AUTHENTICATE:
             return {
                 isLoggedIn: true,
-                user: action.payload
+                profile: action.payload
             };
         default:
             return state;

@@ -10,6 +10,7 @@ function Layout({children}) {
     const router = useRouter();
     const auth = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const authUser = auth.profile.username;
     const handleClickSignIn = () => {
         router.push(`/login`);
     }
@@ -32,7 +33,7 @@ function Layout({children}) {
                 autoClose={5000}
             />
             <Header
-                authUser={auth.user.username}
+                authUser={authUser}
                 isLoggedIn={auth.isLoggedIn}
                 handleClickSignIn={handleClickSignIn}
                 handleClickSignUp={handleClickSignUp}

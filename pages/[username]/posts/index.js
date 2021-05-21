@@ -4,11 +4,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import {getUserPosts} from "../../../api/posts";
 import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
-import {removePost, setPosts, updatePost, updatePosts} from "../../../redux/posts/action";
+import {removePost, updatePost, uploadPosts} from "../../../redux/posts/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 
@@ -30,7 +29,7 @@ function Posts({username}) {
         setLoading(true);
         try {
             await dispatch(updatePost(post.id, post));
-            await dispatch(updatePosts(post.author.username));
+            await dispatch(uploadPosts(post.author.username));
         } catch (error) {
             toast.error(error.toString())
         }
@@ -72,11 +71,9 @@ function Posts({username}) {
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
-        const {data: {data: posts}} = await getUserPosts(ctx.query.username);
-        dispatch(setPosts(posts));
+        await dispatch(uploadPosts(ctx.query.username));
         return {
             props: {
-                posts,
                 username: ctx.query.username
             }
         };

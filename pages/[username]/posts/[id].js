@@ -4,15 +4,14 @@ import Head from "next/head";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import {getPost} from "../../../api/posts";
 import {getPostComments} from "../../../api/comments";
 import {withAuth} from "../../../lib/withAuth";
 import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
 import {useDispatch, useSelector} from "react-redux";
-import {removePost, setPost, updatePost} from "../../../redux/posts/action";
-import {addComments, removeComment, setComments, updateComment} from "../../../redux/comments/action";
+import {removePost, updatePost, uploadPost} from "../../../redux/posts/action";
+import {addComments, removeComment, uploadComments, updateComment} from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 
@@ -23,6 +22,7 @@ const PostPage = () => {
     const post = useSelector((state) => state.posts.post);
     const comments = useSelector((state) => state.comments.comments);
     const dispatch = useDispatch();
+    const authUser = auth.profile.username;
     const onRemovePost = async (post) => {
         setLoading(true);
         try {
@@ -87,7 +87,7 @@ const PostPage = () => {
                             onEdit={onEditPost}
                             onRemove={onRemovePost}
                             post={post}
-                            showPostControls={auth.user.username === post.author?.username}
+                            showPostControls={authUser === post.author?.username}
                             loading={loading}
                         />
                         <div className="list-group-item">
@@ -112,14 +112,11 @@ const PostPage = () => {
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
-        const {data: {data: post}} = await getPost(ctx.query.id);
-        const {data: {data: comments}} = await getPostComments(ctx.query.id);
-        dispatch(setPost(post));
-        dispatch(setComments(comments));
+        await dispatch(uploadPost(ctx.query.id));
+        await dispatch(uploadComments(ctx.query.id));
         return {
             props: {
-                post,
-                comments
+                postId: ctx.query.id
             }
         };
     } catch (e) {

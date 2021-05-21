@@ -6,17 +6,16 @@ import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import {createPost} from "../api/posts";
-import {getUsers} from "../api/users";
 import PostForm from "../components/posts/postForm";
 import UserList from "../components/users/usersList";
 import {withAuth} from "../lib/withAuth";
-import {setUsers} from "../redux/users/action";
+import {uploadUsers} from "../redux/users/action";
 import {withRedux} from "../lib/withRedux";
 
 export default function Home() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const users = useSelector((state) => state.users);
+    const users = useSelector((state) => state.users.users);
     const onCreatePost = async (inputs) => {
         setLoading(true);
         try {
@@ -54,11 +53,10 @@ export default function Home() {
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
-        const {data: {data: users}} = await getUsers();
-        dispatch(setUsers(users));
+        await dispatch(uploadUsers());
         return {
             props: {
-                users
+                page: ctx.query
             }
         };
     } catch (e) {

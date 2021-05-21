@@ -1,5 +1,5 @@
 import {SET_POST, SET_POSTS} from "./types";
-import {deletePost, editPost, getUserPosts} from "../../api/posts";
+import {deletePost, editPost, getPost, getUserPosts} from "../../api/posts";
 
 export const setPosts = (posts) => {
     return ({
@@ -15,7 +15,14 @@ export const setPost = (post) => {
     };
 }
 
-export const updatePosts = (authorUsername) => {
+export const uploadPost = (postId) => {
+    return async (dispatch) => {
+        const {data: {data: post}} = await getPost(postId);
+        dispatch(setPost(post));
+    }
+}
+
+export const uploadPosts = (authorUsername) => {
     return async (dispatch) => {
         const {data: {data: posts}} = await getUserPosts(authorUsername);
         dispatch(setPosts(posts));
@@ -32,6 +39,6 @@ export const updatePost = (postId, updatedData) => {
 export const removePost = (postId, authorUsername) => {
     return async (dispatch) => {
         await deletePost(postId);
-        dispatch(updatePosts(authorUsername))
+        dispatch(uploadPosts(authorUsername))
     }
 }

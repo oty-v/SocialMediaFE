@@ -8,7 +8,7 @@ export const setComments = (comments) => {
     };
 }
 
-export const updateComments = (postId) => {
+export const uploadComments = (postId) => {
     return async (dispatch) => {
         const {data: {data: comments}} = await getPostComments(postId);
         dispatch(setComments(comments));
@@ -18,14 +18,14 @@ export const updateComments = (postId) => {
 export const updateComment = (commentId, updatedData, postId) => {
     return async (dispatch) => {
         await editComment(commentId, updatedData);
-        dispatch(updateComments(postId));
+        dispatch(uploadComments(postId));
     }
 }
 
 export const removeComment = (commentId, postId) => {
     return async (dispatch) => {
         await deleteComment(commentId);
-        dispatch(updateComments(postId));
+        dispatch(uploadComments(postId));
     }
 }
 
