@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import PostForm from "./postForm";
 import Loader from "../common/Loader";
 
-const Post = ({onEdit, onRemove, onCommentsClick, post, showPostControls, waitDispatch}) => {
+const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
     useEffect(() => {
         setEditMode(false);
@@ -18,17 +18,17 @@ const Post = ({onEdit, onRemove, onCommentsClick, post, showPostControls, waitDi
                             onSubmit={onEdit}
                             post={post}
                             setEditMode={setEditMode}
-                            waitDispatch={waitDispatch}
+                            loading={loading}
                         />
                         <button
                             className="btn btn-danger"
-                            disabled={waitDispatch}
+                            disabled={loading}
                             onClick={() => {
                                 onRemove(post)
                                 setEditMode(false)
                             }}
                         >
-                            {waitDispatch ? (<Loader/>) : ("Remove")}
+                            {loading ? (<Loader/>) : ("Remove")}
                         </button>
                     </>
                 ) : (
@@ -41,10 +41,10 @@ const Post = ({onEdit, onRemove, onCommentsClick, post, showPostControls, waitDi
                         {editMode ? "Cancel" : "Edit post"}
                     </button>
                 )}
-                {onCommentsClick && (
+                {onClick && (
                     <button
                         className="btn btn-light"
-                        onClick={onCommentsClick}
+                        onClick={onClick}
                     >
                         Comments
                     </button>

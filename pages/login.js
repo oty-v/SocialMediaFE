@@ -14,10 +14,10 @@ export default function Login() {
     const router = useRouter();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const onLogin = async (inputs) => {
+    const onLogin = async (credentials) => {
         setLoading(true);
         try {
-            await dispatch(login(inputs));
+            await dispatch(login(credentials));
             router.push(`/`);
         } catch (error) {
             toast.error(error.toString())

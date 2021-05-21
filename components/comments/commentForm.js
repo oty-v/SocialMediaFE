@@ -20,11 +20,10 @@ function CommentForm({
         <Formik
             initialValues={comment}
             validationSchema={validationSchema}
-            onSubmit={async values => {
+            onSubmit={async (values, actions) => {
                 await onSubmit(values);
-                if(!comment.body) {
-                    values.body = ''
-                }
+                actions.setSubmitting(false);
+                actions.resetForm()
             }}
         >
             <Form>

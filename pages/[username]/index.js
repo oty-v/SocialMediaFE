@@ -1,11 +1,12 @@
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import {useSelector} from "react-redux";
 
 import {withAuth} from "../../lib/withAuth";
 import BackButton from "../../components/common/BackButton";
 import {withRedux} from "../../lib/withRedux";
-import {uploadUser} from "../../redux/users/action";
+import {getUserAsync} from "../../redux/users/action";
 
 
 function Profile() {
@@ -24,6 +25,12 @@ function Profile() {
                     </div>
                 </div>
                 <div className="card-body">
+                    <Image
+                        src={user.avatar ? user.avatar : '/default.png'}
+                        alt="User avatar"
+                        width={100}
+                        height={100}
+                    />
                     <h4 className="card-title">ID: {user.id}</h4>
                     <p className="card-text">Data registration: {user.created_at}</p>
                     <Link href={`/${user.username}/posts`}>
@@ -39,7 +46,7 @@ function Profile() {
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
-        await dispatch(uploadUser(ctx.query.username));
+        await dispatch(getUserAsync(ctx.query.username));
         return {
             props: {
                 username: ctx.query.username

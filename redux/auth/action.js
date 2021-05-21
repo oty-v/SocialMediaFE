@@ -17,23 +17,28 @@ export const deAuthenticateAction = () => {
     };
 };
 
-export const login = (inputs) => {
+export const getProfileAsync = () => {
     return async (dispatch) => {
-        const {data: {data: {access_token: accessToken}}} = await loginUser(inputs);
-        Cookie.set("token", accessToken);
-        axiosController.setToken(accessToken);
         const {data: {data: user}} = await getProfile();
         dispatch(authenticateAction(user));
     }
 }
 
-export const register = (inputs) => {
+export const login = (credentials) => {
     return async (dispatch) => {
-        const {data: {data: {access_token: accessToken}}} = await registerUser(inputs);
+        const {data: {data: {access_token: accessToken}}} = await loginUser(credentials);
         Cookie.set("token", accessToken);
         axiosController.setToken(accessToken);
-        const {data: {data: user}} = await getProfile();
-        dispatch(authenticateAction(user));
+        dispatch(getProfileAsync(accessToken));
+    }
+}
+
+export const register = (userData) => {
+    return async (dispatch) => {
+        const {data: {data: {access_token: accessToken}}} = await registerUser(userData);
+        Cookie.set("token", accessToken);
+        axiosController.setToken(accessToken);
+        dispatch(getProfileAsync(accessToken));
     }
 }
 

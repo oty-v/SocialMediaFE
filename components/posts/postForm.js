@@ -18,13 +18,13 @@ function PostForm({
     })
     return (
         <Formik
+            enableReinitialize={true}
             initialValues={post}
             validationSchema={validationSchema}
-            onSubmit={async values => {
-                await onSubmit(values)
-                if(!post.content) {
-                    values.body = ''
-                }
+            onSubmit={async (values, actions) => {
+                await onSubmit(values);
+                actions.setSubmitting(false);
+                actions.resetForm()
             }}
         >
             <Form>

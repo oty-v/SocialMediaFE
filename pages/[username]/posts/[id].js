@@ -10,8 +10,8 @@ import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
 import {useDispatch, useSelector} from "react-redux";
-import {removePost, updatePost, uploadPost} from "../../../redux/posts/action";
-import {addComments, removeComment, uploadComments, updateComment} from "../../../redux/comments/action";
+import {removePostAsync, updatePostAsync, getPostAsync} from "../../../redux/posts/action";
+import {createCommentAsync, removeComment, getCommentsAsync, updateComment} from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 
@@ -26,7 +26,7 @@ const PostPage = () => {
     const onRemovePost = async (post) => {
         setLoading(true);
         try {
-            await dispatch(removePost(post.id, post.author.username));
+            await dispatch(removePostAsync(post.id, post.author.username));
             router.push(`/${post.author.username}/posts`);
         } catch (error) {
             toast.error(error.toString())
@@ -36,7 +36,7 @@ const PostPage = () => {
     const onEditPost = async (post) => {
         setLoading(true);
         try {
-            await dispatch(updatePost(post.id, post));
+            await dispatch(updatePostAsync(post.id, post));
         } catch (error) {
             toast.error(error.toString())
         }
@@ -60,10 +60,10 @@ const PostPage = () => {
         }
         setLoading(false);
     }
-    const onCreateComment = async (inputs) => {
+    const onCreateComment = async (commentData) => {
         setLoading(true);
         try {
-            await dispatch(addComments(post.id, inputs));
+            await dispatch(createCommentAsync(post.id, commentData));
         } catch (error) {
             toast.error(error.toString())
         }
@@ -93,7 +93,7 @@ const PostPage = () => {
                         <div className="list-group-item">
                             <h4>Comments:</h4>
                             <CommentForm onSubmit={onCreateComment}/>
-                            {!!comments?.length ? (
+                            {comments?.length ? (
                                 <CommentsList
                                     onEditComment={onEditComment}
                                     onRemoveComment={onRemoveComment}
@@ -112,8 +112,8 @@ const PostPage = () => {
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
-        await dispatch(uploadPost(ctx.query.id));
-        await dispatch(uploadComments(ctx.query.id));
+        await dispatch(getPostAsync(ctx.query.id));
+        await dispatch(getCommentsAsync(ctx.query.id));
         return {
             props: {
                 postId: ctx.query.id

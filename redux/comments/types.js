@@ -1,2 +1,4 @@
 export const SET_COMMENTS = 'SET_COMMENTS';
-export const ADD_COMMENTS = 'ADD_COMMENTS';
+export const ADD_COMMENT = 'ADD_COMMENT';
+export const UPDATE_COMMENT  = 'UPDATE_COMMENT';
+export const REMOVE_COMMENT  = 'REMOVE_COMMENT';

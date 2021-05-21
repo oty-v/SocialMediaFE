@@ -14,10 +14,10 @@ export default function Register() {
     const router = useRouter();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const onRegister = async (inputs) => {
+    const onRegister = async (userData) => {
         setLoading(true);
         try {
-            await dispatch(register(inputs));
+            await dispatch(register(userData));
             router.push(`/`);
         } catch (error) {
             toast.error(error.toString())

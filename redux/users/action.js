@@ -15,14 +15,14 @@ export const setUsers = (users) => {
     };
 }
 
-export const uploadUser = (username) => {
+export const getUserAsync = (username) => {
     return async (dispatch) => {
         const {data: {data: user}} = await getUser(username);
         dispatch(setUser(user));
     }
 }
 
-export const uploadUsers = () => {
+export const getUsersAsync = () => {
     return async (dispatch) => {
         const {data: {data: users}} = await getUsers();
         dispatch(setUsers(users));

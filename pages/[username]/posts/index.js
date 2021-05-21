@@ -7,19 +7,18 @@ import "react-toastify/dist/ReactToastify.css";
 import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
-import {removePost, updatePost, uploadPosts} from "../../../redux/posts/action";
+import {removePostAsync, updatePostAsync, getPostsAsync} from "../../../redux/posts/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 
 function Posts({username}) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const posts = useSelector((state) => state.posts.posts);
     const dispatch = useDispatch();
     const onRemovePost = async (post) => {
         setLoading(true);
         try {
-            await dispatch(removePost(post.id, post.author.username));
+            await dispatch(removePostAsync(post.id, post.author.username));
         } catch (error) {
             toast.error(error.toString())
         }
@@ -28,14 +27,14 @@ function Posts({username}) {
     const onEditPost = async (post) => {
         setLoading(true);
         try {
-            await dispatch(updatePost(post.id, post));
-            await dispatch(uploadPosts(post.author.username));
+            await dispatch(updatePostAsync(post.id, post));
+            await dispatch(getPostsAsync(post.author.username));
         } catch (error) {
             toast.error(error.toString())
         }
         setLoading(false);
     }
-    const handleClickComments = (post) => {
+    const handleClickPost = (post) => {
         router.push(`/${post.author.username}/posts/${post.id}`)
     }
     return (
@@ -52,16 +51,12 @@ function Posts({username}) {
                     </div>
                 </div>
                 <div className="card-body">
-                    {!!posts?.length ? (
-                        <PostsList
-                            onRemovePost={onRemovePost}
-                            onEditPost={onEditPost}
-                            handleClickComments={handleClickComments}
-                            loading={loading}
-                        />
-                    ) : (
-                        <span>No posts</span>
-                    )}
+                    <PostsList
+                        onRemovePost={onRemovePost}
+                        onEditPost={onEditPost}
+                        handleClickPost={handleClickPost}
+                        loading={loading}
+                    />
                 </div>
             </div>
         </>
@@ -71,7 +66,7 @@ function Posts({username}) {
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
-        await dispatch(uploadPosts(ctx.query.username));
+        await dispatch(getPostsAsync(ctx.query.username));
         return {
             props: {
                 username: ctx.query.username

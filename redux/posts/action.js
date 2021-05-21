@@ -1,5 +1,5 @@
-import {SET_POST, SET_POSTS} from "./types";
-import {deletePost, editPost, getPost, getUserPosts} from "../../api/posts";
+import {SET_POST, SET_POSTS, UPDATE_POST, REMOVE_POST} from "./types";
+import {createPost, deletePost, editPost, getPost, getUserPosts} from "../../api/posts";
 
 export const setPosts = (posts) => {
     return ({
@@ -15,30 +15,53 @@ export const setPost = (post) => {
     };
 }
 
-export const uploadPost = (postId) => {
+export const updatePost = (updatedData) => {
+    return {
+        type: UPDATE_POST,
+        payload: updatedData
+    };
+}
+
+
+export const removePost = (postId) => {
+    return {
+        type: REMOVE_POST,
+        payload: postId
+    };
+}
+
+export const getPostAsync = (postId) => {
     return async (dispatch) => {
         const {data: {data: post}} = await getPost(postId);
         dispatch(setPost(post));
     }
 }
 
-export const uploadPosts = (authorUsername) => {
+export const getPostsAsync = (authorUsername) => {
     return async (dispatch) => {
         const {data: {data: posts}} = await getUserPosts(authorUsername);
         dispatch(setPosts(posts));
     }
 }
 
-export const updatePost = (postId, updatedData) => {
+export const createPostAsync = (createdData) => {
+    return async (dispatch) => {
+        const {data: {data: post}} = await createPost(createdData);
+        dispatch(setPosts(post));
+    }
+}
+
+export const updatePostAsync = (postId, updatedData) => {
     return async (dispatch) => {
         await editPost(postId, updatedData);
+        dispatch(updatePost(updatedData));
         dispatch(setPost(updatedData));
     }
 }
 
-export const removePost = (postId, authorUsername) => {
+export const removePostAsync = (postId) => {
     return async (dispatch) => {
         await deletePost(postId);
-        dispatch(uploadPosts(authorUsername))
+        dispatch(removePost(postId))
     }
 }
