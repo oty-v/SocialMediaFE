@@ -33,7 +33,7 @@ function PostForm({
                     name="content"
                     type="text"
                 />
-                <button className="btn btn-primary" type="submit" disabled={loading}>
+                <button className="btn btn-primary float-end m-1" type="submit" disabled={loading}>
                     {loading ? (<Loader/>) : ("Save")}
                 </button>
             </Form>

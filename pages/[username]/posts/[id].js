@@ -91,8 +91,10 @@ const PostPage = () => {
                             loading={loading}
                         />
                         <div className="list-group-item">
+                            <div className="mb-5">
+                                <CommentForm onSubmit={onCreateComment}/>
+                            </div>
                             <h4>Comments:</h4>
-                            <CommentForm onSubmit={onCreateComment}/>
                             {comments?.length ? (
                                 <CommentsList
                                     onEditComment={onEditComment}

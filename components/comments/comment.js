@@ -19,7 +19,7 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
                             setEditMode={setEditMode}
                             loading={loading}
                         />
-                        <button className="btn btn-danger" onClick={() => {
+                        <button className="btn btn-danger float-end m-1" onClick={() => {
                             onRemove(comment)
                             setEditMode(false)
                         }}>
@@ -30,7 +30,7 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
                     <p className="card-text">{comment.body}</p>
                 )}
                 {showCommentControls && (
-                    <button className="btn btn-primary" onClick={() => {
+                    <button className="btn btn-primary m-1" onClick={() => {
                         setEditMode(!editMode)
                     }}>
                         {editMode ? "Cancel" : "Edit post"}

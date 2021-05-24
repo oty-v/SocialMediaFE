@@ -21,7 +21,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
                             loading={loading}
                         />
                         <button
-                            className="btn btn-danger"
+                            className="btn btn-danger float-end m-1"
                             disabled={loading}
                             onClick={() => {
                                 onRemove(post)
@@ -35,7 +35,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
                     <p className="card-text">{post.content}</p>
                 )}
                 {showPostControls && (
-                    <button className="btn btn-primary" onClick={() => {
+                    <button className="btn btn-primary m-1" onClick={() => {
                         setEditMode(!editMode)
                     }}>
                         {editMode ? "Cancel" : "Edit post"}
@@ -43,7 +43,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
                 )}
                 {onClick && (
                     <button
-                        className="btn btn-light"
+                        className="btn btn-light m-1"
                         onClick={onClick}
                     >
                         Comments
