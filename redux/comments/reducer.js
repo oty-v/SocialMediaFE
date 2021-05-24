@@ -17,14 +17,20 @@ const commentsReducer = (state = initialState, action) => {
                 comments: [...state.comments, action.payload]
             };
         case UPDATE_COMMENT:
+            const updateCommentIndex = state.comments.findIndex(comment => {
+                return comment.id === action.payload.id
+            })
+            state.comments.splice(updateCommentIndex, 1, action.payload)
             return {
                 ...state,
-                comments: state.comments.splice(state.comments.findIndex(comment=>comment.id===action.payload.id), 1, action.payload)
             };
         case REMOVE_COMMENT:
+            const removeCommentIndex = state.comments.findIndex(comment => {
+                return comment.id === action.payload
+            })
+            state.comments.splice(removeCommentIndex, 1)
             return {
                 ...state,
-                comments: state.comments.splice(state.comments.findIndex(comment=>comment.id===action.payload), 1)
             };
         default:
             return state;

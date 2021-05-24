@@ -17,17 +17,18 @@ function useMounted() {
 function MyApp({Component, pageProps}) {
     const store = useStore(pageProps.initialReduxState)
     const isMounted = useMounted()
+    if (!isMounted) {
+        return (
+            <div className="vh-100 d-flex flex-column  justify-content-center align-items-center">
+                <Loader/>
+            </div>
+        )
+    }
     return (
         <Provider store={store}>
             <AuthTokenChecker>
                 <Layout>
-                    {isMounted ? (
-                        <Component {...pageProps}/>
-                    ) : (
-                        <div className="vh-100 d-flex flex-column  justify-content-center align-items-center">
-                            <Loader/>
-                        </div>
-                    )}
+                    <Component {...pageProps}/>
                 </Layout>
             </AuthTokenChecker>
         </Provider>

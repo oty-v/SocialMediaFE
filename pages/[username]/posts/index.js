@@ -1,6 +1,6 @@
 import {useState} from "react";
 import Head from "next/head";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -18,7 +18,7 @@ function Posts({username}) {
     const onRemovePost = async (post) => {
         setLoading(true);
         try {
-            await dispatch(removePostAsync(post.id, post.author.username));
+            await dispatch(removePostAsync(post.id));
         } catch (error) {
             toast.error(error.toString())
         }
@@ -28,7 +28,6 @@ function Posts({username}) {
         setLoading(true);
         try {
             await dispatch(updatePostAsync(post.id, post));
-            await dispatch(getPostsAsync(post.author.username));
         } catch (error) {
             toast.error(error.toString())
         }

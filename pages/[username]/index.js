@@ -7,11 +7,19 @@ import {withAuth} from "../../lib/withAuth";
 import BackButton from "../../components/common/BackButton";
 import {withRedux} from "../../lib/withRedux";
 import {getUserAsync} from "../../redux/users/action";
+import Loader from "../../components/common/Loader";
 
 
 function Profile() {
     const user = useSelector((state) => state.users.user);
-    return (user ? (
+    if (!!user) {
+        return (
+            <div className="vh-100 d-flex flex-column  justify-content-center align-items-center">
+                <Loader/>
+            </div>
+        )
+    }
+    return (
         <>
             <Head>
                 <title>{user.username}</title>
@@ -38,10 +46,7 @@ function Profile() {
                     </Link>
                 </div>
             </div>
-        </>
-    ) : (
-        <span>Loading...</span>
-    ))
+        </>)
 }
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {

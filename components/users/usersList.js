@@ -1,6 +1,16 @@
 import Link from "next/link";
+import Loader from "../common/Loader";
+import {useSelector} from "react-redux";
 
-const UserList = ({users}) => {
+const UserList = () => {
+    const users = useSelector((state) => state.users.users);
+    if (!!users) {
+        return (
+            <div className="vh-100 d-flex flex-column  justify-content-center align-items-center">
+                <Loader/>
+            </div>
+        )
+    }
     return (
         <>
             <div className="mx-5">

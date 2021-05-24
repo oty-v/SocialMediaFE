@@ -4,7 +4,7 @@ import {useRouter} from "next/router";
 const BackButton = ({handleClick}) => {
     const router = useRouter();
     return (
-        <button className="btn btn-light" onClick={handleClick ?? (() => router.back())}>
+        <button className="btn btn-light ps-0" onClick={handleClick ?? (() => router.back())}>
             <Image
                 src="/back.svg"
                 alt="Back"

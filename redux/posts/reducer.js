@@ -1,4 +1,4 @@
-import {SET_POSTS, SET_POST, UPDATE_POST, REMOVE_POST} from "./types";
+import {SET_POSTS, SET_POST, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
 
 const initialState = {
     posts: [],
@@ -16,15 +16,26 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 post: action.payload
             };
-        case UPDATE_POST:
+        case ADD_POST:
             return {
                 ...state,
-                posts: state.posts.splice(state.posts.findIndex(post=>post.id===action.payload.id), 1, action.payload)
+                posts: [...state.posts, action.payload]
+            };
+        case UPDATE_POST:
+            const updatePostIndex = state.posts.findIndex(post => {
+                return post.id === action.payload.id
+            })
+            state.posts.splice(updatePostIndex, 1, action.payload)
+            return {
+                ...state
             };
         case REMOVE_POST:
+            const removePostIndex = state.posts.findIndex(post => {
+                return post.id === action.payload
+            })
+            state.posts.splice(removePostIndex, 1)
             return {
-                ...state,
-                posts: state.posts.splice(state.posts.findIndex(post=>post.id===action.payload), 1)
+                ...state
             };
         default:
             return state;

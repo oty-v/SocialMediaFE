@@ -1,4 +1,4 @@
-import {SET_COMMENTS, ADD_COMMENT} from "./types";
+import {SET_COMMENTS, ADD_COMMENT, UPDATE_COMMENT, REMOVE_COMMENT} from "./types";
 import {createComment, deleteComment, editComment, getPostComments} from "../../api/comments";
 
 export const setComments = (comments) => {
@@ -15,6 +15,21 @@ export const addComment = (comment) => {
     }
 }
 
+export const updateComment = (updatedComment) => {
+    return {
+        type: UPDATE_COMMENT,
+        payload: updatedComment
+    };
+}
+
+
+export const removeComment = (commentId) => {
+    return {
+        type: REMOVE_COMMENT,
+        payload: commentId
+    };
+}
+
 export const getCommentsAsync = (postId) => {
     return async (dispatch) => {
         const {data: {data: comments}} = await getPostComments(postId);
@@ -22,17 +37,17 @@ export const getCommentsAsync = (postId) => {
     }
 }
 
-export const updateComment = (commentId, updatedData, postId) => {
+export const updateCommentAsync = (commentId, updatedData) => {
     return async (dispatch) => {
-        await editComment(commentId, updatedData);
-        dispatch(getCommentsAsync(postId));
+        const {data: {data: updatedComment}} = await editComment(commentId, updatedData);
+        dispatch(updateComment(updatedComment));
     }
 }
 
-export const removeComment = (commentId, postId) => {
+export const removeCommentAsync = (commentId) => {
     return async (dispatch) => {
         await deleteComment(commentId);
-        dispatch(getCommentsAsync(postId));
+        dispatch(removeComment(commentId));
     }
 }
 
