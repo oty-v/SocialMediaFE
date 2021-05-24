@@ -7,7 +7,7 @@ const BackButton = ({handleClick}) => {
         <button className="btn btn-light" onClick={handleClick ?? (() => router.back())}>
             <Image
                 src="/back.svg"
-                alt="Picture of the author"
+                alt="Back"
                 width={20}
                 height={20}
             />
