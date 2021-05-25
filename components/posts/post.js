@@ -8,64 +8,53 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     useEffect(() => {
         setEditMode(false);
     }, [post])
-    const postContent = (editMode) => {
-        if (editMode) {
-            return (
-                <>
-                    <PostForm
-                        onSubmit={onEdit}
-                        post={post}
-                        setEditMode={setEditMode}
-                        loading={loading}
-                    />
-                    <button
-                        className="btn btn-danger float-end m-1"
-                        disabled={loading}
-                        onClick={() => {
-                            onRemove(post)
-                            setEditMode(false)
-                        }}
-                    >
-                        {loading ? (<Loader/>) : ("Remove")}
-                    </button>
-                </>
-            )
-        }
-        return <p className="card-text">{post.content}</p>
-    }
-    const editButton = (editMode, setEditMode, showPostControls) => {
-        if (showPostControls) {
-            return (
-                <button
-                    className="btn btn-primary m-1"
-                    onClick={() => {
-                        setEditMode(!editMode)
-                    }}
-                >
-                    {editMode ? "Cancel" : "Edit post"}
-                </button>
-            )
-        }
-    }
-    const commentsButton = (onClick) => {
-        if (onClick) {
-            return (
-                <button
-                    className="btn btn-light m-1"
-                    onClick={onClick}
-                >
-                    Comments
-                </button>
-            )
-        }
-    }
+    const postContent = editMode ? (
+        <>
+            <PostForm
+                onSubmit={onEdit}
+                post={post}
+                setEditMode={setEditMode}
+                loading={loading}
+            />
+            <button
+                className="btn btn-danger float-end m-1"
+                disabled={loading}
+                onClick={() => {
+                    onRemove(post)
+                    setEditMode(false)
+                }}
+            >
+                {loading ? (<Loader/>) : ("Remove")}
+            </button>
+        </>
+    ) : (
+        <p className="card-text">{post.content}</p>
+    )
+    const editButton = showPostControls ? (
+        <button
+            className="btn btn-primary m-1"
+            onClick={() => {
+                setEditMode(!editMode)
+            }}
+        >
+            {editMode ? "Cancel" : "Edit post"}
+        </button>
+    ) : null
+    const commentsButton = onClick ? (
+        <button
+            className="btn btn-light m-1"
+            onClick={onClick}
+        >
+            Comments
+        </button>
+    ) : null
     return (
         <div className="card">
             <h5 className="card-header">User: {post.author.username}</h5>
             <div className="card-body">
-                {postContent(editMode)}
-                {editButton(editMode, setEditMode, showPostControls)}
-                {commentsButton(onClick)}
+                {postContent}
+                {editButton}
+                {commentsButton}
             </div>
         </div>
     )

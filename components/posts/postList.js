@@ -14,7 +14,7 @@ const PostsList = ({onRemovePost, onEditPost, handleClickPost, loading}) => {
             </div>
         )
     }
-    if (!posts) {
+    if (!posts.length) {
         return <span>No posts</span>
     }
     return (

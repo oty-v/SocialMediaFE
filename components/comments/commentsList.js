@@ -14,7 +14,7 @@ const CommentsList = ({onRemoveComment, onEditComment, loading}) => {
             </div>
         )
     }
-    if (!comments) {
+    if (!comments.length) {
         return <span>No Comments</span>
     }
     return (
