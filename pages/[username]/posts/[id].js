@@ -26,7 +26,7 @@ const PostPage = () => {
     const post = useSelector((state) => state.posts.post);
     const dispatch = useDispatch();
     const authUser = auth.profile.username;
-    const onRemovePost = async (post) => {
+    const handlePostRemove = async (post) => {
         setLoading(true);
         try {
             await dispatch(removePostAsync(post.id, post.author.username));
@@ -36,7 +36,7 @@ const PostPage = () => {
         }
         setLoading(false);
     }
-    const onEditPost = async (post) => {
+    const handlePostEdit = async (post) => {
         setLoading(true);
         try {
             await dispatch(updatePostAsync(post.id, post));
@@ -45,7 +45,7 @@ const PostPage = () => {
         }
         setLoading(false);
     }
-    const onRemoveComment = async (comment) => {
+    const handleCommentRemove = async (comment) => {
         setLoading(true);
         try {
             await dispatch(removeCommentAsync(comment.id));
@@ -54,7 +54,7 @@ const PostPage = () => {
         }
         setLoading(false);
     }
-    const onEditComment = async (comment) => {
+    const handleCommentEdit = async (comment) => {
         setLoading(true);
         try {
             await dispatch(updateCommentAsync(comment.id, comment));
@@ -63,7 +63,7 @@ const PostPage = () => {
         }
         setLoading(false);
     }
-    const onCreateComment = async (commentData) => {
+    const handleCommentCreate = async (commentData) => {
         setLoading(true);
         try {
             await dispatch(createCommentAsync(post.id, commentData));
@@ -87,20 +87,20 @@ const PostPage = () => {
                 <div className="list-group list-group-flush card-body">
                     <div className="list-group-item">
                         <Post
-                            onEdit={onEditPost}
-                            onRemove={onRemovePost}
+                            onEdit={handlePostEdit}
+                            onRemove={handlePostRemove}
                             post={post}
                             showPostControls={authUser === post.author?.username}
                             loading={loading}
                         />
                         <div className="list-group-item">
                             <div className="mb-5">
-                                <CommentForm onSubmit={onCreateComment}/>
+                                <CommentForm onSubmit={handleCommentCreate}/>
                             </div>
                             <h4>Comments:</h4>
                             <CommentsList
-                                onEditComment={onEditComment}
-                                onRemoveComment={onRemoveComment}
+                                onEditComment={handleCommentEdit}
+                                onRemoveComment={handleCommentRemove}
                                 loading={loading}
                             />
                         </div>

@@ -14,7 +14,7 @@ import {createPostAsync} from "../redux/posts/action";
 export default function Home() {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-    const onCreatePost = async (postData) => {
+    const handlePostCreate = async (postData) => {
         setLoading(true);
         try {
             await dispatch(createPostAsync(postData));
@@ -34,7 +34,7 @@ export default function Home() {
                 </div>
                 <div className="card-body">
                     <PostForm
-                        onSubmit={onCreatePost}
+                        onSubmit={handlePostCreate}
                         loading={loading}
                     />
                 </div>

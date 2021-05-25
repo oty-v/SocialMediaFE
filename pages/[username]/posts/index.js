@@ -15,7 +15,7 @@ function Posts({username}) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-    const onRemovePost = async (post) => {
+    const handlePostRemove = async (post) => {
         setLoading(true);
         try {
             await dispatch(removePostAsync(post.id));
@@ -24,7 +24,7 @@ function Posts({username}) {
         }
         setLoading(false);
     }
-    const onEditPost = async (post) => {
+    const handlePostEdit = async (post) => {
         setLoading(true);
         try {
             await dispatch(updatePostAsync(post.id, post));
@@ -51,8 +51,8 @@ function Posts({username}) {
                 </div>
                 <div className="card-body">
                     <PostsList
-                        onRemovePost={onRemovePost}
-                        onEditPost={onEditPost}
+                        onRemovePost={handlePostRemove}
+                        onEditPost={handlePostEdit}
                         handleClickPost={handleClickPost}
                         loading={loading}
                     />

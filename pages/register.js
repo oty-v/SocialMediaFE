@@ -14,7 +14,7 @@ export default function Register() {
     const router = useRouter();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const onRegister = async (userData) => {
+    const handleUserRegister = async (userData) => {
         setLoading(true);
         try {
             await dispatch(register(userData));
@@ -36,7 +36,7 @@ export default function Register() {
                 </div>
                 <div className="card-body">
                     <RegisterForm
-                        onSubmit={onRegister}
+                        onSubmit={handleUserRegister}
                         loading={loading}
                     />
                     <Link href="/login">

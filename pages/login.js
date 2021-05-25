@@ -14,7 +14,7 @@ export default function Login() {
     const router = useRouter();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const onLogin = async (credentials) => {
+    const handleUserLogin = async (credentials) => {
         setLoading(true);
         try {
             await dispatch(login(credentials));
@@ -35,7 +35,7 @@ export default function Login() {
                 </div>
                 <div className="card-body">
                     <LoginForm
-                        onSubmit={onLogin}
+                        onSubmit={handleUserLogin}
                         loading={loading}
                     />
                     <Link href="/register">
