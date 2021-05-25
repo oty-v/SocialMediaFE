@@ -4,9 +4,9 @@ import {useSelector} from "react-redux";
 
 const UserList = () => {
     const users = useSelector((state) => state.users.users);
-    if (!!users) {
+    if (!users) {
         return (
-            <div className="vh-100 d-flex flex-column  justify-content-center align-items-center">
+            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
                 <Loader/>
             </div>
         )

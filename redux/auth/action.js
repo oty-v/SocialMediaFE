@@ -29,7 +29,7 @@ export const login = (credentials) => {
         const {data: {data: {access_token: accessToken}}} = await loginUser(credentials);
         Cookie.set("token", accessToken);
         axiosController.setToken(accessToken);
-        dispatch(getProfileAsync(accessToken));
+        dispatch(getProfileAsync());
     }
 }
 
@@ -38,7 +38,7 @@ export const register = (userData) => {
         const {data: {data: {access_token: accessToken}}} = await registerUser(userData);
         Cookie.set("token", accessToken);
         axiosController.setToken(accessToken);
-        dispatch(getProfileAsync(accessToken));
+        dispatch(getProfileAsync());
     }
 }
 

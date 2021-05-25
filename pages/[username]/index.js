@@ -12,9 +12,9 @@ import Loader from "../../components/common/Loader";
 
 function Profile() {
     const user = useSelector((state) => state.users.user);
-    if (!!user) {
+    if (!user) {
         return (
-            <div className="vh-100 d-flex flex-column  justify-content-center align-items-center">
+            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
                 <Loader/>
             </div>
         )

@@ -1,12 +1,20 @@
 import {useSelector} from "react-redux";
 
 import Comment from "./comment";
+import Loader from "../common/Loader";
 
 const CommentsList = ({onRemoveComment, onEditComment, loading}) => {
     const auth = useSelector((state) => state.auth);
     const comments = useSelector((state) => state.comments.comments);
     const authUser = auth.profile.username;
-    if (!!comments) {
+    if (loading) {
+        return (
+            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
+                <Loader/>
+            </div>
+        )
+    }
+    if (!comments) {
         return <span>No Comments</span>
     }
     return (
