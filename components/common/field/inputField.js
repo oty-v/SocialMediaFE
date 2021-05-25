@@ -1,4 +1,3 @@
-import React from 'react';
 import {ErrorMessage, useField} from 'formik';
 
 export const InputField = ({label, ...props}) => {

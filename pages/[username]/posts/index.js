@@ -1,42 +1,74 @@
+import {useState} from "react";
 import Head from "next/head";
+import {useDispatch} from "react-redux";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import {getUserPosts} from "../../../api/posts";
 import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
+import {removePostAsync, updatePostAsync, getPostsAsync} from "../../../redux/posts/action";
+import {withRedux} from "../../../lib/withRedux";
+import BackButton from "../../../components/common/BackButton";
 
-function Posts({auth, username, posts}) {
+function Posts({username}) {
     const router = useRouter();
-    const handleClickEdit = (post) => {
-        router.push(`/${username}/posts/${post.id}`)
+    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+    const handlePostRemove = async (post) => {
+        setLoading(true);
+        try {
+            await dispatch(removePostAsync(post.id));
+        } catch (error) {
+            toast.error(error.toString())
+        }
+        setLoading(false);
+    }
+    const handlePostEdit = async (post) => {
+        setLoading(true);
+        try {
+            await dispatch(updatePostAsync(post.id, post));
+        } catch (error) {
+            toast.error(error.toString())
+        }
+        setLoading(false);
+    }
+    const handleClickPost = (post) => {
+        router.push(`/${post.author.username}/posts/${post.id}`)
     }
     return (
         <>
             <Head>
                 <title>Posts</title>
             </Head>
-            <h2>Posts List</h2>
-            {!!posts?.length ? (
-                <PostsList
-                    posts={posts}
-                    handleClickEdit={handleClickEdit}
-                    authUser={auth.user.username}
-                />
-            ) : (
-                <span>No posts</span>
-            )}
+            <div className="card central-column">
+                <div className="card-header central-column-header">
+                    <BackButton/>
+                    <div className="central-column-header-title">
+                        <h3 className="mb-0">Posts List</h3>
+                        <span className="text-muted">{`@${username}`}</span>
+                    </div>
+                </div>
+                <div className="card-body">
+                    <PostsList
+                        onRemovePost={handlePostRemove}
+                        onEditPost={handlePostEdit}
+                        handleClickPost={handleClickPost}
+                        loading={loading}
+                    />
+                </div>
+            </div>
         </>
     )
 
 }
 
-export const getServerSideProps = withAuth(async (ctx, auth) => {
+export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
-        const {data: {data: posts}} = await getUserPosts(ctx.query.username);
+        await dispatch(getPostsAsync(ctx.query.username));
         return {
             props: {
-                username: ctx.query.username,
-                posts
+                username: ctx.query.username
             }
         };
     } catch (e) {
@@ -46,6 +78,6 @@ export const getServerSideProps = withAuth(async (ctx, auth) => {
             }
         }
     }
-})
+}))
 
 export default Posts;

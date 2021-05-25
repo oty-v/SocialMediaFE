@@ -1,35 +1,48 @@
+import {useState} from 'react'
 import {useRouter} from "next/router";
 import Head from "next/head";
 import Link from "next/link";
-import Cookie from "js-cookie";
+import {useDispatch} from "react-redux";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import LoginForm from "../components/auth/loginForm";
-import {loginUser} from "../api/auth";
 import {withoutAuth} from "../lib/withoutAuth";
+import {login} from "../redux/auth/action";
 
 export default function Login() {
     const router = useRouter();
-    const onLogin = async (inputs) => {
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
+    const handleUserLogin = async (credentials) => {
+        setLoading(true);
         try {
-            const {data: {data: {access_token: accessToken}}} = await loginUser(inputs);
-            Cookie.set("token", accessToken);
+            await dispatch(login(credentials));
             router.push(`/`);
         } catch (error) {
             toast.error(error.toString())
         }
+        setLoading(false);
     }
     return (
         <>
             <Head>
                 <title>Login</title>
             </Head>
-            <h1>Sign in</h1>
-            <LoginForm onSubmit={onLogin}/>
-            <Link href="/register">
-                <span>Need an account?</span>
-            </Link>
+            <div className="card">
+                <div className="card-header central-column-header">
+                    <h3>Sign in</h3>
+                </div>
+                <div className="card-body">
+                    <LoginForm
+                        onSubmit={handleUserLogin}
+                        loading={loading}
+                    />
+                    <Link href="/register">
+                        <span className="text-muted">Need an account?</span>
+                    </Link>
+                </div>
+            </div>
         </>
     );
 }

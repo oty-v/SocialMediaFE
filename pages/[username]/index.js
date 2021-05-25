@@ -1,37 +1,60 @@
 import Head from "next/head";
-
-import {getUser} from "../../api/users";
 import Link from "next/link";
-import {withAuth} from "../../lib/withAuth";
+import Image from "next/image";
+import {useSelector} from "react-redux";
 
-function Profile({profile}) {
-    return (profile ? (
+import {withAuth} from "../../lib/withAuth";
+import BackButton from "../../components/common/BackButton";
+import {withRedux} from "../../lib/withRedux";
+import {getUserAsync} from "../../redux/users/action";
+import Loader from "../../components/common/Loader";
+
+
+function Profile() {
+    const user = useSelector((state) => state.users.user);
+    if (!user) {
+        return (
+            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
+                <Loader/>
+            </div>
+        )
+    }
+    return (
         <>
             <Head>
-                <title>{profile.username}</title>
+                <title>{user.username}</title>
             </Head>
-            <h2>{profile.username}</h2>
-            <div>
-                <span>ID:</span>
-                <p>{profile.id}</p>
-                <span>Data registration:</span>
-                <p>{profile.created_at}</p>
+            <div className="card central-column">
+                <div className="card-header central-column-header">
+                    <BackButton/>
+                    <div className="central-column-header-title">
+                        <h3 className="mb-0">User</h3>
+                        <span className="text-muted">{`@${user.username}`}</span>
+                    </div>
+                </div>
+                <div className="card-body">
+                    <Image
+                        src={user.avatar ? user.avatar : '/default.png'}
+                        alt="User avatar"
+                        width={100}
+                        height={100}
+                    />
+                    <h4 className="card-title">ID: {user.id}</h4>
+                    <p className="card-text">Data registration: {user.created_at}</p>
+                    <Link href={`/${user.username}/posts`}>
+                        <span className="btn btn-primary">{user.username} posts</span>
+                    </Link>
+                </div>
             </div>
-            <Link href={`/${profile.username}/posts`}>
-                <b className="btn btn-primary">{profile.username} posts</b>
-            </Link>
-        </>
-    ) : (
-        <span>Loading...</span>
-    ))
+        </>)
 }
 
-export const getServerSideProps = withAuth(async (ctx, auth) => {
+export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     try {
-        const {data: {data: profile}} = await getUser(ctx.query.username);
+        await dispatch(getUserAsync(ctx.query.username));
         return {
             props: {
-                profile
+                username: ctx.query.username
             }
         };
     } catch (e) {
@@ -41,6 +64,6 @@ export const getServerSideProps = withAuth(async (ctx, auth) => {
             }
         }
     }
-})
+}))
 
 export default Profile;

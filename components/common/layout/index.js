@@ -1,11 +1,16 @@
 import {useRouter} from "next/router";
-import {logoutUser} from "../../../api/auth";
-import Cookie from "js-cookie";
+import {useDispatch, useSelector} from "react-redux";
 import Header from "./header";
-import {Bounce, ToastContainer} from "react-toastify";
+import {Bounce, toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function Layout({auth, isLoggedIn, children}) {
+import {logout} from "../../../redux/auth/action";
+
+function Layout({children}) {
     const router = useRouter();
+    const auth = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+    const authUser = auth.profile.username;
     const handleClickSignIn = () => {
         router.push(`/login`);
     }
@@ -14,28 +19,27 @@ function Layout({auth, isLoggedIn, children}) {
     }
     const handleClickLogOut = async () => {
         try {
-            await logoutUser();
-            Cookie.remove("token");
+            dispatch(logout());
             router.push('/login');
         } catch (error) {
-            console.log(error)
+            toast.error(error.toString())
         }
     }
     return (
         <div className="container-fluid d-flex flex-row">
+            <ToastContainer
+                draggable={false}
+                transition={Bounce}
+                autoClose={5000}
+            />
             <Header
-                authUser={auth?.user.username}
-                isLoggedIn={isLoggedIn}
+                authUser={authUser}
+                isLoggedIn={auth.isLoggedIn}
                 handleClickSignIn={handleClickSignIn}
                 handleClickSignUp={handleClickSignUp}
                 handleClickLogOut={handleClickLogOut}
             />
             <main>
-                <ToastContainer
-                    draggable={false}
-                    transition={Bounce}
-                    autoClose={5000}
-                />
                 {children}
             </main>
         </div>

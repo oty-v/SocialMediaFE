@@ -1,18 +1,18 @@
 import {useEffect, useState} from "react";
 
-import PostForm from "./postForm";
+import CommentForm from "./commentForm";
 import Loader from "../common/Loader";
 
-const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
+const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
     useEffect(() => {
         setEditMode(false);
-    }, [post])
-    const postContent = editMode ? (
+    }, [comment])
+    const commentContent = editMode ? (
         <>
-            <PostForm
+            <CommentForm
                 onSubmit={onEdit}
-                post={post}
+                comment={comment}
                 setEditMode={setEditMode}
                 loading={loading}
             />
@@ -20,7 +20,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
                 className="btn btn-danger float-end m-1"
                 disabled={loading}
                 onClick={() => {
-                    onRemove(post)
+                    onRemove(comment)
                     setEditMode(false)
                 }}
             >
@@ -28,36 +28,27 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
             </button>
         </>
     ) : (
-        <p className="card-text">{post.content}</p>
+        <p className="card-text">{comment.body}</p>
     )
-    const editButton = showPostControls ? (
+    const editButton = showCommentControls ? (
         <button
             className="btn btn-primary m-1"
             onClick={() => {
                 setEditMode(!editMode)
             }}
         >
-            {editMode ? "Cancel" : "Edit post"}
-        </button>
-    ) : null
-    const commentsButton = onClick ? (
-        <button
-            className="btn btn-light m-1"
-            onClick={onClick}
-        >
-            Comments
+            {editMode ? "Cancel" : "Edit comment"}
         </button>
     ) : null
     return (
         <div className="card">
-            <h5 className="card-header">User: {post.author.username}</h5>
+            <h5 className="card-header">User: {comment.author.username}</h5>
             <div className="card-body">
-                {postContent}
+                {commentContent}
                 {editButton}
-                {commentsButton}
             </div>
         </div>
     )
 }
 
-export default Post
+export default Comment

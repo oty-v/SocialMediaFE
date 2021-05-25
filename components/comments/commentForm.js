@@ -4,22 +4,21 @@ import * as Yup from 'yup';
 import Loader from "../common/Loader";
 import {TextField} from '../common/field/textField';
 
-function PostForm({
-                      onSubmit,
-                      loading,
-                      post = {
-                          content: ''
-                      }
-                  }) {
+function CommentForm({
+                         onSubmit,
+                         loading,
+                         comment = {
+                             body: ''
+                         }
+                     }) {
     const validationSchema = Yup.object({
-        content: Yup.string()
+        body: Yup.string()
             .max(280, 'Must be 280 characters or less')
             .required('Required'),
     })
     return (
         <Formik
-            enableReinitialize={true}
-            initialValues={post}
+            initialValues={comment}
             validationSchema={validationSchema}
             onSubmit={async (values, actions) => {
                 await onSubmit(values);
@@ -29,8 +28,8 @@ function PostForm({
         >
             <Form>
                 <TextField
-                    label="Write your post"
-                    name="content"
+                    label="Write your comment"
+                    name="body"
                     type="text"
                 />
                 <button
@@ -38,11 +37,11 @@ function PostForm({
                     type="submit"
                     disabled={loading}
                 >
-                    {loading ? (<Loader/>) : ("Save")}
+                    {loading ? (<Loader/>) : ("Send")}
                 </button>
             </Form>
         </Formik>
     )
 }
 
-export default PostForm;
+export default CommentForm;
