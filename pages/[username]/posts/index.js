@@ -41,7 +41,7 @@ function Posts({username}) {
             <Head>
                 <title>Posts</title>
             </Head>
-            <div className="card central-column">
+            <div className="central-column">
                 <div className="card-header central-column-header">
                     <BackButton/>
                     <div className="central-column-header-title">

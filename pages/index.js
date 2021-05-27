@@ -28,7 +28,7 @@ export default function Home() {
             <Head>
                 <title>Home</title>
             </Head>
-            <div className="card central-column">
+            <div className="central-column">
                 <div className="card-header central-column-header">
                     <h3 className="mb-0">Home</h3>
                 </div>

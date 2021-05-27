@@ -6,4 +6,4 @@ export const loginUser = (userData) => axiosController.instance.post(`/login`, u
 
 export const logoutUser = () => axiosController.instance.post(`/logout`);
 
-export const getProfile = () => axiosController.instance.get("/profile");
+export const getProfile = () => axiosController.instance.get("/profiles");

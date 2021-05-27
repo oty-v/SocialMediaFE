@@ -24,6 +24,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "babel-plugin-inline-react-svg": "^2.0.1",
     "postcss": "^8.2.15",
     "redux-devtools-extension": "^2.13.9"
   }

@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 
 import CommentForm from "./commentForm";
 import Loader from "../common/Loader";
+import EditIconOn from "../../public/icon/edit.svg";
+import EditIconOff from "../../public/icon/edit_off.svg";
 
 const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
@@ -17,7 +19,7 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
                 loading={loading}
             />
             <button
-                className="btn btn-danger float-end m-1"
+                className="btn btn-danger m-1"
                 disabled={loading}
                 onClick={() => {
                     onRemove(comment)
@@ -32,22 +34,28 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     )
     const editButton = showCommentControls ? (
         <button
-            className="btn btn-primary m-1"
+            className="btn btn-light ms-1 p-0 pb-2 svg-icon"
             onClick={() => {
                 setEditMode(!editMode)
             }}
         >
-            {editMode ? "Cancel" : "Edit comment"}
+            {editMode ? (
+                <EditIconOff height="1rem"/>
+            ) : (
+                <EditIconOn height="1rem"/>
+            )}
         </button>
     ) : null
     return (
-        <div className="card">
-            <h5 className="card-header">User: {comment.author.username}</h5>
+        <>
+            <h5 className="card-header">
+                User: {comment.author.username}
+                {editButton}
+            </h5>
             <div className="card-body">
                 {commentContent}
-                {editButton}
             </div>
-        </div>
+        </>
     )
 }
 

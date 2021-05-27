@@ -1,15 +1,14 @@
-import Image from "next/image";
 import {useRouter} from "next/router";
+import BackArrow from "../../public/icon/back.svg";
 
 const BackButton = ({handleClick}) => {
     const router = useRouter();
     return (
         <button className="btn btn-light ps-0" onClick={handleClick ?? (() => router.back())}>
-            <Image
-                src="/back.svg"
+            <BackArrow
                 alt="Back"
-                width={20}
-                height={20}
+                width={24}
+                height={24}
             />
         </button>
     )
