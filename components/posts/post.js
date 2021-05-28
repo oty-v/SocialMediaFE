@@ -5,6 +5,7 @@ import Loader from "../common/Loader";
 import EditIconOn from "../../public/icon/edit.svg";
 import EditIconOff from "../../public/icon/edit_off.svg";
 import ComentIcon from "../../public/icon/comment.svg";
+import User from "../users/user";
 
 const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
@@ -16,7 +17,6 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
             <PostForm
                 onSubmit={onEdit}
                 post={post}
-                setEditMode={setEditMode}
                 loading={loading}
             />
             <button
@@ -35,7 +35,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     )
     const editButton = showPostControls ? (
         <button
-            className="btn btn-light ms-1 p-0 pb-2 svg-icon"
+            className="btn btn-light ms-1 p-0 svg-icon"
             onClick={() => {
                 setEditMode(!editMode)
             }}
@@ -58,8 +58,10 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     return (
         <>
             <h5 className="card-header">
-                User: {post.author.username}
-                {editButton}
+                <div className="d-inline-flex">
+                    <User user={post.author}/>
+                    {editButton}
+                </div>
             </h5>
             <div className="card-body">
                 {postContent}

@@ -8,10 +8,12 @@ import BackButton from "../../components/common/BackButton";
 import {withRedux} from "../../lib/withRedux";
 import {getUserAsync} from "../../redux/users/action";
 import Loader from "../../components/common/Loader";
-import ModalContainer from "../../components/common/ModalContainer";
+import {useRouter} from "next/router";
 
 
 function Profile() {
+    const router = useRouter();
+    const authUser = useSelector((state) => state.auth.profile.username);
     const user = useSelector((state) => state.users.user);
     if (!user) {
         return (
@@ -20,6 +22,17 @@ function Profile() {
             </div>
         )
     }
+    const handleClickEditProfile = () => {
+        router.push(`/settings/profile`);
+    }
+    const EditProfileBtn = (authUser === user.username) && (
+        <button
+            className="btn btn-outline-primary mb-2"
+            onClick={handleClickEditProfile}
+        >
+            Edit profile
+        </button>
+    )
     return (
         <>
             <Head>
@@ -41,7 +54,7 @@ function Profile() {
                             width={125}
                             height={125}
                         />
-                        <button className="btn btn-outline-primary mb-2">Edit profile</button>
+                        {EditProfileBtn}
                     </div>
                     <h4 className="card-title">{user.name ? user.name : `ID: ${user.id}`}</h4>
                     <p className="card-text">Data registration: {user.created_at}</p>

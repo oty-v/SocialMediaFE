@@ -1,7 +1,7 @@
 import Cookie from "js-cookie";
 
-import {AUTHENTICATE, DEAUTHENTICATE} from "./types";
-import {getProfile, loginUser, logoutUser, registerUser} from "../../api/auth";
+import {AUTHENTICATE, DEAUTHENTICATE, UPDATE_PROFILE} from "./types";
+import {getProfile, editProfile, loginUser, logoutUser, registerUser} from "../../api/auth";
 import {axiosController} from "../../lib/axiosController";
 
 export const authenticateAction = (user) => {
@@ -17,10 +17,24 @@ export const deAuthenticateAction = () => {
     };
 };
 
+export const updateProfile = (profile) => {
+    return {
+        type: UPDATE_PROFILE,
+        payload: profile
+    }
+}
+
 export const getProfileAsync = () => {
     return async (dispatch) => {
         const {data: {data: user}} = await getProfile();
         dispatch(authenticateAction(user));
+    }
+}
+
+export const updateProfileAsync = (profileId, updateData) => {
+    return async (dispatch) => {
+        const {data: {data: profile}} = await editProfile(profileId, updateData);
+        dispatch(updateProfile(profile));
     }
 }
 

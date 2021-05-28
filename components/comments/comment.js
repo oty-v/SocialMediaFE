@@ -4,6 +4,7 @@ import CommentForm from "./commentForm";
 import Loader from "../common/Loader";
 import EditIconOn from "../../public/icon/edit.svg";
 import EditIconOff from "../../public/icon/edit_off.svg";
+import User from "../users/user";
 
 const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
@@ -15,7 +16,6 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
             <CommentForm
                 onSubmit={onEdit}
                 comment={comment}
-                setEditMode={setEditMode}
                 loading={loading}
             />
             <button
@@ -34,7 +34,7 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     )
     const editButton = showCommentControls ? (
         <button
-            className="btn btn-light ms-1 p-0 pb-2 svg-icon"
+            className="btn btn-light ms-1 p-0 svg-icon"
             onClick={() => {
                 setEditMode(!editMode)
             }}
@@ -49,8 +49,10 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     return (
         <>
             <h5 className="card-header">
-                User: {comment.author.username}
-                {editButton}
+                <div className="d-inline-flex">
+                    <User user={comment.author}/>
+                    {editButton}
+                </div>
             </h5>
             <div className="card-body">
                 {commentContent}
