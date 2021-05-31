@@ -1,6 +1,5 @@
-import {useEffect, useState} from 'react'
-import Head from "next/head";
-import {Provider} from 'react-redux'
+import {useEffect, useState} from 'react';
+import {Provider} from 'react-redux';
 import {useStore} from "../redux/store";
 import 'bootstrap/dist/css/bootstrap.css';
 import {library} from '@fortawesome/fontawesome-svg-core'
@@ -15,6 +14,7 @@ import {
     faSignOutAlt,
     faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
+
 library.add(
     faEdit,
     faTimesCircle,
@@ -48,18 +48,13 @@ function MyApp({Component, pageProps}) {
         )
     }
     return (
-        <>
-            <Head>
-                <script src="https://kit.fontawesome.com/68a769dc6e.js" crossOrigin="anonymous"/>
-            </Head>
-            <Provider store={store}>
-                <AuthTokenChecker>
-                    <Layout>
-                        <Component {...pageProps}/>
-                    </Layout>
-                </AuthTokenChecker>
-            </Provider>
-        </>
+        <Provider store={store}>
+            <AuthTokenChecker>
+                <Layout>
+                    <Component {...pageProps}/>
+                </Layout>
+            </AuthTokenChecker>
+        </Provider>
     )
 }
 
