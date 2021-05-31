@@ -9,7 +9,7 @@ import {withRedux} from "../../lib/withRedux";
 import {getUserAsync} from "../../redux/users/action";
 import Loader from "../../components/common/Loader";
 import {useRouter} from "next/router";
-
+import UserAvatar from "../../components/users/userAvatar";
 
 function Profile() {
     const router = useRouter();
@@ -25,7 +25,7 @@ function Profile() {
     const handleClickEditProfile = () => {
         router.push(`/settings/profile`);
     }
-    const EditProfileBtn = (authUser === user.username) && (
+    const editProfileBtn = (authUser === user.username) && (
         <button
             className="btn btn-outline-primary mb-2"
             onClick={handleClickEditProfile}
@@ -48,13 +48,14 @@ function Profile() {
                 </div>
                 <div className="card-body">
                     <div className="d-flex align-items-end justify-content-between mb-2">
-                        <Image
-                            src={user.avatar?.length ? user.avatar : '/default.png'}
-                            alt="User avatar"
-                            width={125}
-                            height={125}
-                        />
-                        {EditProfileBtn}
+                        <UserAvatar userAvatar={user.avatar}>
+                            <Image
+                                width={125}
+                                height={125}
+                            />
+                        </UserAvatar>
+
+                        {editProfileBtn}
                     </div>
                     <h4 className="card-title">{user.name ? user.name : `ID: ${user.id}`}</h4>
                     <p className="card-text">Data registration: {user.created_at}</p>

@@ -2,9 +2,6 @@ import {useEffect, useState} from "react";
 
 import PostForm from "./postForm";
 import Loader from "../common/Loader";
-import EditIconOn from "../../public/icon/edit.svg";
-import EditIconOff from "../../public/icon/edit_off.svg";
-import ComentIcon from "../../public/icon/comment.svg";
 import User from "../users/user";
 
 const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
@@ -27,7 +24,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
                     setEditMode(false)
                 }}
             >
-                {loading ? (<Loader/>) : ("Remove")}
+                {loading ? (<Loader/>) : (<i className="fas fa-trash-alt"/>)}
             </button>
         </>
     ) : (
@@ -35,24 +32,24 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     )
     const editButton = showPostControls ? (
         <button
-            className="btn btn-light ms-1 p-0 svg-icon"
+            className="btn btn-light ms-1 p-0 icon focus-off"
             onClick={() => {
                 setEditMode(!editMode)
             }}
         >
             {editMode ? (
-                <EditIconOff height="1rem"/>
+                <i className="far fa-times-circle"/>
             ) : (
-                <EditIconOn height="1rem"/>
+                <i className="far fa-edit"/>
             )}
         </button>
     ) : null
     const commentsButton = onClick ? (
         <button
-            className="btn btn-light svg-icon"
+            className="btn btn-light icon focus-off"
             onClick={onClick}
         >
-            <ComentIcon height="1.25rem"/>
+            <i className="far fa-comment"/>
         </button>
     ) : null
     return (

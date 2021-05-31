@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react'
+import Head from "next/head";
 import {Provider} from 'react-redux'
 import {useStore} from "../redux/store";
 import 'bootstrap/dist/css/bootstrap.css';
@@ -25,13 +26,18 @@ function MyApp({Component, pageProps}) {
         )
     }
     return (
-        <Provider store={store}>
-            <AuthTokenChecker>
-                <Layout>
-                    <Component {...pageProps}/>
-                </Layout>
-            </AuthTokenChecker>
-        </Provider>
+        <>
+            <Head>
+                <script src="https://kit.fontawesome.com/68a769dc6e.js" crossOrigin="anonymous"/>
+            </Head>
+            <Provider store={store}>
+                <AuthTokenChecker>
+                    <Layout>
+                        <Component {...pageProps}/>
+                    </Layout>
+                </AuthTokenChecker>
+            </Provider>
+        </>
     )
 }
 

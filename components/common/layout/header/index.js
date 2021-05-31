@@ -1,8 +1,4 @@
 import ActiveLink from "./ActiveLink";
-import HomeIcon from "../../../../public/icon/home.svg";
-import ProfileIcon from "../../../../public/icon/account.svg";
-import PostIcon from "../../../../public/icon/list.svg";
-import LogoutIcon from "../../../../public/icon/logout.svg";
 
 const Header = ({
                     authUser,
@@ -18,7 +14,7 @@ const Header = ({
                     <li className="nav-item mt-2">
                         <ActiveLink activeClassName="active" href="/">
                             <div className="nav-link link-dark">
-                                <HomeIcon className="me-1 pb-1" height="2rem"/>
+                                <i className="me-2 fas fa-home fs-4"/>
                                 <span>Home</span>
                             </div>
                         </ActiveLink>
@@ -26,7 +22,7 @@ const Header = ({
                     <li className="nav-item mt-3">
                         <ActiveLink activeClassName="active" href={`/${authUser}`}>
                             <div className="nav-link link-dark ">
-                                <ProfileIcon className="me-1 pb-1" height="2rem"/>
+                                <i className="me-2 fas fa-user fs-4"/>
                                 <span>Profile</span>
                             </div>
                         </ActiveLink>
@@ -34,14 +30,14 @@ const Header = ({
                     <li className="nav-item mt-3">
                         <ActiveLink activeClassName="active" href={`/${authUser}/posts`}>
                             <div className="nav-link link-dark">
-                                <PostIcon className="me-1 mb-1" height="2rem"/>
+                                <i className="me-2 fas fa-stream fs-4"/>
                                 <span>My Posts</span>
                             </div>
                         </ActiveLink>
                     </li>
                     <li className="nav-item mt-3">
                         <button className="nav-link link-dark" onClick={handleClickLogOut}>
-                            <LogoutIcon className="me-1 pb-1" height="2rem"/>
+                            <i className="me-2 fas fa-sign-out-alt fs-4"/>
                             <span>Logout</span>
                         </button>
                     </li>

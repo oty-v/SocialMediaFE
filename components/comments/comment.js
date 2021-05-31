@@ -2,8 +2,6 @@ import {useEffect, useState} from "react";
 
 import CommentForm from "./commentForm";
 import Loader from "../common/Loader";
-import EditIconOn from "../../public/icon/edit.svg";
-import EditIconOff from "../../public/icon/edit_off.svg";
 import User from "../users/user";
 
 const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
@@ -26,7 +24,7 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
                     setEditMode(false)
                 }}
             >
-                {loading ? (<Loader/>) : ("Remove")}
+                {loading ? (<Loader/>) : (<i className="fas fa-trash-alt"/>)}
             </button>
         </>
     ) : (
@@ -34,15 +32,15 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     )
     const editButton = showCommentControls ? (
         <button
-            className="btn btn-light ms-1 p-0 svg-icon"
+            className="btn btn-light ms-1 p-0 icon focus-off"
             onClick={() => {
                 setEditMode(!editMode)
             }}
         >
             {editMode ? (
-                <EditIconOff height="1rem"/>
+                <i className="far fa-times-circle"/>
             ) : (
-                <EditIconOn height="1rem"/>
+                <i className="far fa-edit"/>
             )}
         </button>
     ) : null

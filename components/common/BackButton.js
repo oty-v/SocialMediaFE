@@ -1,15 +1,10 @@
 import {useRouter} from "next/router";
-import BackArrow from "../../public/icon/back.svg";
 
 const BackButton = ({handleClick}) => {
     const router = useRouter();
     return (
-        <button className="btn btn-light ps-0" onClick={handleClick ?? (() => router.back())}>
-            <BackArrow
-                alt="Back"
-                width={24}
-                height={24}
-            />
+        <button className="btn btn-light ps-0 text-primary" onClick={handleClick ?? (() => router.back())}>
+            <i className="fas fa-arrow-left fs-3"/>
         </button>
     )
 }
