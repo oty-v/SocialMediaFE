@@ -4,7 +4,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PostForm from "./postForm";
 import Loader from "../common/Loader";
 import User from "../users/user";
-import UserAvatar from "../users/userAvatar";
 
 const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
