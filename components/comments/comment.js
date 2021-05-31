@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import CommentForm from "./commentForm";
 import Loader from "../common/Loader";
@@ -24,7 +25,7 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
                     setEditMode(false)
                 }}
             >
-                {loading ? (<Loader/>) : (<i className="fas fa-trash-alt"/>)}
+                {loading ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
             </button>
         </>
     ) : (
@@ -38,9 +39,9 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
             }}
         >
             {editMode ? (
-                <i className="far fa-times-circle"/>
+                <FontAwesomeIcon icon="times-circle"/>
             ) : (
-                <i className="far fa-edit"/>
+                <FontAwesomeIcon icon="edit"/>
             )}
         </button>
     ) : null

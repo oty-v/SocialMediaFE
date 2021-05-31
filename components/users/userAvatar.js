@@ -1,12 +1,15 @@
-import React, {Children} from "react";
+import Image from "next/image";
 
-const UserAvatar = ({userAvatar, children}) => {
-    const child = Children.only(children)
+const UserAvatar = ({userAvatar, width, height}) => {
     const src = userAvatar?.length ? userAvatar : '/default.png'
-    return React.cloneElement(child, {
-        src,
-        alt: "User avatar",
-    })
+    return (
+        <Image
+            src={src}
+            alt="User avatar"
+            width={width}
+            height={height}
+        />
+    )
 }
 
 export default UserAvatar;

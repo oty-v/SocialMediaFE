@@ -1,16 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
 import UserAvatar from "./userAvatar";
 
-const User = ({user}) => {
+const User = ({user, width = 50, height = 50}) => {
     return (
         <div className="d-inline-flex align-items-center">
-            <UserAvatar userAvatar={user.avatar}>
-                <Image
-                    width={35}
-                    height={35}
-                />
-            </UserAvatar>
+            <UserAvatar
+                userAvatar={user.avatar}
+                width={width}
+                height={height}
+            />
             <Link href={`/${user.username}`}>
                 <span className="ms-1 text-muted">{`@${user.username}`}</span>
             </Link>

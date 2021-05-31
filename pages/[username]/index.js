@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/image";
 import {useSelector} from "react-redux";
 
 import {withAuth} from "../../lib/withAuth";
@@ -48,13 +47,11 @@ function Profile() {
                 </div>
                 <div className="card-body">
                     <div className="d-flex align-items-end justify-content-between mb-2">
-                        <UserAvatar userAvatar={user.avatar}>
-                            <Image
-                                width={125}
-                                height={125}
-                            />
-                        </UserAvatar>
-
+                        <UserAvatar
+                            userAvatar={user.avatar}
+                            width={125}
+                            height={125}
+                        />
                         {editProfileBtn}
                     </div>
                     <h4 className="card-title">{user.name ? user.name : `ID: ${user.id}`}</h4>

@@ -3,6 +3,28 @@ import Head from "next/head";
 import {Provider} from 'react-redux'
 import {useStore} from "../redux/store";
 import 'bootstrap/dist/css/bootstrap.css';
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {
+    faEdit,
+    faTimesCircle,
+    faComment,
+    faArrowLeft,
+    faHome,
+    faUser,
+    faStream,
+    faSignOutAlt,
+    faTrashAlt
+} from '@fortawesome/free-solid-svg-icons';
+library.add(
+    faEdit,
+    faTimesCircle,
+    faComment,
+    faArrowLeft,
+    faHome, faUser,
+    faStream,
+    faSignOutAlt,
+    faTrashAlt
+)
 
 import '../styles/globals.css';
 import Layout from "../components/common/layout";

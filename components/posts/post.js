@@ -1,8 +1,10 @@
 import {useEffect, useState} from "react";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import PostForm from "./postForm";
 import Loader from "../common/Loader";
 import User from "../users/user";
+import UserAvatar from "../users/userAvatar";
 
 const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
@@ -24,7 +26,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
                     setEditMode(false)
                 }}
             >
-                {loading ? (<Loader/>) : (<i className="fas fa-trash-alt"/>)}
+                {loading ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
             </button>
         </>
     ) : (
@@ -38,9 +40,9 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
             }}
         >
             {editMode ? (
-                <i className="far fa-times-circle"/>
+                <FontAwesomeIcon icon="times-circle"/>
             ) : (
-                <i className="far fa-edit"/>
+                <FontAwesomeIcon icon="edit"/>
             )}
         </button>
     ) : null
@@ -49,14 +51,16 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
             className="btn btn-light icon focus-off"
             onClick={onClick}
         >
-            <i className="far fa-comment"/>
+            <FontAwesomeIcon icon="comment"/>
         </button>
     ) : null
     return (
         <>
             <h5 className="card-header">
                 <div className="d-inline-flex">
-                    <User user={post.author}/>
+                    <User
+                        user={post.author}
+                    />
                     {editButton}
                 </div>
             </h5>
