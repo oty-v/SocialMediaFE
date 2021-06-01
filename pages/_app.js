@@ -2,34 +2,12 @@ import {useEffect, useState} from 'react';
 import {Provider} from 'react-redux';
 import {useStore} from "../redux/store";
 import 'bootstrap/dist/css/bootstrap.css';
-import {library} from '@fortawesome/fontawesome-svg-core'
-import {
-    faEdit,
-    faTimesCircle,
-    faComment,
-    faArrowLeft,
-    faHome,
-    faUser,
-    faStream,
-    faSignOutAlt,
-    faTrashAlt
-} from '@fortawesome/free-solid-svg-icons';
-
-library.add(
-    faEdit,
-    faTimesCircle,
-    faComment,
-    faArrowLeft,
-    faHome, faUser,
-    faStream,
-    faSignOutAlt,
-    faTrashAlt
-)
 
 import '../styles/globals.css';
+import '../lib/fontawesome.js';
 import Layout from "../components/common/layout";
 import {AuthTokenChecker} from "../components/hoc/authTokenChecker";
-import Loader from '../components/common/Loader'
+import Loader from '../components/common/Loader';
 
 function useMounted() {
     const [mounted, setMounted] = useState(false)
