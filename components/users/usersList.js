@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Loader from "../common/Loader";
 import {useSelector} from "react-redux";
+import User from "./user";
+import UserAvatar from "./userAvatar";
 
 const UserList = () => {
     const users = useSelector((state) => state.users.users);
@@ -19,9 +21,11 @@ const UserList = () => {
                     <ul className="list-group">
                         {users.map(user => (
                             <li className="list-group-item list-group-item-action" key={user.id}>
-                                <Link href={`/${user.username}`}>
-                                    <span>{user.username}</span>
-                                </Link>
+                                <User
+                                    user={user}
+                                    width={25}
+                                    height={25}
+                                />
                             </li>
                         ))}
                     </ul>

@@ -34,10 +34,10 @@ const LoginForm = ({onSubmit, loading}) => {
                     type="password"
                 />
                 <div className="field-container">
-                    <button className="btn btn-primary" type="submit" disabled={loading}>
+                    <button className="btn btn-primary m-1" type="submit" disabled={loading}>
                         {loading ? (<Loader/>) : ("Sign In")}
                     </button>
-                    <button className="btn btn-light" type="reset">Reset</button>
+                    <button className="btn btn-outline-danger m-1" type="reset">Reset</button>
                 </div>
             </Form>
         </Formik>

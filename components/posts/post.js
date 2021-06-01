@@ -1,7 +1,9 @@
 import {useEffect, useState} from "react";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import PostForm from "./postForm";
 import Loader from "../common/Loader";
+import User from "../users/user";
 
 const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
@@ -13,18 +15,17 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
             <PostForm
                 onSubmit={onEdit}
                 post={post}
-                setEditMode={setEditMode}
                 loading={loading}
             />
             <button
-                className="btn btn-danger float-end m-1"
+                className="btn btn-danger m-1"
                 disabled={loading}
                 onClick={() => {
                     onRemove(post)
                     setEditMode(false)
                 }}
             >
-                {loading ? (<Loader/>) : ("Remove")}
+                {loading ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
             </button>
         </>
     ) : (
@@ -32,31 +33,43 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     )
     const editButton = showPostControls ? (
         <button
-            className="btn btn-primary m-1"
+            className="btn btn-light ms-1 p-0 icon focus-off"
             onClick={() => {
                 setEditMode(!editMode)
             }}
         >
-            {editMode ? "Cancel" : "Edit post"}
+            {editMode ? (
+                <FontAwesomeIcon icon="times-circle"/>
+            ) : (
+                <FontAwesomeIcon icon="edit"/>
+            )}
         </button>
     ) : null
     const commentsButton = onClick ? (
         <button
-            className="btn btn-light m-1"
+            className="btn btn-light icon focus-off"
             onClick={onClick}
         >
-            Comments
+            <FontAwesomeIcon icon="comment"/>
         </button>
     ) : null
     return (
-        <div className="card">
-            <h5 className="card-header">User: {post.author.username}</h5>
+        <>
+            <h5 className="card-header">
+                <div className="d-inline-flex">
+                    <User
+                        user={post.author}
+                    />
+                    {editButton}
+                </div>
+            </h5>
             <div className="card-body">
                 {postContent}
-                {editButton}
+            </div>
+            <div className="card-footer text-muted">
                 {commentsButton}
             </div>
-        </div>
+        </>
     )
 }
 

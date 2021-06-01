@@ -1,4 +1,4 @@
-import {AUTHENTICATE, DEAUTHENTICATE} from "./types";
+import {AUTHENTICATE, DEAUTHENTICATE, UPDATE_PROFILE} from "./types";
 
 
 const initialState = {
@@ -19,6 +19,11 @@ const reducer = (state = initialState, action) => {
                 isLoggedIn: true,
                 profile: action.payload
             };
+        case UPDATE_PROFILE:
+            return {
+                ...state,
+                profile: action.payload
+            }
         default:
             return state;
     }

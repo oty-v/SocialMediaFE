@@ -1,16 +1,11 @@
-import Image from "next/image";
 import {useRouter} from "next/router";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const BackButton = ({handleClick}) => {
     const router = useRouter();
     return (
-        <button className="btn btn-light ps-0" onClick={handleClick ?? (() => router.back())}>
-            <Image
-                src="/back.svg"
-                alt="Back"
-                width={20}
-                height={20}
-            />
+        <button className="btn btn-light ps-0 text-primary" onClick={handleClick ?? (() => router.back())}>
+            <FontAwesomeIcon icon="arrow-left" size="lg"/>
         </button>
     )
 }

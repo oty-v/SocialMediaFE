@@ -77,7 +77,7 @@ const PostPage = () => {
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
-            <div className="card central-column">
+            <div className="central-column">
                 <div className="card-header central-column-header">
                     <BackButton/>
                     <div className="central-column-header-title">
@@ -93,17 +93,17 @@ const PostPage = () => {
                             showPostControls={authUser === post.author?.username}
                             loading={loading}
                         />
-                        <div className="list-group-item">
-                            <div className="mb-5">
-                                <CommentForm onSubmit={handleCommentCreate}/>
-                            </div>
-                            <h4>Comments:</h4>
-                            <CommentsList
-                                onEditComment={handleCommentEdit}
-                                onRemoveComment={handleCommentRemove}
-                                loading={loading}
-                            />
+                    </div>
+                    <div className="list-group-item">
+                        <div className="mb-5">
+                            <CommentForm onSubmit={handleCommentCreate}/>
                         </div>
+                        <h4>Comments:</h4>
+                        <CommentsList
+                            onEditComment={handleCommentEdit}
+                            onRemoveComment={handleCommentRemove}
+                            loading={loading}
+                        />
                     </div>
                 </div>
             </div>

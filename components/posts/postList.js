@@ -18,9 +18,9 @@ const PostsList = ({onRemovePost, onEditPost, handleClickPost, loading}) => {
         return <span>No posts</span>
     }
     return (
-        <ul className="list-group">
+        <ul className="list-group list-group-flush">
             {posts.map(post => (
-                <li className="list-group-item" key={post.id}>
+                <li className="list-group-item list-group-item-action" key={post.id}>
                     <Post
                         onEdit={onEditPost}
                         onRemove={onRemovePost}

@@ -59,3 +59,18 @@ main {
     color: #dc3545;
     font-size: .75rem;
 }
+
+.nav-link:hover, .icon:hover {
+    color: #0d6efd;
+    fill: #0d6efd;
+}
+
+.active {
+    fill: #fff !important;
+}
+
+.focus-off, .focus-off:focus, .focus-off:active .focus-off:hover .focus-off:visited {
+    background-color: rgba(0,0,0,0);
+    border-color: rgba(0,0,0,0);
+    box-shadow: 0 0 0 0 !important;
+}
