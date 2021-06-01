@@ -1,11 +1,19 @@
-import {SET_POST, SET_POSTS, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
+import {SET_POST, SET_POSTS, ADD_POSTS, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
 import {createPost, deletePost, editPost, getPost, getUserPosts} from "../../api/posts";
 
-export const setPosts = (posts) => {
+export const setPosts = (posts, nextPosts) => {
     return ({
         type: SET_POSTS,
-        payload: posts
+        payload: {posts, nextPosts}
+
     });
+}
+
+export const addPosts = (posts, nextPosts) => {
+    return {
+        type: ADD_POSTS,
+        payload: {posts, nextPosts}
+    };
 }
 
 export const setPost = (post) => {
@@ -46,8 +54,15 @@ export const getPostAsync = (postId) => {
 
 export const getPostsAsync = (authorUsername) => {
     return async (dispatch) => {
-        const {data: {data: posts}} = await getUserPosts(authorUsername);
-        dispatch(setPosts(posts));
+        const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername);
+        dispatch(setPosts(posts, nextPosts));
+    }
+}
+
+export const getNextPostsAsync = (authorUsername) => {
+    return async (dispatch) => {
+        const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername);
+        dispatch(addPosts(posts, nextPosts));
     }
 }
 

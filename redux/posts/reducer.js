@@ -1,15 +1,23 @@
-import {SET_POSTS, SET_POST, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
+import {SET_POSTS, ADD_POSTS, SET_POST, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
 
 const initialState = {
     posts: [],
-    post: {}
+    nextPosts: null,
+    post: {},
 };
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_POSTS:
             return {
                 ...state,
-                posts: action.payload
+                posts: action.payload.posts,
+                nextPosts: action.payload.nextPosts
+            };
+        case ADD_POSTS:
+            return {
+                ...state,
+                posts: [...state.posts, ...action.payload.posts],
+                nextPosts: action.payload.nextPosts
             };
         case SET_POST:
             return {
