@@ -24,14 +24,9 @@ function Posts({username}) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    useEffect(async () => {
+    useEffect( () => {
         if (!isFetching || !nextPosts) return;
-        try {
-            await dispatch(getNextPostsAsync(username, nextPosts));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setIsFetching(false);
+        handleFetchingNextPosts()
     }, [isFetching]);
 
     const handleScroll = () => {
@@ -42,6 +37,15 @@ function Posts({username}) {
             return;
         setIsFetching(true);
     };
+
+    const handleFetchingNextPosts = async () => {
+        try {
+            await dispatch(getNextPostsAsync(username, nextPosts));
+        } catch (error) {
+            toast.error(error.toString())
+        }
+        setIsFetching(false);
+    }
 
     const handlePostRemove = async (post) => {
         setLoading(true);

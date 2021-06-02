@@ -61,7 +61,7 @@ export const getPostsAsync = (authorUsername) => {
 
 export const getNextPostsAsync = (authorUsername, srcPagePosts) => {
     return async (dispatch) => {
-        const pageNumber = srcPagePosts.slice(-1);
+        const pageNumber = srcPagePosts.match(/(\?cursor=[^&]*)/)[0];
         const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername, pageNumber);
         dispatch(addPosts(posts, nextPosts));
     }
