@@ -1,20 +1,48 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Head from "next/head";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
-import {removePostAsync, updatePostAsync, getPostsAsync} from "../../../redux/posts/action";
+import {removePostAsync, updatePostAsync, getPostsAsync, getNextPostsAsync} from "../../../redux/posts/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
+import Loader from "../../../components/common/Loader";
 
 function Posts({username}) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
+    const nextPosts = useSelector((state) => state.posts.nextPosts);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    useEffect(async () => {
+        if (!isFetching || !nextPosts) return;
+        try {
+            await dispatch(getNextPostsAsync(username, nextPosts));
+        } catch (error) {
+            toast.error(error.toString())
+        }
+        setIsFetching(false);
+    }, [isFetching]);
+
+    const handleScroll = () => {
+        if (
+            window.innerHeight + document.documentElement.scrollTop !==
+            document.documentElement.offsetHeight
+        )
+            return;
+        setIsFetching(true);
+    };
+
     const handlePostRemove = async (post) => {
         setLoading(true);
         try {
@@ -36,6 +64,11 @@ function Posts({username}) {
     const handleClickPost = (post) => {
         router.push(`/${post.author.username}/posts/${post.id}`)
     }
+    const loadingNextPosts = !!nextPosts && (
+        <div className="d-flex flex-column justify-content-center align-items-center">
+            <Loader/>
+        </div>
+    )
     return (
         <>
             <Head>
@@ -56,6 +89,7 @@ function Posts({username}) {
                         handleClickPost={handleClickPost}
                         loading={loading}
                     />
+                    {loadingNextPosts}
                 </div>
             </div>
         </>
