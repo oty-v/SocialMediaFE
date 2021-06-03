@@ -1,18 +1,24 @@
-import {SET_POST, SET_POSTS, ADD_POSTS, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
+import {SET_POST, SET_POSTS, ADD_POSTS, SET_NEXT_POSTS, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
 import {createPost, deletePost, editPost, getPost, getUserPosts} from "../../api/posts";
 
-export const setPosts = (posts, nextPosts) => {
+export const setPosts = (posts) => {
     return ({
         type: SET_POSTS,
-        payload: {posts, nextPosts}
-
+        payload: posts,
     });
 }
 
-export const addPosts = (posts, nextPosts) => {
+export const addPosts = (posts) => {
     return {
         type: ADD_POSTS,
-        payload: {posts, nextPosts}
+        payload: posts,
+    };
+}
+
+export const setNextPosts = (nextPosts) => {
+    return {
+        type: SET_NEXT_POSTS,
+        payload: nextPosts
     };
 }
 
@@ -55,15 +61,17 @@ export const getPostAsync = (postId) => {
 export const getPostsAsync = (authorUsername) => {
     return async (dispatch) => {
         const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername);
-        dispatch(setPosts(posts, nextPosts));
+        dispatch(setNextPosts(nextPosts));
+        dispatch(setPosts(posts));
     }
 }
 
-export const getNextPostsAsync = (authorUsername, srcPagePosts) => {
+export const getNextPostsAsync = (authorUsername, srcCursorPosts) => {
     return async (dispatch) => {
-        const pageNumber = srcPagePosts.match(/(\?cursor=[^&]*)/)[0];
-        const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername, pageNumber);
-        dispatch(addPosts(posts, nextPosts));
+        const cursor = srcCursorPosts.match(/cursor=[^&]*/g);
+        const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername, cursor);
+        dispatch(setNextPosts(nextPosts));
+        dispatch(addPosts(posts));
     }
 }
 

@@ -1,6 +1,6 @@
 import {axiosController} from "../lib/axiosController";
 
-export const getUserPosts = (username, pageNumber='') => axiosController.instance.get(`/users/${username}/posts${pageNumber}`);
+export const getUserPosts = (username, cursor='') => axiosController.instance.get(`/users/${username}/posts?${cursor}`);
 
 export const getPost = (postId) => axiosController.instance.get(`/posts/${postId}`);
 

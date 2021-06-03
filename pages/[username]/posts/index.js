@@ -15,36 +15,30 @@ import Loader from "../../../components/common/Loader";
 function Posts({username}) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [isFetching, setIsFetching] = useState(false);
     const nextPosts = useSelector((state) => state.posts.nextPosts);
     const dispatch = useDispatch();
 
     useEffect(() => {
+        if (!nextPosts) return;
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    useEffect( () => {
-        if (!isFetching || !nextPosts) return;
-        handleFetchingNextPosts()
-    }, [isFetching]);
+    }, [nextPosts]);
 
     const handleScroll = () => {
         if (
-            window.innerHeight + document.documentElement.scrollTop !==
+            window.innerHeight + document.documentElement.scrollTop >=
             document.documentElement.offsetHeight
-        )
-            return;
-        setIsFetching(true);
+        ) {
+            handleGetNextPosts(username, nextPosts)
+        }
     };
 
-    const handleFetchingNextPosts = async () => {
+    const handleGetNextPosts = async (username, nextPosts) => {
         try {
             await dispatch(getNextPostsAsync(username, nextPosts));
         } catch (error) {
             toast.error(error.toString())
         }
-        setIsFetching(false);
     }
 
     const handlePostRemove = async (post) => {
