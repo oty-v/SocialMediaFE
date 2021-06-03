@@ -1,8 +1,8 @@
-import {SET_POSTS, ADD_POSTS, SET_NEXT_POSTS, SET_POST, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
+import {SET_POSTS, ADD_POSTS, SET_CURSOR_POSTS, SET_POST, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
 
 const initialState = {
     posts: [],
-    nextPosts: null,
+    cursor: null,
     post: {},
 };
 const reducer = (state = initialState, action) => {
@@ -17,10 +17,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 posts: [...state.posts, ...action.payload],
             };
-        case SET_NEXT_POSTS:
+        case SET_CURSOR_POSTS:
+            const cursorPosts = action.payload && action.payload.match(/cursor=(.+?)(&|$)/)[1]
             return {
                 ...state,
-                nextPosts: action.payload,
+                cursor: cursorPosts,
             };
         case SET_POST:
             return {

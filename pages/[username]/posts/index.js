@@ -15,31 +15,27 @@ import Loader from "../../../components/common/Loader";
 function Posts({username}) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const nextPosts = useSelector((state) => state.posts.nextPosts);
+    const cursorPosts = useSelector((state) => state.posts.cursor);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!nextPosts) return;
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [nextPosts]);
+    });
 
-    const handleScroll = () => {
+    const handleScroll = async () => {
+        if (!cursorPosts) return;
         if (
             window.innerHeight + document.documentElement.scrollTop ===
             document.documentElement.offsetHeight
         ) {
-            handleGetNextPosts(username, nextPosts)
+            try {
+                await dispatch(getNextPostsAsync(username, cursorPosts));
+            } catch (error) {
+                toast.error(error.toString())
+            }
         }
     };
-
-    const handleGetNextPosts = async (username, nextPosts) => {
-        try {
-            await dispatch(getNextPostsAsync(username, nextPosts));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-    }
 
     const handlePostRemove = async (post) => {
         setLoading(true);
@@ -62,7 +58,7 @@ function Posts({username}) {
     const handleClickPost = (post) => {
         router.push(`/${post.author.username}/posts/${post.id}`)
     }
-    const loadingNextPosts = !!nextPosts && (
+    const loadingNextPosts = !!cursorPosts && (
         <div className="d-flex flex-column justify-content-center align-items-center">
             <Loader/>
         </div>
