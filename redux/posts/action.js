@@ -68,7 +68,7 @@ export const getPostsAsync = (authorUsername) => {
 
 export const getNextPostsAsync = (authorUsername, cursor) => {
     return async (dispatch) => {
-        const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername, {cursor});
+        const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername, cursor);
         dispatch(setCursorPosts(nextPosts));
         dispatch(addPosts(posts));
     }

@@ -24,11 +24,9 @@ function Posts({username}) {
     });
 
     const handleScroll = async () => {
-        if (!cursorPosts) return;
-        if (
-            window.innerHeight + document.documentElement.scrollTop ===
-            document.documentElement.offsetHeight
-        ) {
+        const onBottom = window.innerHeight + document.documentElement.scrollTop ===
+            document.documentElement.offsetHeight;
+        if (onBottom && cursorPosts) {
             try {
                 await dispatch(getNextPostsAsync(username, cursorPosts));
             } catch (error) {

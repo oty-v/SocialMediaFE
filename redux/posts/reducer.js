@@ -18,7 +18,7 @@ const reducer = (state = initialState, action) => {
                 posts: [...state.posts, ...action.payload],
             };
         case SET_CURSOR_POSTS:
-            const cursorPosts = action.payload && action.payload.match(/cursor=(.+?)(&|$)/)[1]
+            const cursorPosts = action.payload && action.payload.match(/cursor=(\w+)/)[1]
             return {
                 ...state,
                 cursor: cursorPosts,
