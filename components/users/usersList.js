@@ -1,10 +1,9 @@
-import Link from "next/link";
 import Loader from "../common/Loader";
 import {useSelector} from "react-redux";
 import User from "./user";
-import UserAvatar from "./userAvatar";
+import SearchForm from "../common/SearchForm";
 
-const UserList = () => {
+const UserList = ({onSubmit}) => {
     const users = useSelector((state) => state.users.users);
     if (!users) {
         return (
@@ -15,22 +14,22 @@ const UserList = () => {
     }
     return (
         <>
-            <div className="mx-5">
-                <div className="my-3">
-                    <h4>Users</h4>
-                    <ul className="list-group">
-                        {users.map(user => (
-                            <li className="list-group-item list-group-item-action" key={user.id}>
-                                <User
-                                    user={user}
-                                    width={25}
-                                    height={25}
-                                />
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
+            <SearchForm
+                onSubmit={onSubmit}
+                label="Search user"
+                maxSearchLength={25}
+            />
+            <ul className="list-group">
+                {users.map(user => (
+                    <li className="list-group-item list-group-item-action" key={user.id}>
+                        <User
+                            user={user}
+                            width={25}
+                            height={25}
+                        />
+                    </li>
+                ))}
+            </ul>
         </>
     )
 }
