@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import Head from 'next/head';
+import Link from 'next/link'
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,6 +24,13 @@ export default function Home() {
         }
         setLoading(false);
     }
+    const handleUserSearch = async (search) => {
+        try {
+            await dispatch(getUsersAsync(search.query));
+        } catch (error) {
+            toast.error(error.toString())
+        }
+    }
     return (
         <>
             <Head>
@@ -39,8 +47,18 @@ export default function Home() {
                     />
                 </div>
             </div>
-            <div>
-                <UserList/>
+            <div className="mx-5">
+                <div className="my-3">
+                    <h4>Users</h4>
+                    <UserList
+                        onSubmit={handleUserSearch}
+                    />
+                    <div className="d-inline-flex justify-content-center w-100">
+                        <Link href="/users">
+                            <a>Show more</a>
+                        </Link>
+                    </div>
+                </div>
             </div>
         </>
     )

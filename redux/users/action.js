@@ -1,4 +1,4 @@
-import {SET_USER, SET_USERS} from "./types";
+import {SET_USER, SET_USERS, SET_SEARCH_QUERY} from "./types";
 import {getUser, getUsers} from "../../api/users";
 
 export const setUser = (user) => {
@@ -8,10 +8,17 @@ export const setUser = (user) => {
     };
 }
 
-export const setUsers = (users) => {
+export const setUsers = (users, currentPage, lastPage) => {
     return {
         type: SET_USERS,
-        payload: users
+        payload: {users, currentPage, lastPage}
+    };
+}
+
+export const setSearchQuery = (query) => {
+    return {
+        type: SET_SEARCH_QUERY,
+        payload: query,
     };
 }
 
@@ -22,10 +29,24 @@ export const getUserAsync = (username) => {
     }
 }
 
-export const getUsersAsync = () => {
+
+export const getUsersAsync = (query, page) => {
     return async (dispatch) => {
-        const {data: {data: users}} = await getUsers();
-        dispatch(setUsers(users));
+        const {
+            data: {
+                data: users,
+                meta: {
+                    current_page: currentPage,
+                    last_page: lastPage
+                }
+            }
+        } = await getUsers(query ? query : undefined, page);
+        dispatch(setUsers(users, currentPage, lastPage));
+        if (query) {
+            dispatch(setSearchQuery(query));
+        } else {
+            dispatch(setSearchQuery(null));
+        }
     }
 }
 
