@@ -1,6 +1,6 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Head from "next/head";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,11 +10,31 @@ import {withAuth} from "../../../lib/withAuth";
 import {removePostAsync, updatePostAsync, getPostsAsync} from "../../../redux/posts/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
+import Loader from "../../../components/common/Loader";
 
 function Posts({username}) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const cursorPosts = useSelector((state) => state.posts.cursor);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    });
+
+    const handleScroll = async () => {
+        const onBottom = window.innerHeight + document.documentElement.scrollTop ===
+            document.documentElement.offsetHeight;
+        if (onBottom && cursorPosts) {
+            try {
+                await dispatch(getPostsAsync(username, cursorPosts));
+            } catch (error) {
+                toast.error(error.toString())
+            }
+        }
+    };
+
     const handlePostRemove = async (post) => {
         setLoading(true);
         try {
@@ -36,6 +56,11 @@ function Posts({username}) {
     const handleClickPost = (post) => {
         router.push(`/${post.author.username}/posts/${post.id}`)
     }
+    const loadingNextPosts = !!cursorPosts && (
+        <div className="d-flex flex-column justify-content-center align-items-center">
+            <Loader/>
+        </div>
+    )
     return (
         <>
             <Head>
@@ -56,6 +81,7 @@ function Posts({username}) {
                         handleClickPost={handleClickPost}
                         loading={loading}
                     />
+                    {loadingNextPosts}
                 </div>
             </div>
         </>
