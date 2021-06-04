@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
-import {removePostAsync, updatePostAsync, getPostsAsync, getNextPostsAsync} from "../../../redux/posts/action";
+import {removePostAsync, updatePostAsync, getPostsAsync} from "../../../redux/posts/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 import Loader from "../../../components/common/Loader";
@@ -28,7 +28,7 @@ function Posts({username}) {
             document.documentElement.offsetHeight;
         if (onBottom && cursorPosts) {
             try {
-                await dispatch(getNextPostsAsync(username, cursorPosts));
+                await dispatch(getPostsAsync(username, cursorPosts));
             } catch (error) {
                 toast.error(error.toString())
             }
