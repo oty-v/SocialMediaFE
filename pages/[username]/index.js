@@ -5,15 +5,16 @@ import {useSelector} from "react-redux";
 import {withAuth} from "../../lib/withAuth";
 import BackButton from "../../components/common/BackButton";
 import {withRedux} from "../../lib/withRedux";
-import {getUserAsync} from "../../redux/users/action";
+import {fetchUser, getUserAsync} from "../../redux/users/action";
 import Loader from "../../components/common/Loader";
 import {useRouter} from "next/router";
 import UserAvatar from "../../components/users/userAvatar";
+import {useQuery} from "@redux-requests/react";
 
 function Profile() {
     const router = useRouter();
-    const authUser = useSelector((state) => state.auth.profile.username);
-    const user = useSelector((state) => state.users.user);
+    const {data: {username: authUser}} = useQuery({type: 'FETCH_PROFILE'});
+    const {data: user} = useQuery({type: 'FETCH_USER'});
     if (!user) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
@@ -38,7 +39,7 @@ function Profile() {
                 <title>{user.username}</title>
             </Head>
             <div className="central-column">
-                <div className="card-header central-column-header">
+                <div className="card-header central-column-header bg-transparent">
                     <BackButton/>
                     <div className="central-column-header-title">
                         <h3 className="mb-0">User</h3>
@@ -64,21 +65,20 @@ function Profile() {
         </>)
 }
 
-export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
-    try {
-        await dispatch(getUserAsync(ctx.query.username));
+export const getServerSideProps = withRedux(withAuth(
+    async (ctx, dispatch) => {
+        const {error} = await dispatch(fetchUser(ctx.query.username));
+        if (error?.response.status === 404) {
+            return {
+                notFound: true,
+            }
+        }
         return {
             props: {
                 username: ctx.query.username
             }
         };
-    } catch (e) {
-        if (e.response.status === 404) {
-            return {
-                notFound: true,
-            }
-        }
     }
-}))
+))
 
 export default Profile;

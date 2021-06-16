@@ -12,6 +12,9 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
+    "@redux-requests/axios": "^1.1.1",
+    "@redux-requests/core": "^1.6.2",
+    "@redux-requests/react": "^1.6.1",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.0",
     "cookies": "^0.8.0",
@@ -25,7 +28,9 @@
     "react-redux": "^7.2.4",
     "react-toastify": "^7.0.4",
     "redux": "^4.1.0",
+    "redux-smart-actions": "^1.0.0",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {

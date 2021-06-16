@@ -8,11 +8,11 @@ function CommentForm({
                          onSubmit,
                          loading,
                          comment = {
-                             body: ''
+                             content: ''
                          }
                      }) {
     const validationSchema = Yup.object({
-        body: Yup.string()
+        content: Yup.string()
             .max(280, 'Must be 280 characters or less')
             .required('Required'),
     })
@@ -29,7 +29,7 @@ function CommentForm({
             <Form>
                 <TextField
                     label="Write your comment"
-                    name="body"
+                    name="content"
                     type="text"
                 />
                 <button

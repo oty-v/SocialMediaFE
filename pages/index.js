@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import PostForm from "../components/posts/postForm";
 import UserList from "../components/users/usersList";
 import {withAuth} from "../lib/withAuth";
-import {getUsersAsync} from "../redux/users/action";
+import {fetchUsers, getUsersAsync} from "../redux/users/action";
 import {withRedux} from "../lib/withRedux";
 import {createPostAsync} from "../redux/posts/action";
 
@@ -26,7 +26,7 @@ export default function Home() {
     }
     const handleUserSearch = async (search) => {
         try {
-            await dispatch(getUsersAsync(search.query));
+            await dispatch(fetchUsers(1, search.query))
         } catch (error) {
             toast.error(error.toString())
         }
@@ -37,7 +37,7 @@ export default function Home() {
                 <title>Home</title>
             </Head>
             <div className="central-column">
-                <div className="card-header central-column-header">
+                <div className="card-header central-column-header bg-transparent">
                     <h3 className="mb-0">Home</h3>
                 </div>
                 <div className="card-body">
@@ -64,19 +64,18 @@ export default function Home() {
     )
 }
 
-export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
-    try {
-        await dispatch(getUsersAsync());
+export const getServerSideProps = withRedux(withAuth(
+    async (ctx, dispatch) => {
+        const {error} = await dispatch(fetchUsers(1));
+        if (error?.response.status === 404) {
+            return {
+                notFound: true,
+            }
+        }
         return {
             props: {
                 page: ctx.query
             }
         };
-    } catch (e) {
-        if (e.response.status === 404) {
-            return {
-                notFound: true,
-            }
-        }
     }
-}))
+))

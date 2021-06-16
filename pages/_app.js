@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Provider} from 'react-redux';
-import {useStore} from "../redux/store";
+import {configureStore, useStore} from "../redux/store";
 import 'bootstrap/dist/css/bootstrap.css';
 
 import '../styles/globals.css';
@@ -16,7 +16,7 @@ function useMounted() {
 }
 
 function MyApp({Component, pageProps}) {
-    const store = useStore(pageProps.initialReduxState)
+    const {store} = configureStore(pageProps.initialReduxState)
     const isMounted = useMounted()
     if (!isMounted) {
         return (

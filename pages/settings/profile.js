@@ -40,7 +40,7 @@ function SettingsProfile() {
                 <title>{profile.username}</title>
             </Head>
             <div className="central-column">
-                <div className="card-header central-column-header">
+                <div className="card-header central-column-header bg-transparent">
                     <BackButton/>
                     <div className="central-column-header-title">
                         <h3 className="mb-0">Settings</h3>

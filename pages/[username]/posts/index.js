@@ -7,15 +7,16 @@ import "react-toastify/dist/ReactToastify.css";
 import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
-import {removePostAsync, updatePostAsync, getPostsAsync} from "../../../redux/posts/action";
+import {removePostAsync, updatePostAsync, getPostsAsync, fetchUserPosts} from "../../../redux/posts/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 import Loader from "../../../components/common/Loader";
+import {useQuery} from "@redux-requests/react";
 
 function Posts({username}) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const cursorPosts = useSelector((state) => state.posts.cursor);
+    const {data:{cursorPosts}} = useQuery({type: 'FETCH_USER_POSTS'});
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -67,7 +68,7 @@ function Posts({username}) {
                 <title>Posts</title>
             </Head>
             <div className="central-column">
-                <div className="card-header central-column-header">
+                <div className="card-header central-column-header bg-transparent">
                     <BackButton/>
                     <div className="central-column-header-title">
                         <h3 className="mb-0">Posts List</h3>
@@ -89,21 +90,20 @@ function Posts({username}) {
 
 }
 
-export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
-    try {
-        await dispatch(getPostsAsync(ctx.query.username));
+export const getServerSideProps = withRedux(withAuth(
+    async (ctx, dispatch) => {
+        const {error} = await dispatch(fetchUserPosts(ctx.query.username));
+        if (error?.response.status === 404) {
+            return {
+                notFound: true,
+            }
+        }
         return {
             props: {
                 username: ctx.query.username
             }
         };
-    } catch (e) {
-        if (e.response.status === 404) {
-            return {
-                notFound: true,
-            }
-        }
     }
-}))
+))
 
 export default Posts;

@@ -1,5 +1,6 @@
 import {SET_USER, SET_USERS, SET_SEARCH_QUERY} from "./types";
 import {getUser, getUsers} from "../../api/users";
+import {createAction} from "redux-smart-actions";
 
 export const setUser = (user) => {
     return {
@@ -50,4 +51,32 @@ export const getUsersAsync = (query, page) => {
     }
 }
 
+export const fetchUsers = createAction('FETCH_USERS', (page,query) => ({
+    request: {
+        url: `/users`,
+        params: {
+            page,
+            username: !!query ? query : undefined,
+        },
+    },
+    meta: {
+        requestKey: page,
+        getData: data => ({
+            users: data.data,
+            currentPage: data.meta.current_page,
+            lastPage: data.meta.last_page,
+            searchQuery: query||null,
+        }),
+    },
+}));
 
+export const fetchUser = createAction('FETCH_USER', (username) => ({
+    request: {
+        url: `/users/${username}`,
+    },
+    meta: {
+        getData: data => ({
+            ...data.data,
+        }),
+    },
+}));

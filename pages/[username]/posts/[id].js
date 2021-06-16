@@ -9,7 +9,7 @@ import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
 import {useDispatch, useSelector} from "react-redux";
-import {removePostAsync, updatePostAsync, getPostAsync} from "../../../redux/posts/action";
+import {removePostAsync, updatePostAsync, getPostAsync, fetchPost} from "../../../redux/posts/action";
 import {
     createCommentAsync,
     removeCommentAsync,
@@ -18,14 +18,14 @@ import {
 } from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
+import {useQuery} from "@redux-requests/react";
 
 const PostPage = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const auth = useSelector((state) => state.auth);
-    const post = useSelector((state) => state.posts.post);
+    const {data:{username:authUser}} = useQuery({ type: 'FETCH_PROFILE' });
+    const {data:post} = useQuery({ type: 'FETCH_POST' });
     const dispatch = useDispatch();
-    const authUser = auth.profile.username;
     const handlePostRemove = async (post) => {
         setLoading(true);
         try {
@@ -78,7 +78,7 @@ const PostPage = () => {
                 <title>Post: {post.id}</title>
             </Head>
             <div className="central-column">
-                <div className="card-header central-column-header">
+                <div className="card-header central-column-header bg-transparent">
                     <BackButton/>
                     <div className="central-column-header-title">
                         <h3>Post</h3>
@@ -112,21 +112,32 @@ const PostPage = () => {
 }
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
-    try {
-        await dispatch(getPostAsync(ctx.query.id));
-        await dispatch(getCommentsAsync(ctx.query.id));
+    const {error} = await dispatch(fetchPost(ctx.query.id));
+    if (error?.response.status === 404) {
         return {
-            props: {
-                postId: ctx.query.id
-            }
-        };
-    } catch (e) {
-        if (e.response.status === 404) {
-            return {
-                notFound: true,
-            }
+            notFound: true,
         }
     }
+    return {
+        props: {
+            username: ctx.query.username
+        }
+    };
+    // try {
+    //     await dispatch(getPostAsync(ctx.query.id));
+    //     await dispatch(getCommentsAsync(ctx.query.id));
+    //     return {
+    //         props: {
+    //             postId: ctx.query.id
+    //         }
+    //     };
+    // } catch (e) {
+    //     if (e.response.status === 404) {
+    //         return {
+    //             notFound: true,
+    //         }
+    //     }
+    // }
 }))
 
 export default PostPage

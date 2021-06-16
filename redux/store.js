@@ -1,44 +1,32 @@
-import { useMemo } from 'react'
-import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
+import { handleRequests } from '@redux-requests/core';
+import { createDriver } from '@redux-requests/axios';
+
 import { composeWithDevTools } from 'redux-devtools-extension'
-import thunkMiddleware from 'redux-thunk'
-import AuthReducer from "./auth/reducer";
-import UsersListReducer from "./users/reducer";
-import PostsReducer from "./posts/reducer";
-import CommentsListReducer from "./comments/reducer";
+import {axiosController} from "../lib/axiosController";
 
-const reducers = combineReducers({
-    auth: AuthReducer,
-    users: UsersListReducer,
-    posts: PostsReducer,
-    comments: CommentsListReducer,
-});
+export const configureStore = (initialState = undefined) => {
+    const ssr = !initialState;
 
-let store
+    const {
+        requestsReducer,
+        requestsMiddleware,
+        requestsPromise,
+    } = handleRequests({
+        driver: createDriver(axiosController.instance),
+        ssr: ssr ? 'server' : 'client',
+        cache: true,
+    });
 
-function initStore(initialState) {
-    return createStore(
+    const reducers = combineReducers({
+        requests: requestsReducer,
+    });
+
+    const store = createStore(
         reducers,
         initialState,
-        composeWithDevTools(applyMiddleware(thunkMiddleware))
-    )
-}
+        composeWithDevTools(applyMiddleware(...requestsMiddleware)),
+    );
 
-export const initializeStore = (preloadedState) => {
-    let _store = store ?? initStore(preloadedState)
-    if (preloadedState && store) {
-        _store = initStore({
-            ...store.getState(),
-            ...preloadedState,
-        })
-        store = undefined
-    }
-    if (typeof window === 'undefined') return _store
-    if (!store) store = _store
-    return _store
-}
-
-export function useStore(initialState) {
-    const store = useMemo(() => initializeStore(initialState), [initialState])
-    return store
-}
+    return { store, requestsPromise };
+};

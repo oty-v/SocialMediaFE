@@ -3,6 +3,7 @@ import Cookie from "js-cookie";
 import {AUTHENTICATE, DEAUTHENTICATE, UPDATE_PROFILE} from "./types";
 import {getProfile, editProfile, loginUser, logoutUser, registerUser} from "../../api/auth";
 import {axiosController} from "../../lib/axiosController";
+import { createAction } from 'redux-smart-actions';
 
 export const authenticateAction = (user) => {
     return {
@@ -63,3 +64,15 @@ export const logout = () => {
         dispatch(deAuthenticateAction());
     }
 }
+
+
+export const fetchProfile = createAction('FETCH_PROFILE', () => ({
+    request: {
+        url: `/profile`,
+    },
+    meta: {
+    getData: data => ({
+        ...data.data,
+    }),
+},
+}));

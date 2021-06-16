@@ -8,24 +8,29 @@ import BackButton from "../components/common/BackButton";
 import UserList from "../components/users/usersList";
 import {withRedux} from "../lib/withRedux";
 import {withAuth} from "../lib/withAuth";
-import {getUsersAsync} from "../redux/users/action";
+import {fetchUsers} from "../redux/users/action";
+import {useQuery} from "@redux-requests/react";
+import {useState} from "react";
 
 const UsersPage = () => {
-    const {currentPage, lastPage, searchQuery} = useSelector((state) => state.users);
+    const [selectedPage, setSelectedPage] = useState(1)
+    const {data:{currentPage, lastPage, searchQuery}} = useQuery({type: 'FETCH_USERS', requestKey: selectedPage});
     const dispatch = useDispatch();
     const handleUserSearch = async (search) => {
         try {
-            await dispatch(getUsersAsync(search.query));
+            await dispatch(fetchUsers(1, search.query))
         } catch (error) {
             toast.error(error.toString())
         }
+        setSelectedPage(1)
     }
     const handlePagination = async (page) => {
         try {
-            await dispatch(getUsersAsync(searchQuery, page.selected + 1));
+            await dispatch(fetchUsers(page.selected + 1, searchQuery))
         } catch (error) {
             toast.error(error.toString())
         }
+        setSelectedPage(page.selected + 1)
     };
     const paginationComponent = lastPage > 1 && (
         <div className="d-inline-flex justify-content-center w-100">
@@ -43,7 +48,7 @@ const UsersPage = () => {
                 previousLinkClassName={'page-link'}
                 nextClassName={'page-item'}
                 nextLinkClassName={'page-link'}
-                initialPage={currentPage-1}
+                initialPage={currentPage - 1}
                 pageCount={lastPage}
                 disableInitialCallback={true}
                 marginPagesDisplayed={2}
@@ -58,7 +63,7 @@ const UsersPage = () => {
                 <title>Users</title>
             </Head>
             <div className="central-column">
-                <div className="card-header central-column-header">
+                <div className="card-header central-column-header bg-transparent">
                     <BackButton/>
                     <div className="central-column-header-title">
                         <h3 className="mb-0">Users List</h3>
@@ -67,6 +72,7 @@ const UsersPage = () => {
                 <div className="card-body">
                     <UserList
                         onSubmit={handleUserSearch}
+                        selectedPage={selectedPage}
                     />
                 </div>
                 {paginationComponent}
@@ -75,21 +81,20 @@ const UsersPage = () => {
     )
 }
 
-export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
-    try {
-        await dispatch(getUsersAsync());
+export const getServerSideProps = withRedux(withAuth(
+    async (ctx, dispatch) => {
+        const {error} = await dispatch(fetchUsers(1));
+        if (error?.response.status === 404) {
+            return {
+                notFound: true,
+            }
+        }
         return {
             props: {
                 page: ctx.query
             }
         };
-    } catch (e) {
-        if (e.response.status === 404) {
-            return {
-                notFound: true,
-            }
-        }
     }
-}))
+))
 
 export default UsersPage;

@@ -30,7 +30,7 @@ export default function Login() {
                 <title>Login</title>
             </Head>
             <div className="card">
-                <div className="card-header central-column-header">
+                <div className="card-header central-column-header bg-transparent">
                     <h3>Sign in</h3>
                 </div>
                 <div className="card-body">

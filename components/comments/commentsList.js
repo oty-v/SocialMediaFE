@@ -2,11 +2,11 @@ import {useSelector} from "react-redux";
 
 import Comment from "./comment";
 import Loader from "../common/Loader";
+import {useQuery} from "@redux-requests/react";
 
 const CommentsList = ({onRemoveComment, onEditComment, loading}) => {
-    const auth = useSelector((state) => state.auth);
-    const comments = useSelector((state) => state.comments.comments);
-    const authUser = auth.profile.username;
+    const {data:{username:authUser}} = useQuery({ type: 'FETCH_PROFILE' });
+    const {data:{comments}} = useQuery({ type: 'FETCH_POST' });
     if (loading) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">

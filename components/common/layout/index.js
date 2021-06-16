@@ -5,12 +5,13 @@ import {Bounce, toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import {logout} from "../../../redux/auth/action";
+import {getQuery} from "@redux-requests/core";
+import {useQuery} from "@redux-requests/react";
 
 function Layout({children}) {
     const router = useRouter();
-    const auth = useSelector((state) => state.auth);
+    const {data:{username:authUser}} = useQuery({ type: 'FETCH_PROFILE' });
     const dispatch = useDispatch();
-    const authUser = auth.profile.username;
     const handleClickSignIn = () => {
         router.push(`/login`);
     }
@@ -34,7 +35,6 @@ function Layout({children}) {
             />
             <Header
                 authUser={authUser}
-                isLoggedIn={auth.isLoggedIn}
                 handleClickSignIn={handleClickSignIn}
                 handleClickSignUp={handleClickSignUp}
                 handleClickLogOut={handleClickLogOut}

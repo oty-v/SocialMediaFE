@@ -33,21 +33,21 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     )
     const editButton = showPostControls ? (
         <button
-            className="btn btn-light ms-1 p-0 icon focus-off"
+            className="btn-svg"
             onClick={() => {
                 setEditMode(!editMode)
             }}
         >
             {editMode ? (
-                <FontAwesomeIcon icon="times-circle"/>
+                <FontAwesomeIcon icon="times-circle" size="xs"/>
             ) : (
-                <FontAwesomeIcon icon="edit"/>
+                <FontAwesomeIcon icon="edit" size="xs"/>
             )}
         </button>
     ) : null
     const commentsButton = onClick ? (
         <button
-            className="btn btn-light icon focus-off"
+            className="btn-svg"
             onClick={onClick}
         >
             <FontAwesomeIcon icon="comment"/>
@@ -55,7 +55,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
     ) : null
     return (
         <>
-            <h5 className="card-header">
+            <h5 className="card-header bg-transparent">
                 <div className="d-inline-flex">
                     <User
                         user={post.author}
@@ -66,7 +66,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
             <div className="card-body">
                 {postContent}
             </div>
-            <div className="card-footer text-muted">
+            <div className="card-footer bg-transparent text-muted">
                 {commentsButton}
             </div>
         </>

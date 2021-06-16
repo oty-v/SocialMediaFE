@@ -29,19 +29,19 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
             </button>
         </>
     ) : (
-        <p className="card-text">{comment.body}</p>
+        <p className="card-text">{comment.content}</p>
     )
     const editButton = showCommentControls ? (
         <button
-            className="btn btn-light ms-1 p-0 icon focus-off"
+            className="btn-svg"
             onClick={() => {
                 setEditMode(!editMode)
             }}
         >
             {editMode ? (
-                <FontAwesomeIcon icon="times-circle"/>
+                <FontAwesomeIcon icon="times-circle" size="xs"/>
             ) : (
-                <FontAwesomeIcon icon="edit"/>
+                <FontAwesomeIcon icon="edit" size="xs"/>
             )}
         </button>
     ) : null

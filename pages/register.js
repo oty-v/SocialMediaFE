@@ -31,7 +31,7 @@ export default function Register() {
                 <meta name="description" content="Please register before login"/>
             </Head>
             <div className="card">
-                <div className="card-header central-column-header">
+                <div className="card-header central-column-header bg-transparent">
                     <h3>Sign Up</h3>
                 </div>
                 <div className="card-body">

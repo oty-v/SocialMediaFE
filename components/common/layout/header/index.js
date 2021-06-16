@@ -4,13 +4,12 @@ import ActiveLink from "./ActiveLink";
 
 const Header = ({
                     authUser,
-                    isLoggedIn,
                     handleClickSignIn,
                     handleClickSignUp,
                     handleClickLogOut
                 }) => {
-    const navList = (isLoggedIn) => {
-        if (isLoggedIn) {
+    const navList = (authUser) => {
+        if (authUser) {
             return (
                 <>
                     <li className="nav-item mt-2">
@@ -61,7 +60,7 @@ const Header = ({
         <header>
             <nav>
                 <ul className="position-fixed nav flex-column nav-pills justify-content-center mt-5 ms-5">
-                    {navList(isLoggedIn)}
+                    {navList(authUser)}
                 </ul>
             </nav>
         </header>
