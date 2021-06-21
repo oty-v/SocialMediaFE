@@ -9,7 +9,7 @@ import Loader from "../../components/common/Loader";
 import ProfileForm from "../../components/profile/ProfileForm";
 import {withRedux} from "../../lib/withRedux";
 import {withAuth} from "../../lib/withAuth";
-import {updateProfileAsync} from "../../redux/auth/action";
+import {updateProfile} from "../../redux/auth/action";
 
 
 function SettingsProfile() {
@@ -20,7 +20,7 @@ function SettingsProfile() {
     const handleProfileEdit = async (profileId, editProfile) => {
         setLoading(true);
         try {
-            await dispatch(updateProfileAsync(profileId, editProfile));
+            await dispatch(updateProfile(profileId, editProfile));
             router.push(`/${profile.username}`);
         } catch (error) {
             toast.error(error.toString())

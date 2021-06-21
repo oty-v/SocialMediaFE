@@ -4,9 +4,13 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PostForm from "./postForm";
 import Loader from "../common/Loader";
 import User from "../users/user";
+import {useMutation, useQuery} from "@redux-requests/react";
+import {fetchPost, fetchUserPosts} from "../../redux/posts/action";
+import ContentParser from "../common/ContentParser";
 
-const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
+const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
     const [editMode, setEditMode] = useState(false);
+    const {loading} = useMutation({type: fetchPost, requestKey: post.id});
     useEffect(() => {
         setEditMode(false);
     }, [post])
@@ -29,7 +33,9 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
             </button>
         </>
     ) : (
-        <p className="card-text">{post.content}</p>
+        <div className="card-text">
+            <ContentParser>{post.content}</ContentParser>
+        </div>
     )
     const editButton = showPostControls ? (
         <button

@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import CommentForm from "./commentForm";
 import Loader from "../common/Loader";
 import User from "../users/user";
+import ContentParser from "../common/ContentParser";
 
 const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
     const [editMode, setEditMode] = useState(false);
@@ -29,7 +30,9 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
             </button>
         </>
     ) : (
-        <p className="card-text">{comment.content}</p>
+        <div className="card-text">
+            <ContentParser>{comment.content}</ContentParser>
+        </div>
     )
     const editButton = showCommentControls ? (
         <button

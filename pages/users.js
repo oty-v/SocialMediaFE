@@ -14,19 +14,21 @@ import {useState} from "react";
 
 const UsersPage = () => {
     const [selectedPage, setSelectedPage] = useState(1)
-    const {data:{currentPage, lastPage, searchQuery}} = useQuery({type: 'FETCH_USERS', requestKey: selectedPage});
+    const {data} = useQuery({type: fetchUsers, requestKey: selectedPage});
+    const lastPage = data?.lastPage;
+    const searchQuery = data?.searchQuery;
     const dispatch = useDispatch();
     const handleUserSearch = async (search) => {
         try {
-            await dispatch(fetchUsers(1, search.query))
+            await dispatch(fetchUsers(search.query))
         } catch (error) {
-            toast.error(error.toString())
+            toast.error(error&&error.toString())
         }
         setSelectedPage(1)
     }
     const handlePagination = async (page) => {
         try {
-            await dispatch(fetchUsers(page.selected + 1, searchQuery))
+            await dispatch(fetchUsers(searchQuery, page.selected + 1))
         } catch (error) {
             toast.error(error.toString())
         }
@@ -48,7 +50,7 @@ const UsersPage = () => {
                 previousLinkClassName={'page-link'}
                 nextClassName={'page-item'}
                 nextLinkClassName={'page-link'}
-                initialPage={currentPage - 1}
+                initialPage={selectedPage - 1}
                 pageCount={lastPage}
                 disableInitialCallback={true}
                 marginPagesDisplayed={2}
@@ -83,7 +85,7 @@ const UsersPage = () => {
 
 export const getServerSideProps = withRedux(withAuth(
     async (ctx, dispatch) => {
-        const {error} = await dispatch(fetchUsers(1));
+        const {error} = await dispatch(fetchUsers());
         if (error?.response.status === 404) {
             return {
                 notFound: true,

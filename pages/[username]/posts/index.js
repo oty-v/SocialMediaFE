@@ -1,23 +1,27 @@
 import {useState, useEffect} from "react";
 import Head from "next/head";
-import {useDispatch, useSelector} from "react-redux";
-import {toast} from "react-toastify";
+import {useDispatch} from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 
 import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
-import {removePostAsync, updatePostAsync, getPostsAsync, fetchUserPosts} from "../../../redux/posts/action";
+import {fetchUserPosts, updatePost, deletePost} from "../../../redux/posts/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 import Loader from "../../../components/common/Loader";
 import {useQuery} from "@redux-requests/react";
 
 function Posts({username}) {
+    const [cursor, setCursor] = useState('');
+    const [posts, setPosts] = useState([]);
+    const {data: {posts: newPosts, cursorPosts}, loading} = useQuery({type: fetchUserPosts, requestKey: cursor});
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const {data:{cursorPosts}} = useQuery({type: 'FETCH_USER_POSTS'});
     const dispatch = useDispatch();
+
+    useEffect(()=>{
+        setPosts([...posts,...newPosts])
+    },[newPosts]);
 
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
@@ -28,40 +32,31 @@ function Posts({username}) {
         const onBottom = window.innerHeight + document.documentElement.scrollTop ===
             document.documentElement.offsetHeight;
         if (onBottom && cursorPosts) {
-            try {
-                await dispatch(getPostsAsync(username, cursorPosts));
-            } catch (error) {
-                toast.error(error.toString())
+            const {isAborted} = await dispatch(fetchUserPosts(username, cursorPosts));
+            if(!isAborted){
+                setCursor(cursorPosts);
             }
         }
     };
 
     const handlePostRemove = async (post) => {
-        setLoading(true);
-        try {
-            await dispatch(removePostAsync(post.id));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
+        await dispatch(deletePost(post.id));
     }
+
     const handlePostEdit = async (post) => {
-        setLoading(true);
-        try {
-            await dispatch(updatePostAsync(post.id, post));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
+        await dispatch(updatePost(post.id, post));
     }
+
     const handleClickPost = (post) => {
         router.push(`/${post.author.username}/posts/${post.id}`)
     }
-    const loadingNextPosts = !!cursorPosts && (
+
+    const loadingNextPosts = loading && (
         <div className="d-flex flex-column justify-content-center align-items-center">
             <Loader/>
         </div>
     )
+
     return (
         <>
             <Head>
@@ -80,6 +75,7 @@ function Posts({username}) {
                         onRemovePost={handlePostRemove}
                         onEditPost={handlePostEdit}
                         handleClickPost={handleClickPost}
+                        posts={posts}
                         loading={loading}
                     />
                     {loadingNextPosts}
@@ -100,7 +96,7 @@ export const getServerSideProps = withRedux(withAuth(
         }
         return {
             props: {
-                username: ctx.query.username
+                username: ctx.query.username,
             }
         };
     }

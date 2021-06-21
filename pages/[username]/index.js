@@ -1,21 +1,23 @@
 import Head from "next/head";
 import Link from "next/link";
-import {useSelector} from "react-redux";
 
+import {FETCH_PROFILE} from "../../redux/auth/types";
 import {withAuth} from "../../lib/withAuth";
 import BackButton from "../../components/common/BackButton";
 import {withRedux} from "../../lib/withRedux";
-import {fetchUser, getUserAsync} from "../../redux/users/action";
+import {fetchUser} from "../../redux/users/action";
 import Loader from "../../components/common/Loader";
 import {useRouter} from "next/router";
 import UserAvatar from "../../components/users/userAvatar";
 import {useQuery} from "@redux-requests/react";
+import {fetchProfile} from "../../redux/auth/action";
 
 function Profile() {
     const router = useRouter();
-    const {data: {username: authUser}} = useQuery({type: 'FETCH_PROFILE'});
-    const {data: user} = useQuery({type: 'FETCH_USER'});
-    if (!user) {
+    const {data} = useQuery({type: fetchProfile});
+    const {data: user, loading} = useQuery({type: fetchUser});
+    const authUser = data?.username;
+    if (loading||!user) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
                 <Loader/>

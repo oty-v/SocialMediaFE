@@ -2,10 +2,13 @@ import Loader from "../common/Loader";
 import User from "./user";
 import SearchForm from "../common/SearchForm";
 import {useQuery} from "@redux-requests/react";
+import {fetchUsers} from "../../redux/users/action";
+
 
 const UserList = ({onSubmit, selectedPage=1}) => {
-    const {data: {users}, loading} = useQuery({type: 'FETCH_USERS', requestKey: selectedPage});
-    const userList = loading ? (
+    const {data, loading} = useQuery({type: fetchUsers, requestKey: selectedPage});
+    const users = data?.users;
+    const userList = loading||!users ? (
         <div className="d-flex flex-column justify-content-center align-items-center">
             <Loader/>
         </div>

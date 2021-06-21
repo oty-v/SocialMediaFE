@@ -1,9 +1,11 @@
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
+import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { handleRequests } from '@redux-requests/core';
 import { createDriver } from '@redux-requests/axios';
-
+import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
+
 import {axiosController} from "../lib/axiosController";
+import {onError} from "./interceptors";
 
 export const configureStore = (initialState = undefined) => {
     const ssr = !initialState;
@@ -16,6 +18,7 @@ export const configureStore = (initialState = undefined) => {
         driver: createDriver(axiosController.instance),
         ssr: ssr ? 'server' : 'client',
         cache: true,
+        onError,
     });
 
     const reducers = combineReducers({
@@ -25,7 +28,7 @@ export const configureStore = (initialState = undefined) => {
     const store = createStore(
         reducers,
         initialState,
-        composeWithDevTools(applyMiddleware(...requestsMiddleware)),
+        composeWithDevTools(applyMiddleware(thunkMiddleware,...requestsMiddleware)),
     );
 
     return { store, requestsPromise };

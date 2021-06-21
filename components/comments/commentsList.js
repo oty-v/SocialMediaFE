@@ -3,10 +3,12 @@ import {useSelector} from "react-redux";
 import Comment from "./comment";
 import Loader from "../common/Loader";
 import {useQuery} from "@redux-requests/react";
+import {fetchProfile} from "../../redux/auth/action";
+import {fetchPost} from "../../redux/posts/action";
 
-const CommentsList = ({onRemoveComment, onEditComment, loading}) => {
-    const {data:{username:authUser}} = useQuery({ type: 'FETCH_PROFILE' });
-    const {data:{comments}} = useQuery({ type: 'FETCH_POST' });
+const CommentsList = ({postId, onRemoveComment, onEditComment, loading}) => {
+    const {data:{username:authUser}} = useQuery({ type: fetchProfile });
+    const {data:{comments}} = useQuery({ type: fetchPost , requestKey: postId});
     if (loading) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">

@@ -1,76 +1,45 @@
 import {useState} from "react";
 import {useRouter} from "next/router";
 import Head from "next/head";
-import {toast} from "react-toastify";
+import {useQuery} from "@redux-requests/react";
+import {useDispatch} from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 
 import {withAuth} from "../../../lib/withAuth";
 import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
-import {useDispatch, useSelector} from "react-redux";
-import {removePostAsync, updatePostAsync, getPostAsync, fetchPost} from "../../../redux/posts/action";
-import {
-    createCommentAsync,
-    removeCommentAsync,
-    getCommentsAsync,
-    updateCommentAsync
-} from "../../../redux/comments/action";
+import {fetchPost, updatePost} from "../../../redux/posts/action";
+import {createComment, deleteComment, updateComment,} from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
-import {useQuery} from "@redux-requests/react";
+import {fetchProfile} from "../../../redux/auth/action";
+import Loader from "../../../components/common/Loader";
 
-const PostPage = () => {
+const PostPage = ({username, postId}) => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const {data:{username:authUser}} = useQuery({ type: 'FETCH_PROFILE' });
-    const {data:post} = useQuery({ type: 'FETCH_POST' });
+    const {data:{username:authUser}} = useQuery({ type: fetchProfile });
+    const {data:post} = useQuery({ type: fetchPost, requestKey: postId});
+    if (!post) {
+        router.push(`/${username}/posts`)
+        return <Loader/>
+    }
     const dispatch = useDispatch();
-    const handlePostRemove = async (post) => {
-        setLoading(true);
-        try {
-            await dispatch(removePostAsync(post.id, post.author.username));
-            router.push(`/${post.author.username}/posts`);
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
+    const handlePostRemove = (post) => {
+        dispatch(deletePost(post.id));
     }
-    const handlePostEdit = async (post) => {
-        setLoading(true);
-        try {
-            await dispatch(updatePostAsync(post.id, post));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
+    const handlePostEdit = (post) => {
+        dispatch(updatePost(post.id, post));
     }
-    const handleCommentRemove = async (comment) => {
-        setLoading(true);
-        try {
-            await dispatch(removeCommentAsync(comment.id));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
+    const handleCommentRemove = (comment) => {
+        dispatch(deleteComment(post.id, comment.id));
     }
-    const handleCommentEdit = async (comment) => {
-        setLoading(true);
-        try {
-            await dispatch(updateCommentAsync(comment.id, comment));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
+    const handleCommentEdit = (comment) => {
+        dispatch(updateComment(post.id, comment.id, comment));
     }
-    const handleCommentCreate = async (commentData) => {
-        setLoading(true);
-        try {
-            await dispatch(createCommentAsync(post.id, commentData));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
+    const handleCommentCreate = (commentData) => {
+        dispatch(createComment(post.id, commentData));
     }
     return (
         <>
@@ -100,6 +69,7 @@ const PostPage = () => {
                         </div>
                         <h4>Comments:</h4>
                         <CommentsList
+                            postId={postId}
                             onEditComment={handleCommentEdit}
                             onRemoveComment={handleCommentRemove}
                             loading={loading}
@@ -120,24 +90,10 @@ export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
     }
     return {
         props: {
-            username: ctx.query.username
+            username: ctx.query.username,
+            postId: ctx.query.id
         }
     };
-    // try {
-    //     await dispatch(getPostAsync(ctx.query.id));
-    //     await dispatch(getCommentsAsync(ctx.query.id));
-    //     return {
-    //         props: {
-    //             postId: ctx.query.id
-    //         }
-    //     };
-    // } catch (e) {
-    //     if (e.response.status === 404) {
-    //         return {
-    //             notFound: true,
-    //         }
-    //     }
-    // }
 }))
 
 export default PostPage

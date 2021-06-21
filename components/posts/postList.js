@@ -1,11 +1,12 @@
-import {useQuery} from "@redux-requests/react";
+import {useMutation, useQuery} from "@redux-requests/react";
 
 import Post from "./post";
 import Loader from "../common/Loader";
+import {fetchUserPosts} from "../../redux/posts/action";
+import {fetchProfile} from "../../redux/auth/action";
 
-const PostsList = ({onRemovePost, onEditPost, handleClickPost}) => {
-    const {data:{username:authUser}} = useQuery({ type: 'FETCH_PROFILE' });
-    const {data: {posts}, loading} = useQuery({type: 'FETCH_USER_POSTS'});
+const PostsList = ({onRemovePost, onEditPost, handleClickPost, posts, loading}) => {
+    const {data:{username:authUser}} = useQuery({ type: fetchProfile });
     if (loading) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
@@ -26,7 +27,6 @@ const PostsList = ({onRemovePost, onEditPost, handleClickPost}) => {
                         onClick={() => handleClickPost(post)}
                         post={post}
                         showPostControls={authUser === post.author.username}
-                        loading={loading}
                     />
                 </li>
             ))}
