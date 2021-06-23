@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import "react-toastify/dist/ReactToastify.css";
 
-import {FETCH_PROFILE} from "../../redux/auth/types";
 import {withAuth} from "../../lib/withAuth";
 import BackButton from "../../components/common/BackButton";
 import {withRedux} from "../../lib/withRedux";
@@ -11,12 +11,14 @@ import {useRouter} from "next/router";
 import UserAvatar from "../../components/users/userAvatar";
 import {useQuery} from "@redux-requests/react";
 import {fetchProfile} from "../../redux/auth/action";
+import {useCallback} from "react";
 
 function Profile() {
     const router = useRouter();
     const {data} = useQuery({type: fetchProfile});
     const {data: user, loading} = useQuery({type: fetchUser});
     const authUser = data?.username;
+
     if (loading||!user) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
@@ -24,9 +26,10 @@ function Profile() {
             </div>
         )
     }
-    const handleClickEditProfile = () => {
+    const handleClickEditProfile = useCallback(() => {
         router.push(`/settings/profile`);
-    }
+    },[]);
+
     const editProfileBtn = (authUser === user.username) && (
         <button
             className="btn btn-outline-primary mb-2"
@@ -35,6 +38,7 @@ function Profile() {
             Edit profile
         </button>
     )
+
     return (
         <>
             <Head>

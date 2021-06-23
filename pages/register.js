@@ -1,29 +1,23 @@
-import {useState} from 'react'
+import {useCallback} from 'react'
 import Head from "next/head";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import {useDispatch} from "react-redux";
-import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import RegisterForm from "../components/auth/registerForm";
 import {withoutAuth} from "../lib/withoutAuth";
 import {register} from "../redux/auth/action";
+import {useMutation, useQuery} from "@redux-requests/react";
 
 export default function Register() {
     const router = useRouter();
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(false);
-    const handleUserRegister = async (userData) => {
-        setLoading(true);
-        try {
-            await dispatch(register(userData));
-            router.push(`/`);
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
-    }
+    const {loading} = useQuery({type: register})
+    const handleUserRegister = useCallback(async (userData) => {
+        await dispatch(register(userData));
+        router.push(`/`);
+    },[]);
     return (
         <>
             <Head>

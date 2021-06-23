@@ -5,17 +5,14 @@ import Loader from "../common/Loader";
 import {fetchUserPosts} from "../../redux/posts/action";
 import {fetchProfile} from "../../redux/auth/action";
 
-const PostsList = ({onRemovePost, onEditPost, handleClickPost, posts, loading}) => {
+const PostsList = ({onRemovePost, onEditPost, handleClickPost, posts}) => {
     const {data:{username:authUser}} = useQuery({ type: fetchProfile });
-    if (loading) {
+    if (!posts.length) {
         return (
-            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
-                <Loader/>
+            <div className="d-flex flex-column justify-content-center align-items-center">
+                <span>No posts</span>
             </div>
         )
-    }
-    if (!posts.length) {
-        return <span>No posts</span>
     }
     return (
         <ul className="list-group list-group-flush">

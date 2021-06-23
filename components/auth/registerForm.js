@@ -4,21 +4,22 @@ import * as Yup from 'yup';
 import Loader from "../common/Loader";
 import {InputField} from '../common/field/inputField';
 
+const validationSchema = Yup.object({
+    username: Yup.string()
+        .max(25, 'Must be 25 characters or less')
+        .required('Required'),
+    email: Yup.string()
+        .email('Email is invalid')
+        .required('Email is required'),
+    password: Yup.string()
+        .min(8, 'Password must be at least 8 characters')
+        .required('Password is required'),
+    password_confirmation: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Password must match')
+        .required('Confirm password is required'),
+})
+
 const RegisterForm = ({onSubmit, loading}) => {
-    const validationSchema = Yup.object({
-        username: Yup.string()
-            .max(25, 'Must be 25 characters or less')
-            .required('Required'),
-        email: Yup.string()
-            .email('Email is invalid')
-            .required('Email is required'),
-        password: Yup.string()
-            .min(8, 'Password must be at least 8 characters')
-            .required('Password is required'),
-        password_confirmation: Yup.string()
-            .oneOf([Yup.ref('password'), null], 'Password must match')
-            .required('Confirm password is required'),
-    })
     return (
         <Formik
             initialValues={{

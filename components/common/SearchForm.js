@@ -1,24 +1,23 @@
 import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 import {InputField} from "./field/inputField";
+import {useCallback, useMemo} from "react";
 
-function SearchForm({
-                        onSubmit,
-                        maxSearchLength = 50,
-                        label= "Search",
-                        query = '',
-                    }) {
-    const validationSchema = Yup.object({
+function SearchForm({onSubmit, maxSearchLength = 50, label= "Search", query = '',}) {
+    const validationSchema = useCallback(Yup.object({
         query: Yup.string()
             .max(maxSearchLength, `Must be ${maxSearchLength} characters or less`),
-    })
+    }),[maxSearchLength])
+
+    const handleSubmit = useCallback(async (values) => {
+        await onSubmit(values);
+    }, [onSubmit]);
+
     return (
         <Formik
             initialValues={{query}}
             validationSchema={validationSchema}
-            onSubmit={async (values, actions) => {
-                await onSubmit(values);
-            }}
+            onSubmit={handleSubmit}
         >{({handleChange,submitForm}) => (
             <Form className="mb-3">
                 <InputField

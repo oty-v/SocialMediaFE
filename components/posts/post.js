@@ -4,38 +4,44 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PostForm from "./postForm";
 import Loader from "../common/Loader";
 import User from "../users/user";
-import {useMutation, useQuery} from "@redux-requests/react";
-import {fetchPost, fetchUserPosts} from "../../redux/posts/action";
+import {useMutation} from "@redux-requests/react";
+import {deletePost, updatePost} from "../../redux/posts/action";
 import ContentParser from "../common/ContentParser";
 
 const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
     const [editMode, setEditMode] = useState(false);
-    const {loading} = useMutation({type: fetchPost, requestKey: post.id});
+    const {loading: loadingUpdate} = useMutation({type: updatePost, requestKey: post.id});
+    const {loading: loadingDelete} = useMutation({type: deletePost, requestKey: post.id});
     useEffect(() => {
         setEditMode(false);
     }, [post])
     const postContent = editMode ? (
         <>
             <PostForm
+                setEditMode={editMode && setEditMode}
                 onSubmit={onEdit}
                 post={post}
-                loading={loading}
+                loading={loadingUpdate}
             />
             <button
                 className="btn btn-danger m-1"
-                disabled={loading}
+                disabled={loadingDelete}
                 onClick={() => {
-                    onRemove(post)
+                    onRemove(post.id, post.cursor)
                     setEditMode(false)
                 }}
             >
-                {loading ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
+                {loadingDelete ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
             </button>
         </>
     ) : (
-        <div className="card-text">
-            <ContentParser>{post.content}</ContentParser>
-        </div>
+        <ContentParser
+            contentClass={"card-text"}
+            linkClass={"mx-1"}
+            parsedUsers={post.mentionedUsers}
+        >
+            {post.content}
+        </ContentParser>
     )
     const editButton = showPostControls ? (
         <button

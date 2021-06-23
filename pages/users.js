@@ -1,6 +1,5 @@
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import Head from 'next/head';
-import {toast} from "react-toastify";
 import ReactPaginate from 'react-paginate';
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,7 +9,7 @@ import {withRedux} from "../lib/withRedux";
 import {withAuth} from "../lib/withAuth";
 import {fetchUsers} from "../redux/users/action";
 import {useQuery} from "@redux-requests/react";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 
 const UsersPage = () => {
     const [selectedPage, setSelectedPage] = useState(1)
@@ -18,22 +17,17 @@ const UsersPage = () => {
     const lastPage = data?.lastPage;
     const searchQuery = data?.searchQuery;
     const dispatch = useDispatch();
-    const handleUserSearch = async (search) => {
-        try {
-            await dispatch(fetchUsers(search.query))
-        } catch (error) {
-            toast.error(error&&error.toString())
-        }
+
+    const handleUserSearch = useCallback(async (search) => {
+        await dispatch(fetchUsers(search.query))
         setSelectedPage(1)
-    }
-    const handlePagination = async (page) => {
-        try {
-            await dispatch(fetchUsers(searchQuery, page.selected + 1))
-        } catch (error) {
-            toast.error(error.toString())
-        }
+    }, []);
+
+    const handlePagination = useCallback(async (page) => {
+        await dispatch(fetchUsers(searchQuery, page.selected + 1))
         setSelectedPage(page.selected + 1)
-    };
+    }, []);
+
     const paginationComponent = lastPage > 1 && (
         <div className="d-inline-flex justify-content-center w-100">
             <ReactPaginate

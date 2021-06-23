@@ -3,29 +3,28 @@ import * as Yup from 'yup';
 
 import Loader from "../common/Loader";
 import {TextField} from '../common/field/textField';
+import {useCallback} from "react";
 
-function PostForm({
-                      onSubmit,
-                      loading,
-                      post = {
-                          content: ''
-                      }
-                  }) {
-    const validationSchema = Yup.object({
-        content: Yup.string()
-            .max(280, 'Must be 280 characters or less')
-            .required('Required'),
-    })
+const validationSchema = Yup.object({
+    content: Yup.string()
+        .max(280, 'Must be 280 characters or less')
+        .required('Required'),
+})
+
+function PostForm({setEditMode, onSubmit, loading, post = {content: ''}}) {
+    const handleSubmit = useCallback(async (values, actions) => {
+        await onSubmit(values, post.id, post.cursor);
+        actions.setSubmitting(false);
+        actions.resetForm();
+        setEditMode(false);
+    }, [onSubmit]);
+
     return (
         <Formik
             enableReinitialize={true}
             initialValues={post}
             validationSchema={validationSchema}
-            onSubmit={async (values, actions) => {
-                await onSubmit(values);
-                actions.setSubmitting(false);
-                actions.resetForm()
-            }}
+            onSubmit={handleSubmit}
         >
             <Form>
                 <TextField

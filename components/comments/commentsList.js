@@ -6,9 +6,8 @@ import {useQuery} from "@redux-requests/react";
 import {fetchProfile} from "../../redux/auth/action";
 import {fetchPost} from "../../redux/posts/action";
 
-const CommentsList = ({postId, onRemoveComment, onEditComment, loading}) => {
+const CommentsList = ({comments, onRemoveComment, onEditComment, loading}) => {
     const {data:{username:authUser}} = useQuery({ type: fetchProfile });
-    const {data:{comments}} = useQuery({ type: fetchPost , requestKey: postId});
     if (loading) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">

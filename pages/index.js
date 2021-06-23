@@ -1,8 +1,7 @@
-import {useState} from 'react';
+import {useCallback} from 'react';
 import {useDispatch} from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link'
-import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import PostForm from "../components/posts/postForm";
@@ -11,26 +10,20 @@ import {withAuth} from "../lib/withAuth";
 import {fetchUsers} from "../redux/users/action";
 import {withRedux} from "../lib/withRedux";
 import {createPost} from "../redux/posts/action";
+import {useMutation} from "@redux-requests/react";
 
 export default function Home() {
-    const [loading, setLoading] = useState(false);
+    const {loading} = useMutation({type: createPost})
     const dispatch = useDispatch();
-    const handlePostCreate = async (postData) => {
-        setLoading(true);
-        try {
-            await dispatch(createPost(postData));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
-    }
-    const handleUserSearch = async (search) => {
-        try {
-            await dispatch(fetchUsers(search.query))
-        } catch (error) {
-            toast.error(error.toString())
-        }
-    }
+
+    const handlePostCreate = useCallback(async (postData) => {
+        await dispatch(createPost(postData));
+    }, []);
+
+    const handleUserSearch = useCallback(async (search) => {
+        await dispatch(fetchUsers(search.query));
+    }, []);
+
     return (
         <>
             <Head>

@@ -1,8 +1,7 @@
 import {useEffect, useState} from 'react';
 import {Provider} from 'react-redux';
-import {configureStore, useStore} from "../redux/store";
+import {configureStore} from "../redux/store";
 import 'bootstrap/dist/css/bootstrap.css';
-import "react-toastify/dist/ReactToastify.css";
 
 import '../styles/globals.css';
 import '../lib/fontawesome.js';

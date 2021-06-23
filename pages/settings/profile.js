@@ -1,32 +1,31 @@
 import Head from "next/head";
-import {useDispatch, useSelector} from "react-redux";
-import {toast} from "react-toastify";
-import {useState} from "react";
+import {useDispatch} from "react-redux";
+import {useCallback} from "react";
 import {useRouter} from "next/router";
+import "react-toastify/dist/ReactToastify.css";
 
 import BackButton from "../../components/common/BackButton";
 import Loader from "../../components/common/Loader";
 import ProfileForm from "../../components/profile/ProfileForm";
 import {withRedux} from "../../lib/withRedux";
 import {withAuth} from "../../lib/withAuth";
-import {updateProfile} from "../../redux/auth/action";
+import {fetchProfile, updateProfile} from "../../redux/auth/action";
+import {useMutation, useQuery} from "@redux-requests/react";
 
 
 function SettingsProfile() {
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const profile = useSelector((state) => state.auth.profile);
+    const {data: profile} = useQuery({type: fetchProfile});
+    const {loading} = useMutation({type: updateProfile});
     const dispatch = useDispatch();
-    const handleProfileEdit = async (profileId, editProfile) => {
-        setLoading(true);
-        try {
+
+    const handleProfileEdit = useCallback(async (profileId, editProfile) => {
             await dispatch(updateProfile(profileId, editProfile));
-            router.push(`/${profile.username}`);
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
-    }
+            !loading && router.push(`/${profile.username}`);
+        },
+        [profile],
+    )
+
     if (!profile) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
@@ -34,6 +33,7 @@ function SettingsProfile() {
             </div>
         )
     }
+
     return (
         <>
             <Head>

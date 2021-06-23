@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useCallback} from "react";
 import {useRouter} from "next/router";
 import Head from "next/head";
 import {useQuery} from "@redux-requests/react";
@@ -9,7 +9,7 @@ import {withAuth} from "../../../lib/withAuth";
 import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
-import {fetchPost, updatePost} from "../../../redux/posts/action";
+import {deletePost, fetchPost, updatePost} from "../../../redux/posts/action";
 import {createComment, deleteComment, updateComment,} from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
@@ -18,29 +18,37 @@ import Loader from "../../../components/common/Loader";
 
 const PostPage = ({username, postId}) => {
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const {data:{username:authUser}} = useQuery({ type: fetchProfile });
-    const {data:post} = useQuery({ type: fetchPost, requestKey: postId});
+    const {data: {username: authUser}} = useQuery({type: fetchProfile});
+    const {data: post, loading} = useQuery({type: fetchPost, requestKey: postId});
+    if (loading) {
+        return <Loader/>
+    }
     if (!post) {
         router.push(`/${username}/posts`)
         return <Loader/>
     }
     const dispatch = useDispatch();
-    const handlePostRemove = (post) => {
-        dispatch(deletePost(post.id));
-    }
-    const handlePostEdit = (post) => {
-        dispatch(updatePost(post.id, post));
-    }
-    const handleCommentRemove = (comment) => {
+
+    const handlePostRemove = useCallback((postId) => {
+        dispatch(deletePost(postId));
+    }, []);
+
+    const handlePostEdit = useCallback((postUpdate, postId) => {
+        dispatch(updatePost(postUpdate, postId));
+    },[]);
+
+    const handleCommentRemove = useCallback((comment) => {
         dispatch(deleteComment(post.id, comment.id));
-    }
-    const handleCommentEdit = (comment) => {
+    },[post.id]);
+
+    const handleCommentEdit = useCallback((comment) => {
         dispatch(updateComment(post.id, comment.id, comment));
-    }
-    const handleCommentCreate = (commentData) => {
+    }, [post.id]);
+
+    const handleCommentCreate = useCallback((commentData) => {
         dispatch(createComment(post.id, commentData));
-    }
+    },[post.id]);
+
     return (
         <>
             <Head>
@@ -60,7 +68,6 @@ const PostPage = ({username, postId}) => {
                             onRemove={handlePostRemove}
                             post={post}
                             showPostControls={authUser === post.author?.username}
-                            loading={loading}
                         />
                     </div>
                     <div className="list-group-item">
@@ -69,7 +76,7 @@ const PostPage = ({username, postId}) => {
                         </div>
                         <h4>Comments:</h4>
                         <CommentsList
-                            postId={postId}
+                            comments={post.comments}
                             onEditComment={handleCommentEdit}
                             onRemoveComment={handleCommentRemove}
                             loading={loading}

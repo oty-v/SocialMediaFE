@@ -2,12 +2,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import ActiveLink from "./ActiveLink";
 
-const Header = ({
-                    authUser,
-                    handleClickSignIn,
-                    handleClickSignUp,
-                    handleClickLogOut
-                }) => {
+const Header = ({authUser, handleClickSignIn, handleClickSignUp, handleClickLogOut}) => {
     const navList = (authUser) => {
         if (authUser) {
             return (

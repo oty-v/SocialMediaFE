@@ -1,29 +1,23 @@
-import {useState} from 'react'
+import {useCallback, useState} from 'react'
 import {useRouter} from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import {useDispatch} from "react-redux";
-import {toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import LoginForm from "../components/auth/loginForm";
 import {withoutAuth} from "../lib/withoutAuth";
 import {login} from "../redux/auth/action";
+import {useQuery} from "@redux-requests/react";
 
 export default function Login() {
     const router = useRouter();
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(false);
-    const handleUserLogin = async (credentials) => {
-        setLoading(true);
-        try {
-            await dispatch(login(credentials));
-            router.push(`/`);
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
-    }
+    const {loading} = useQuery({type: login})
+    const handleUserLogin = useCallback(async (credentials) => {
+        await dispatch(login(credentials));
+        router.push(`/`);
+    }, []);
     return (
         <>
             <Head>

@@ -30,9 +30,13 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
             </button>
         </>
     ) : (
-        <div className="card-text">
-            <ContentParser>{comment.content}</ContentParser>
-        </div>
+        <ContentParser
+            contentClass={"card-text"}
+            linkClass={"mx-1"}
+            parsedUsers={comment.mentionedUsers}
+        >
+            {comment.content}
+        </ContentParser>
     )
     const editButton = showCommentControls ? (
         <button

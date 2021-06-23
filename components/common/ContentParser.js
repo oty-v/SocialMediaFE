@@ -1,33 +1,48 @@
-import React from 'react';
+import React, {useCallback, useMemo} from 'react';
+import Link from "next/link";
 
-const ContentParser = ({children}) => {
-    const REGEX_URL = /(?:\s)(f|ht)tps?:\/\/([^\s\t\r\n<]*[^\s\t\r\n<)*_,\.])/g,
-        REGEX_USER = /\B@([a-zA-Z0-9_]+)/g,
-        REGEX_HASHTAG = /\B(#[Ã¡-ÃºÃ-ÃÃ¤-Ã¼Ã-Ãa-zA-Z0-9_]+)/g;
-    const generateLink = (url, text) => {
-        return `<a href="/${url}">${text}</a>`;
-    }
-    let content = children,
-        searchlink = "hashtag/";
-    content = content.replace(REGEX_URL, (url) => {
-        const link = generateLink(url, url);
-        return url.replace(url, link);
-    });
-    content = content.replace(REGEX_USER, (user) => {
-        const userOnly = user.slice(1),
-            url = `${userOnly}`,
-            link = generateLink(url, user);
-        return user.replace(user, link);
-    });
-    content = content.replace(REGEX_HASHTAG, (hashtag) => {
-        const hashtagOnly = hashtag.slice(1),
-            url = searchlink + hashtagOnly,
-            link = generateLink(url, hashtag);
-        return hashtag.replace(hashtag, link);
-    });
+const REGEX_URL = /(?:\s)(f|ht)tps?:\/\/([^\s\t\r\n<]*[^\s\t\r\n<)*_,\.])/g,
+    REGEX_HASHTAG = /#(\w+)/;
+
+const ContentParser = ({parsedUsers, contentClass, linkClass, children}) => {
+    const generateLink = useCallback((key, url, text) => {
+        return (
+            <span className={linkClass} key={key}>
+                <Link href={`/${url}`}>{text || url}</Link>
+            </span>
+        )
+    },[linkClass]);
+
+    const parsedUsernames = useCallback(parsedUsers.reduce((values, item) => {
+        item.username && values.push(`@${item.username}`);
+        return values;
+    }, []),[parsedUsers]);
+
+    const content = useCallback(children.split(' ').reduce((content, word, key) => {
+        if (parsedUsernames.find((username) => username === word)) {
+            content.push(generateLink(key, word.match(/@(\w+)/)[1], word));
+            return content;
+        }
+        if (word.match(REGEX_HASHTAG)) {
+            content.push(generateLink(key, `hashtag/${word.match(REGEX_HASHTAG)[1]}`, word));
+            return content;
+        }
+        if (word.match(REGEX_URL)) {
+            content.push(generateLink(key, word));
+            return content;
+        }
+        const lastWord = content[content.length - 1]
+        if (typeof lastWord === 'string') {
+            content.splice(content.length - 1, 1, `${lastWord} ${word}`);
+            return content;
+        }
+        content.push(word);
+        return content
+    }, []),[children]);
 
     return (
-        <div dangerouslySetInnerHTML={{__html: content}}>
+        <div className={contentClass}>
+            {content}
         </div>
     );
 }
