@@ -34,13 +34,14 @@ export const fetchTagPosts = createAction(FETCH_TAG_POSTS, (tag, cursor = '') =>
 }));
 
 export const fetchPost = createAction(FETCH_POST, postId => ({
-    request: [{url: `/posts/${postId}`}, {url: `/posts/${postId}/comments`}],
+    request: {
+        url: `/posts/${postId}`
+    },
     meta: {
         requestKey: postId,
         getData: data => {
             return ({
-                ...data[0].data,
-                comments: data[1].data,
+                ...data.data,
             })
         },
     },

@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import RegisterForm from "../components/auth/registerForm";
 import {withoutAuth} from "../lib/withoutAuth";
 import {register} from "../redux/auth/action";
-import {useMutation, useQuery} from "@redux-requests/react";
+import {useQuery} from "@redux-requests/react";
 
 export default function Register() {
     const router = useRouter();

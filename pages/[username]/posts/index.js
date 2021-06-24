@@ -22,20 +22,20 @@ function Posts({username}) {
         return () => window.removeEventListener("scroll", handleScroll);
     });
 
-    const handleScroll = async () => {
+    const handleScroll = () => {
         const onBottom = window.innerHeight + document.documentElement.scrollTop ===
             document.documentElement.offsetHeight;
         if (onBottom && cursorPosts && !loading) {
-            await dispatch(fetchUserPosts(username, cursorPosts));
+            dispatch(fetchUserPosts(username, cursorPosts));
         }
     };
 
-    const handlePostRemove = useCallback(async (postId, postCursor) => {
-        await dispatch(deletePost(postId, postCursor));
+    const handlePostRemove = useCallback( (postId, postCursor) => {
+        dispatch(deletePost(postId, postCursor));
     },[]);
 
-    const handlePostEdit = useCallback(async (postUpdate, postId, postCursor) => {
-        await dispatch(updatePost(postUpdate, postId, postCursor));
+    const handlePostEdit = useCallback((postUpdate, postId, postCursor) => {
+        dispatch(updatePost(postUpdate, postId, postCursor));
     },[]);
 
     const handleClickPost = useCallback((post) => {

@@ -1,8 +1,6 @@
-import {useMutation, useQuery} from "@redux-requests/react";
+import {useQuery} from "@redux-requests/react";
 
 import Post from "./post";
-import Loader from "../common/Loader";
-import {fetchUserPosts} from "../../redux/posts/action";
 import {fetchProfile} from "../../redux/auth/action";
 
 const PostsList = ({onRemovePost, onEditPost, handleClickPost, posts}) => {

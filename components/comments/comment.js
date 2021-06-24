@@ -5,28 +5,31 @@ import CommentForm from "./commentForm";
 import Loader from "../common/Loader";
 import User from "../users/user";
 import ContentParser from "../common/ContentParser";
+import {useMutation} from "@redux-requests/react";
+import {deleteComment, updateComment} from "../../redux/comments/action";
 
-const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
+const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
     const [editMode, setEditMode] = useState(false);
+    const {loading: loadingUpdate} = useMutation({type: updateComment, requestKey: comment.id});
+    const {loading: loadingDelete} = useMutation({type: deleteComment, requestKey: comment.id});
     useEffect(() => {
         setEditMode(false);
-    }, [comment])
+    }, [comment, comment.content])
     const commentContent = editMode ? (
         <>
             <CommentForm
                 onSubmit={onEdit}
                 comment={comment}
-                loading={loading}
+                loading={loadingUpdate}
             />
             <button
                 className="btn btn-danger m-1"
-                disabled={loading}
+                disabled={loadingDelete}
                 onClick={() => {
                     onRemove(comment)
-                    setEditMode(false)
                 }}
             >
-                {loading ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
+                {loadingDelete ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
             </button>
         </>
     ) : (

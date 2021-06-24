@@ -14,7 +14,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
     const {loading: loadingDelete} = useMutation({type: deletePost, requestKey: post.id});
     useEffect(() => {
         setEditMode(false);
-    }, [post])
+    }, [post, post.content])
     const postContent = editMode ? (
         <>
             <PostForm
@@ -28,7 +28,6 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
                 disabled={loadingDelete}
                 onClick={() => {
                     onRemove(post.id, post.cursor)
-                    setEditMode(false)
                 }}
             >
                 {loadingDelete ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}

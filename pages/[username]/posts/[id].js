@@ -1,7 +1,7 @@
 import {useCallback} from "react";
 import {useRouter} from "next/router";
 import Head from "next/head";
-import {useQuery} from "@redux-requests/react";
+import {useMutation, useQuery} from "@redux-requests/react";
 import {useDispatch} from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,7 +10,7 @@ import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
 import {deletePost, fetchPost, updatePost} from "../../../redux/posts/action";
-import {createComment, deleteComment, updateComment,} from "../../../redux/comments/action";
+import {createComment, deleteComment, fetchPostComments, updateComment,} from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 import {fetchProfile} from "../../../redux/auth/action";
@@ -20,6 +20,7 @@ const PostPage = ({username, postId}) => {
     const router = useRouter();
     const {data: {username: authUser}} = useQuery({type: fetchProfile});
     const {data: post, loading} = useQuery({type: fetchPost, requestKey: postId});
+    const {loading: loadingCreate} = useMutation({type: createComment})
     if (loading) {
         return <Loader/>
     }
@@ -38,16 +39,16 @@ const PostPage = ({username, postId}) => {
     },[]);
 
     const handleCommentRemove = useCallback((comment) => {
-        dispatch(deleteComment(post.id, comment.id));
-    },[post.id]);
+        dispatch(deleteComment(comment.id));
+    },[]);
 
     const handleCommentEdit = useCallback((comment) => {
-        dispatch(updateComment(post.id, comment.id, comment));
-    }, [post.id]);
+        dispatch(updateComment(comment.id, comment));
+    }, []);
 
     const handleCommentCreate = useCallback((commentData) => {
-        dispatch(createComment(post.id, commentData));
-    },[post.id]);
+        dispatch(createComment(postId, commentData));
+    }, []);
 
     return (
         <>
@@ -72,14 +73,13 @@ const PostPage = ({username, postId}) => {
                     </div>
                     <div className="list-group-item">
                         <div className="mb-5">
-                            <CommentForm onSubmit={handleCommentCreate}/>
+                            <CommentForm onSubmit={handleCommentCreate} loading={loadingCreate}/>
                         </div>
                         <h4>Comments:</h4>
                         <CommentsList
-                            comments={post.comments}
+                            postId={post.id}
                             onEditComment={handleCommentEdit}
                             onRemoveComment={handleCommentRemove}
-                            loading={loading}
                         />
                     </div>
                 </div>
@@ -89,7 +89,9 @@ const PostPage = ({username, postId}) => {
 }
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
-    const {error} = await dispatch(fetchPost(ctx.query.id));
+    const  {error: errorPost} = await dispatch(fetchPost(ctx.query.id));
+    const {error: errorComments} = await dispatch(fetchPostComments(ctx.query.id))
+    const error = errorPost||errorComments;
     if (error?.response.status === 404) {
         return {
             notFound: true,

@@ -11,12 +11,11 @@ const validationSchema = Yup.object({
         .required('Required'),
 })
 
-function PostForm({setEditMode, onSubmit, loading, post = {content: ''}}) {
+function PostForm({onSubmit, loading, post = {content: ''}}) {
     const handleSubmit = useCallback(async (values, actions) => {
         await onSubmit(values, post.id, post.cursor);
         actions.setSubmitting(false);
         actions.resetForm();
-        setEditMode(false);
     }, [onSubmit]);
 
     return (
