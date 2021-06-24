@@ -6,7 +6,7 @@ import Loader from "../common/Loader";
 import User from "../users/user";
 import {useMutation} from "@redux-requests/react";
 import {deletePost, updatePost} from "../../redux/posts/action";
-import ContentParser from "../common/ContentParser";
+import ParsedContent from "../common/ParsedContent";
 
 const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
     const [editMode, setEditMode] = useState(false);
@@ -34,13 +34,13 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
             </button>
         </>
     ) : (
-        <ContentParser
+        <ParsedContent
             contentClass={"card-text"}
             linkClass={"mx-1"}
             parsedUsers={post.mentionedUsers}
         >
             {post.content}
-        </ContentParser>
+        </ParsedContent>
     )
     const editButton = showPostControls ? (
         <button

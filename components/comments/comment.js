@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import CommentForm from "./commentForm";
 import Loader from "../common/Loader";
 import User from "../users/user";
-import ContentParser from "../common/ContentParser";
+import ParsedContent from "../common/ParsedContent";
 import {useMutation} from "@redux-requests/react";
 import {deleteComment, updateComment} from "../../redux/comments/action";
 
@@ -33,13 +33,13 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
             </button>
         </>
     ) : (
-        <ContentParser
+        <ParsedContent
             contentClass={"card-text"}
             linkClass={"mx-1"}
             parsedUsers={comment.mentionedUsers}
         >
             {comment.content}
-        </ContentParser>
+        </ParsedContent>
     )
     const editButton = showCommentControls ? (
         <button
