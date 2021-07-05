@@ -25,6 +25,8 @@ export const fetchUser = createAction(FETCH_USER, (username) => ({
         url: `/users/${username}`,
     },
     meta: {
+        requestKey: username,
+        requestsCapacity: 5,
         getData: data => ({
             ...data.data,
         }),

@@ -6,6 +6,8 @@ export const fetchPostComments = createAction(FETCH_POST_COMMENTS, (postId) => (
         url: `/posts/${postId}/comments`,
     },
     meta: {
+        requestKey: postId,
+        requestsCapacity: 2,
         getData: data => data.data,
     },
 }));
@@ -17,13 +19,14 @@ export const createComment = createAction(CREATE_COMMENT, (postId, createdData) 
         data: createdData
     },
     meta: {
+        requestKey: postId,
         mutations: {
-            [FETCH_POST_COMMENTS]: (data, mutationData) => [...data, mutationData.data]
+            [FETCH_POST_COMMENTS + postId]: (data, mutationData) => [...data, mutationData.data]
         },
     },
 }));
 
-export const updateComment = createAction(UPDATE_COMMENT, (commentId, updatedData) => {
+export const updateComment = createAction(UPDATE_COMMENT, (postId, commentId, updatedData) => {
     return {
         request: {
             url: `/comments/${commentId}`,
@@ -33,7 +36,7 @@ export const updateComment = createAction(UPDATE_COMMENT, (commentId, updatedDat
         meta: {
             requestKey: commentId,
             mutations: {
-                [FETCH_POST_COMMENTS]: (data, mutationData) => {
+                [FETCH_POST_COMMENTS + postId]: (data, mutationData) => {
                     return data.map(comment => (comment.id === commentId ? mutationData.data : comment))
                 },
             },
@@ -41,7 +44,7 @@ export const updateComment = createAction(UPDATE_COMMENT, (commentId, updatedDat
     }
 });
 
-export const deleteComment = createAction(DELETE_COMMENT, (commentId) => ({
+export const deleteComment = createAction(DELETE_COMMENT, (postId, commentId) => ({
     request: {
         url: `/comments/${commentId}`,
         method: 'delete',
@@ -49,7 +52,7 @@ export const deleteComment = createAction(DELETE_COMMENT, (commentId) => ({
     meta: {
         requestKey: commentId,
         mutations: {
-            [FETCH_POST_COMMENTS]: (data) => {
+            [FETCH_POST_COMMENTS + postId]: (data) => {
                 return data.filter(comment => comment.id !== commentId)
             },
         },

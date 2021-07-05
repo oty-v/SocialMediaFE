@@ -13,10 +13,10 @@ import {useQuery} from "@redux-requests/react";
 import {fetchProfile} from "../../redux/auth/action";
 import {useCallback} from "react";
 
-function Profile() {
+function Profile({username}) {
     const router = useRouter();
     const {data} = useQuery({type: fetchProfile});
-    const {data: user, loading} = useQuery({type: fetchUser});
+    const {data: user, loading} = useQuery({type: fetchUser, requestKey: username});
     const authUser = data?.username;
 
     if (loading||!user) {

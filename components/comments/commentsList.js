@@ -6,7 +6,7 @@ import {fetchPostComments} from "../../redux/comments/action";
 
 const CommentsList = ({postId, onRemoveComment, onEditComment}) => {
     const {data: {username: authUser}} = useQuery({type: fetchProfile});
-    const {data: comments, loading} = useQuery({type: fetchPostComments});
+    const {data: comments, loading} = useQuery({type: fetchPostComments, requestKey: postId});
     if (loading) {
         return (
             <div className="d-flex flex-column justify-content-center align-items-center">

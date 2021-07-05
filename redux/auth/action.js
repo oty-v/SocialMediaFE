@@ -64,9 +64,8 @@ export const updateProfile = createAction(UPDATE_PROFILE, (profileId, profileDat
         data: profileData,
     },
     meta: {
-        requestKey: profileId,
         mutations: {
-            [FETCH_PROFILE + profileId]: (data, mutationData) => mutationData,
+            [FETCH_PROFILE]: (data, mutationData) => mutationData,
         },
     },
 }));

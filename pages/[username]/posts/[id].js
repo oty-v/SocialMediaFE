@@ -20,7 +20,7 @@ const PostPage = ({username, postId}) => {
     const router = useRouter();
     const {data: {username: authUser}} = useQuery({type: fetchProfile});
     const {data: post, loading} = useQuery({type: fetchPost, requestKey: postId});
-    const {loading: loadingCreate} = useMutation({type: createComment})
+    const {loading: loadingCreate} = useMutation({type: createComment, requestKey: postId})
     if (loading) {
         return <Loader/>
     }
@@ -39,11 +39,11 @@ const PostPage = ({username, postId}) => {
     },[]);
 
     const handleCommentRemove = useCallback((comment) => {
-        dispatch(deleteComment(comment.id));
+        dispatch(deleteComment(postId, comment.id));
     },[]);
 
     const handleCommentEdit = useCallback((comment) => {
-        dispatch(updateComment(comment.id, comment));
+        dispatch(updateComment(postId, comment.id, comment));
     }, []);
 
     const handleCommentCreate = useCallback((commentData) => {
