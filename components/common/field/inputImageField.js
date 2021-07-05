@@ -21,5 +21,3 @@ export const InputImageField = ({setFieldValue, label, ...props}) => {
         </div>
     )
 }
-
-// export default InputImageField;

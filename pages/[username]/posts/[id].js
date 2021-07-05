@@ -31,14 +31,6 @@ const PostPage = ({username, postId}) => {
         dispatch(updatePost(postUpdate, postId));
     },[]);
 
-    const handleCommentRemove = useCallback((comment) => {
-        dispatch(deleteComment(postId, comment.id));
-    },[]);
-
-    const handleCommentEdit = useCallback((comment) => {
-        dispatch(updateComment(postId, comment.id, comment));
-    }, []);
-
     const handleCommentCreate = useCallback((commentData) => {
         dispatch(createComment(postId, commentData));
     }, []);
@@ -79,8 +71,6 @@ const PostPage = ({username, postId}) => {
                         <h4>Comments:</h4>
                         <CommentsList
                             postId={post.id}
-                            onEditComment={handleCommentEdit}
-                            onRemoveComment={handleCommentRemove}
                         />
                     </div>
                 </div>

@@ -11,6 +11,7 @@ import {withRedux} from "../../../lib/withRedux";
 import BackButton from "../../../components/common/BackButton";
 import Loader from "../../../components/common/Loader";
 import {getCursorPosts} from "../../../redux/posts/selectors";
+import {CenterInScreen} from "../../../components/common/CenterInScreen";
 
 function Posts({username}) {
     const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, 'FETCH_USER_POSTS'));
@@ -43,9 +44,9 @@ function Posts({username}) {
     },[]);
 
     const loadingNextPosts = !!loading && (
-        <div className="d-flex flex-column justify-content-center align-items-center">
+        <CenterInScreen>
             <Loader/>
-        </div>
+        </CenterInScreen>
     )
 
     return (

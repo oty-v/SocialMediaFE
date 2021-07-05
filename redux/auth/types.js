@@ -1,4 +1,0 @@
-export const AUTHENTICATE = 'SIGN_IN';
-export const DEAUTHENTICATE = 'SIGN_OUT';
-export const FETCH_PROFILE = 'FETCH_PROFILE'
-export const UPDATE_PROFILE = 'UPDATE_PROFILE';

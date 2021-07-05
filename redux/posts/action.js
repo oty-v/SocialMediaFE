@@ -1,7 +1,6 @@
-import {FETCH_POST, FETCH_USER_POSTS, FETCH_TAG_POSTS, CREATE_POST, UPDATE_POST, DELETE_POST} from "./types";
 import {createAction} from "redux-smart-actions";
 
-export const fetchUserPosts = createAction(FETCH_USER_POSTS, (username, cursor = '') => ({
+export const fetchUserPosts = createAction('FETCH_USER_POSTS', (username, cursor = '') => ({
     request: {
         url: `/users/${username}/posts`,
         params: {
@@ -17,7 +16,7 @@ export const fetchUserPosts = createAction(FETCH_USER_POSTS, (username, cursor =
     },
 }));
 
-export const fetchTagPosts = createAction(FETCH_TAG_POSTS, (tag, cursor = '') => ({
+export const fetchTagPosts = createAction('FETCH_TAG_POSTS', (tag, cursor = '') => ({
     request: {
         url: `/tags/${tag}/posts`,
         params: {
@@ -33,7 +32,7 @@ export const fetchTagPosts = createAction(FETCH_TAG_POSTS, (tag, cursor = '') =>
     },
 }));
 
-export const fetchPost = createAction(FETCH_POST, postId => ({
+export const fetchPost = createAction('FETCH_POST', postId => ({
     request: {
         url: `/posts/${postId}`
     },
@@ -48,7 +47,7 @@ export const fetchPost = createAction(FETCH_POST, postId => ({
     },
 }));
 
-export const createPost = createAction(CREATE_POST, (createdData) => ({
+export const createPost = createAction('CREATE_POST', (createdData) => ({
     request: {
         url: `/posts/`,
         method: 'post',
@@ -56,7 +55,7 @@ export const createPost = createAction(CREATE_POST, (createdData) => ({
     },
 }));
 
-export const updatePost = createAction(UPDATE_POST, (updatedData, postId, cursor) => ({
+export const updatePost = createAction('UPDATE_POST', (updatedData, postId, cursor) => ({
     request: {
         url: `/posts/${postId}`,
         method: 'put',
@@ -65,24 +64,24 @@ export const updatePost = createAction(UPDATE_POST, (updatedData, postId, cursor
     meta: {
         requestKey: cursor || postId,
         mutations: {
-            [FETCH_USER_POSTS + cursor]: (data, mutationData) => {
+            [fetchUserPosts + cursor]: (data, mutationData) => {
                 const posts = data.posts.map(post =>
                     post.id === postId ? mutationData.data : post
                 )
                 return Object.assign(data, {posts})
             },
-            [FETCH_TAG_POSTS + cursor]: (data, mutationData) => {
+            [fetchTagPosts + cursor]: (data, mutationData) => {
                 const posts = data.posts.map(post =>
                     post.id === postId ? mutationData.data : post
                 )
                 return Object.assign(data, {posts})
             },
-            [FETCH_POST + postId]: (data, mutationData) => Object.assign(data, mutationData.data)
+            [fetchPost + postId]: (data, mutationData) => Object.assign(data, mutationData.data)
         },
     },
 }));
 
-export const deletePost = createAction(DELETE_POST, (postId, cursor) => ({
+export const deletePost = createAction('DELETE_POST', (postId, cursor) => ({
     request: {
         url: `/posts/${postId}`,
         method: 'delete',
@@ -90,17 +89,17 @@ export const deletePost = createAction(DELETE_POST, (postId, cursor) => ({
     meta: {
         requestKey: cursor || postId,
         mutations: {
-            [FETCH_USER_POSTS + cursor]: (data) => {
+            [fetchUserPosts + cursor]: (data) => {
                 const postIndex = data.posts.findIndex(post => post.id === postId)
                 data.posts.splice(postIndex, 1)
                 return data
             },
-            [FETCH_TAG_POSTS + cursor]: (data) => {
+            [fetchTagPosts + cursor]: (data) => {
                 const postIndex = data.posts.findIndex(post => post.id === postId)
                 data.posts.splice(postIndex, 1)
                 return data
             },
-            [FETCH_POST + postId]: () => {},
+            [fetchPost + postId]: () => {},
         },
     },
 }));

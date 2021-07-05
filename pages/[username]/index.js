@@ -25,9 +25,9 @@ function Profile({username}) {
 
     if (loading||!user) {
         return (
-            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
+            <CenterInScreen additionalClassName={"vh-100"}>
                 <Loader/>
-            </div>
+            </CenterInScreen>
         )
     }
 

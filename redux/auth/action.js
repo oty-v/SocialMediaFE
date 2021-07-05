@@ -1,9 +1,8 @@
 import Cookie from "js-cookie";
 
-import {AUTHENTICATE, DEAUTHENTICATE, FETCH_PROFILE, UPDATE_PROFILE} from "./types";
 import {createAction} from 'redux-smart-actions';
 
-export const register = createAction(AUTHENTICATE, (userData) => ({
+export const register = createAction('AUTHENTICATE', (userData) => ({
     request: {
         url: `/register`,
         method: 'post',
@@ -18,7 +17,7 @@ export const register = createAction(AUTHENTICATE, (userData) => ({
     },
 }));
 
-export const login = createAction(AUTHENTICATE, (credentials) => ({
+export const login = createAction('AUTHENTICATE', (credentials) => ({
     request: {
         url: `/login`,
         method: 'post',
@@ -33,7 +32,7 @@ export const login = createAction(AUTHENTICATE, (credentials) => ({
     },
 }));
 
-export const logout = createAction(DEAUTHENTICATE, () => ({
+export const logout = createAction('DEAUTHENTICATE', () => ({
     request: {
         url: `/logout`,
         method: 'post',
@@ -46,7 +45,7 @@ export const logout = createAction(DEAUTHENTICATE, () => ({
     },
 }));
 
-export const fetchProfile = createAction(FETCH_PROFILE, () => ({
+export const fetchProfile = createAction('FETCH_PROFILE', () => ({
     request: {
         url: `/profile`,
     },
@@ -57,7 +56,7 @@ export const fetchProfile = createAction(FETCH_PROFILE, () => ({
     },
 }));
 
-export const updateProfile = createAction(UPDATE_PROFILE, (profileId, profileData) => ({
+export const updateProfile = createAction('UPDATE_PROFILE', (profileId, profileData) => ({
     request: {
         url: `/profiles/${profileId}`,
         method: 'post',
@@ -65,7 +64,7 @@ export const updateProfile = createAction(UPDATE_PROFILE, (profileId, profileDat
     },
     meta: {
         mutations: {
-            [FETCH_PROFILE]: (data, mutationData) => mutationData,
+            [fetchProfile]: (data, mutationData) => mutationData,
         },
     },
 }));

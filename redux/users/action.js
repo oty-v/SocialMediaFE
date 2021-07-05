@@ -1,7 +1,6 @@
-import {FETCH_USER, FETCH_USERS} from "./types";
 import {createAction} from "redux-smart-actions";
 
-export const fetchUsers = createAction(FETCH_USERS, (query,page = 1) => ({
+export const fetchUsers = createAction('FETCH_USERS', (query,page = 1) => ({
     request: {
         url: `/users`,
         params: {
@@ -20,7 +19,7 @@ export const fetchUsers = createAction(FETCH_USERS, (query,page = 1) => ({
     },
 }));
 
-export const fetchUser = createAction(FETCH_USER, (username) => ({
+export const fetchUser = createAction('FETCH_USER', (username) => ({
     request: {
         url: `/users/${username}`,
     },

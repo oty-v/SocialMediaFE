@@ -11,6 +11,7 @@ import {withRedux} from "../../lib/withRedux";
 import {withAuth} from "../../lib/withAuth";
 import {fetchProfile, updateProfile} from "../../redux/auth/action";
 import {useMutation, useQuery} from "@redux-requests/react";
+import {CenterInScreen} from "../../components/common/CenterInScreen";
 
 
 function SettingsProfile() {
@@ -28,9 +29,9 @@ function SettingsProfile() {
 
     if (!profile) {
         return (
-            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
+            <CenterInScreen additionalClassName={"vh-100"}>
                 <Loader/>
-            </div>
+            </CenterInScreen>
         )
     }
 

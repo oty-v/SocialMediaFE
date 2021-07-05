@@ -1,16 +1,15 @@
 import {useRouter} from "next/router";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import Header from "./header";
-import {Bounce, toast, ToastContainer} from "react-toastify";
+import {Bounce, ToastContainer} from "react-toastify";
 
-import {logout} from "../../../redux/auth/action";
+import {fetchProfile, logout} from "../../../redux/auth/action";
 import {useQuery} from "@redux-requests/react";
-import {FETCH_PROFILE} from "../../../redux/auth/types";
 import {useCallback} from "react";
 
 function Layout({children}) {
     const router = useRouter();
-    const {data} = useQuery({ type: FETCH_PROFILE });
+    const {data} = useQuery({ type: fetchProfile });
     const authUser = data?.username;
     const dispatch = useDispatch();
 

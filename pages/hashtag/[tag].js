@@ -11,6 +11,7 @@ import {deletePost, fetchTagPosts, updatePost} from "../../redux/posts/action";
 import Loader from "../../components/common/Loader";
 import BackButton from "../../components/common/BackButton";
 import PostsList from "../../components/posts/postList";
+import {CenterInScreen} from "../../components/common/CenterInScreen";
 
 export default function Tag({tag}) {
     const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, 'FETCH_TAG_POSTS'));
@@ -43,9 +44,9 @@ export default function Tag({tag}) {
     },[]);
 
     const loadingNextPosts = !!loading && (
-        <div className="d-flex flex-column justify-content-center align-items-center">
+        <CenterInScreen>
             <Loader/>
-        </div>
+        </CenterInScreen>
     )
     return (
         <>

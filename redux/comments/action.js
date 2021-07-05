@@ -1,7 +1,6 @@
 import {createAction} from "redux-smart-actions";
-import {FETCH_POST_COMMENTS, CREATE_COMMENT, UPDATE_COMMENT, DELETE_COMMENT} from "./types";
 
-export const fetchPostComments = createAction(FETCH_POST_COMMENTS, (postId) => ({
+export const fetchPostComments = createAction('FETCH_POST_COMMENTS', (postId) => ({
     request: {
         url: `/posts/${postId}/comments`,
     },
@@ -12,7 +11,7 @@ export const fetchPostComments = createAction(FETCH_POST_COMMENTS, (postId) => (
     },
 }));
 
-export const createComment = createAction(CREATE_COMMENT, (postId, createdData) => ({
+export const createComment = createAction('CREATE_COMMENT', (postId, createdData) => ({
     request: {
         url: `/posts/${postId}/comments`,
         method: 'post',
@@ -21,12 +20,12 @@ export const createComment = createAction(CREATE_COMMENT, (postId, createdData) 
     meta: {
         requestKey: postId,
         mutations: {
-            [FETCH_POST_COMMENTS + postId]: (data, mutationData) => [...data, mutationData.data]
+            [fetchPostComments + postId]: (data, mutationData) => [...data, mutationData.data]
         },
     },
 }));
 
-export const updateComment = createAction(UPDATE_COMMENT, (postId, commentId, updatedData) => {
+export const updateComment = createAction('UPDATE_COMMENT', (postId, commentId, updatedData) => {
     return {
         request: {
             url: `/comments/${commentId}`,
@@ -36,7 +35,7 @@ export const updateComment = createAction(UPDATE_COMMENT, (postId, commentId, up
         meta: {
             requestKey: commentId,
             mutations: {
-                [FETCH_POST_COMMENTS + postId]: (data, mutationData) => {
+                [fetchPostComments + postId]: (data, mutationData) => {
                     return data.map(comment => (comment.id === commentId ? mutationData.data : comment))
                 },
             },
@@ -44,7 +43,7 @@ export const updateComment = createAction(UPDATE_COMMENT, (postId, commentId, up
     }
 });
 
-export const deleteComment = createAction(DELETE_COMMENT, (postId, commentId) => ({
+export const deleteComment = createAction('DELETE_COMMENT', (postId, commentId) => ({
     request: {
         url: `/comments/${commentId}`,
         method: 'delete',
@@ -52,7 +51,7 @@ export const deleteComment = createAction(DELETE_COMMENT, (postId, commentId) =>
     meta: {
         requestKey: commentId,
         mutations: {
-            [FETCH_POST_COMMENTS + postId]: (data) => {
+            [fetchPostComments + postId]: (data) => {
                 return data.filter(comment => comment.id !== commentId)
             },
         },

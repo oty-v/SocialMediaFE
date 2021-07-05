@@ -3,15 +3,16 @@ import User from "./user";
 import SearchForm from "../common/SearchForm";
 import {useQuery} from "@redux-requests/react";
 import {fetchUsers} from "../../redux/users/action";
+import {CenterInScreen} from "../common/CenterInScreen";
 
 
 const UserList = ({onSubmit, selectedPage=1}) => {
     const {data, loading} = useQuery({type: fetchUsers, requestKey: selectedPage});
     const users = data?.users;
     const userList = loading||!users ? (
-        <div className="d-flex flex-column justify-content-center align-items-center">
+        <CenterInScreen>
             <Loader/>
-        </div>
+        </CenterInScreen>
     ) : (
         <ul className="list-group">
             {users.map(user => (

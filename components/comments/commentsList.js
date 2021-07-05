@@ -2,23 +2,34 @@ import Comment from "./comment";
 import Loader from "../common/Loader";
 import {useQuery} from "@redux-requests/react";
 import {fetchProfile} from "../../redux/auth/action";
-import {fetchPostComments} from "../../redux/comments/action";
+import {deleteComment, fetchPostComments, updateComment} from "../../redux/comments/action";
+import {useCallback} from "react";
+import {useDispatch} from "react-redux";
+import {CenterInScreen} from "../common/CenterInScreen";
 
 const CommentsList = ({postId, onRemoveComment, onEditComment}) => {
     const {data: {username: authUser}} = useQuery({type: fetchProfile});
     const {data: comments, loading} = useQuery({type: fetchPostComments, requestKey: postId});
+    const dispatch = useDispatch();
+    const handleCommentRemove = useCallback((comment) => {
+        dispatch(deleteComment(postId, comment.id));
+    },[postId]);
+
+    const handleCommentEdit = useCallback((comment) => {
+        dispatch(updateComment(postId, comment.id, comment));
+    }, [postId]);
     if (loading) {
         return (
-            <div className="d-flex flex-column justify-content-center align-items-center">
+            <CenterInScreen>
                 <Loader/>
-            </div>
+            </CenterInScreen>
         )
     }
     if (!comments.length) {
         return (
-            <div className="d-flex flex-column justify-content-center align-items-center">
+            <CenterInScreen>
                 <span>No Comments</span>
-            </div>
+            </CenterInScreen>
         )
     }
     return (
