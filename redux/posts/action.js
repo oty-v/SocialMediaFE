@@ -100,7 +100,7 @@ export const deletePost = createAction(DELETE_POST, (postId, cursor) => ({
                 data.posts.splice(postIndex, 1)
                 return data
             },
-            [FETCH_POST + postId]: () => null,
+            [FETCH_POST + postId]: () => {},
         },
     },
 }));

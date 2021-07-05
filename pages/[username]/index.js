@@ -19,6 +19,10 @@ function Profile({username}) {
     const {data: user, loading} = useQuery({type: fetchUser, requestKey: username});
     const authUser = data?.username;
 
+    const handleClickEditProfile = useCallback(() => {
+        router.push(`/settings/profile`);
+    },[]);
+
     if (loading||!user) {
         return (
             <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
@@ -26,9 +30,6 @@ function Profile({username}) {
             </div>
         )
     }
-    const handleClickEditProfile = useCallback(() => {
-        router.push(`/settings/profile`);
-    },[]);
 
     const editProfileBtn = (authUser === user.username) && (
         <button
