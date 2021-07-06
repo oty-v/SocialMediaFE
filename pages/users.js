@@ -1,15 +1,14 @@
 import {useDispatch} from 'react-redux';
 import Head from 'next/head';
 import ReactPaginate from 'react-paginate';
-import "react-toastify/dist/ReactToastify.css";
 
-import BackButton from "../components/common/BackButton";
 import UserList from "../components/users/usersList";
 import {withRedux} from "../lib/withRedux";
 import {withAuth} from "../lib/withAuth";
 import {fetchUsers} from "../redux/users/action";
 import {useQuery} from "@redux-requests/react";
 import {useCallback, useState} from "react";
+import MiddleContent from "../components/common/layout/content/MiddleContent";
 
 const UsersPage = () => {
     const [selectedPage, setSelectedPage] = useState(1)
@@ -58,21 +57,20 @@ const UsersPage = () => {
             <Head>
                 <title>Users</title>
             </Head>
-            <div className="central-column">
-                <div className="card-header central-column-header bg-transparent">
-                    <BackButton/>
-                    <div className="central-column-header-title">
-                        <h3 className="mb-0">Users List</h3>
-                    </div>
-                </div>
-                <div className="card-body">
-                    <UserList
-                        onSubmit={handleUserSearch}
-                        selectedPage={selectedPage}
-                    />
-                </div>
-                {paginationComponent}
-            </div>
+            <MiddleContent
+                title={'Users List'}
+                backBtn
+            >
+                <MiddleContent.Body>
+                    <MiddleContent.Item>
+                        <UserList
+                            onSubmit={handleUserSearch}
+                            selectedPage={selectedPage}
+                        />
+                    </MiddleContent.Item>
+                    {paginationComponent}
+                </MiddleContent.Body>
+            </MiddleContent>
         </>
     )
 }

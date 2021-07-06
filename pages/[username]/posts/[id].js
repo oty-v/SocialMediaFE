@@ -3,18 +3,18 @@ import {useRouter} from "next/router";
 import Head from "next/head";
 import {useMutation, useQuery} from "@redux-requests/react";
 import {useDispatch} from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
 
 import {withAuth} from "../../../lib/withAuth";
 import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
 import {deletePost, fetchPost, updatePost} from "../../../redux/posts/action";
-import {createComment, deleteComment, fetchPostComments, updateComment,} from "../../../redux/comments/action";
+import {createComment, fetchPostComments} from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
-import BackButton from "../../../components/common/BackButton";
 import {fetchProfile} from "../../../redux/auth/action";
 import Loader from "../../../components/common/Loader";
+import MiddleContent from "../../../components/common/layout/content/MiddleContent";
+import CenterInScreen from "../../../components/common/CenterInScreen";
 
 const PostPage = ({username, postId}) => {
     const router = useRouter();
@@ -29,18 +29,26 @@ const PostPage = ({username, postId}) => {
 
     const handlePostEdit = useCallback((postUpdate, postId) => {
         dispatch(updatePost(postUpdate, postId));
-    },[]);
+    }, []);
 
     const handleCommentCreate = useCallback((commentData) => {
         dispatch(createComment(postId, commentData));
     }, []);
 
     if (loading) {
-        return <Loader/>
+        return (
+            <CenterInScreen>
+                <Loader/>
+            </CenterInScreen>
+        )
     }
     if (!post) {
         router.push(`/${username}/posts`)
-        return <Loader/>
+        return (
+            <CenterInScreen>
+                <Loader/>
+            </CenterInScreen>
+        )
     }
 
     return (
@@ -48,23 +56,20 @@ const PostPage = ({username, postId}) => {
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
-            <div className="central-column">
-                <div className="card-header central-column-header bg-transparent">
-                    <BackButton/>
-                    <div className="central-column-header-title">
-                        <h3>Post</h3>
-                    </div>
-                </div>
-                <div className="list-group list-group-flush card-body">
-                    <div className="list-group-item">
+            <MiddleContent
+                backBtn
+                title={'Post'}
+            >
+                <MiddleContent.Body>
+                    <MiddleContent.Item>
                         <Post
                             onEdit={handlePostEdit}
                             onRemove={handlePostRemove}
                             post={post}
                             showPostControls={authUser === post.author?.username}
                         />
-                    </div>
-                    <div className="list-group-item">
+                    </MiddleContent.Item>
+                    <MiddleContent.Item>
                         <div className="mb-5">
                             <CommentForm onSubmit={handleCommentCreate} loading={loadingCreate}/>
                         </div>
@@ -72,17 +77,17 @@ const PostPage = ({username, postId}) => {
                         <CommentsList
                             postId={post.id}
                         />
-                    </div>
-                </div>
-            </div>
+                    </MiddleContent.Item>
+                </MiddleContent.Body>
+            </MiddleContent>
         </>
     )
 }
 
 export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
-    const  {error: errorPost} = await dispatch(fetchPost(ctx.query.id));
+    const {error: errorPost} = await dispatch(fetchPost(ctx.query.id));
     const {error: errorComments} = await dispatch(fetchPostComments(ctx.query.id))
-    const error = errorPost||errorComments;
+    const error = errorPost || errorComments;
     if (error?.response.status === 404) {
         return {
             notFound: true,

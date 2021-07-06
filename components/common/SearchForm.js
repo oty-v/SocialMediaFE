@@ -1,7 +1,7 @@
 import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 import {InputField} from "./field/inputField";
-import {useCallback, useMemo} from "react";
+import {useCallback} from "react";
 
 function SearchForm({onSubmit, maxSearchLength = 50, label= "Search", query = '',}) {
     const validationSchema = useCallback(Yup.object({

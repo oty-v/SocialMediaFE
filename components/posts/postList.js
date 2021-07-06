@@ -2,7 +2,8 @@ import {useQuery} from "@redux-requests/react";
 
 import Post from "./post";
 import {fetchProfile} from "../../redux/auth/action";
-import {CenterInScreen} from "../common/CenterInScreen";
+import CenterInScreen from "../common/CenterInScreen";
+import List from "../common/list/List";
 
 const PostsList = ({onRemovePost, onEditPost, handleClickPost, posts}) => {
     const {data:{username:authUser}} = useQuery({ type: fetchProfile });
@@ -14,9 +15,9 @@ const PostsList = ({onRemovePost, onEditPost, handleClickPost, posts}) => {
         )
     }
     return (
-        <ul className="list-group list-group-flush">
+        <List customClassName={"list-group-flush"}>
             {posts.map(post => (
-                <li className="list-group-item list-group-item-action" key={post.id}>
+                <List.Item key={post.id}>
                     <Post
                         onEdit={onEditPost}
                         onRemove={onRemovePost}
@@ -24,9 +25,9 @@ const PostsList = ({onRemovePost, onEditPost, handleClickPost, posts}) => {
                         post={post}
                         showPostControls={authUser === post.author.username}
                     />
-                </li>
+                </List.Item>
             ))}
-        </ul>
+        </List>
     )
 }
 

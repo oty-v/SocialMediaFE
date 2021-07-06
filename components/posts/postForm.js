@@ -1,9 +1,10 @@
 import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 
-import Loader from "../common/Loader";
 import {TextField} from '../common/field/textField';
 import {useCallback} from "react";
+import LoaderButton from "../common/buttons/LoaderButton";
+import SaveButton from "../common/buttons/SaveButton";
 
 const validationSchema = Yup.object({
     content: Yup.string()
@@ -31,13 +32,13 @@ function PostForm({onSubmit, loading, post = {content: ''}}) {
                     name="content"
                     type="text"
                 />
-                <button
-                    className="btn btn-primary float-end m-1"
-                    type="submit"
-                    disabled={loading}
-                >
-                    {loading ? (<Loader/>) : ("Save")}
-                </button>
+                <div className="float-end">
+                    {loading ? (
+                        <LoaderButton/>
+                    ) : (
+                        <SaveButton/>
+                    )}
+                </div>
             </Form>
         </Formik>
     )

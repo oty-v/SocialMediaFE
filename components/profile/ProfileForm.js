@@ -1,10 +1,11 @@
-import {Formik, Form, Field} from 'formik';
+import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 
-import Loader from "../common/Loader";
 import {InputField} from "../common/field/inputField";
 import {InputImageField} from "../common/field/inputImageField";
 import {useCallback} from "react";
+import LoaderButton from "../common/buttons/LoaderButton";
+import SaveButton from "../common/buttons/SaveButton";
 
 const FILE_SIZE = 5 * 1024 * 1024;
 const SUPPORTED_FORMATS = [
@@ -66,13 +67,13 @@ function ProfileForm({onSubmit, loading, profile = {name: ''}}) {
                     name="name"
                     type="text"
                 />
-                <button
-                    className="btn btn-primary float-end m-1"
-                    type="submit"
-                    disabled={loading}
-                >
-                    {loading ? (<Loader/>) : ("Save")}
-                </button>
+                <div className="float-end">
+                    {loading ? (
+                        <LoaderButton/>
+                    ) : (
+                        <SaveButton/>
+                    )}
+                </div>
             </Form>
             )}
         </Formik>

@@ -5,9 +5,10 @@ import {fetchProfile} from "../../redux/auth/action";
 import {deleteComment, fetchPostComments, updateComment} from "../../redux/comments/action";
 import {useCallback} from "react";
 import {useDispatch} from "react-redux";
-import {CenterInScreen} from "../common/CenterInScreen";
+import CenterInScreen from "../common/CenterInScreen";
+import List from "../common/list/List";
 
-const CommentsList = ({postId, onRemoveComment, onEditComment}) => {
+const CommentsList = ({postId}) => {
     const {data: {username: authUser}} = useQuery({type: fetchProfile});
     const {data: comments, loading} = useQuery({type: fetchPostComments, requestKey: postId});
     const dispatch = useDispatch();
@@ -34,19 +35,19 @@ const CommentsList = ({postId, onRemoveComment, onEditComment}) => {
     }
     return (
         <>
-            <ul className="list-group">
+            <List>
                 {comments.map(comment => (
-                    <li className="list-group-item list-group-item-action" key={comment.id}>
+                    <List.Item key={comment.id}>
                         <Comment
                             postId={postId}
                             comment={comment}
                             showCommentControls={authUser === comment.author.username}
-                            onEdit={onEditComment}
-                            onRemove={onRemoveComment}
+                            onEdit={handleCommentEdit}
+                            onRemove={handleCommentRemove}
                         />
-                    </li>
+                    </List.Item>
                 ))}
-            </ul>
+            </List>
         </>
     )
 }

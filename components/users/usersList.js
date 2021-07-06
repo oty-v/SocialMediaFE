@@ -3,7 +3,8 @@ import User from "./user";
 import SearchForm from "../common/SearchForm";
 import {useQuery} from "@redux-requests/react";
 import {fetchUsers} from "../../redux/users/action";
-import {CenterInScreen} from "../common/CenterInScreen";
+import CenterInScreen from "../common/CenterInScreen";
+import List from "../common/list/List";
 
 
 const UserList = ({onSubmit, selectedPage=1}) => {
@@ -14,17 +15,17 @@ const UserList = ({onSubmit, selectedPage=1}) => {
             <Loader/>
         </CenterInScreen>
     ) : (
-        <ul className="list-group">
+        <List>
             {users.map(user => (
-                <li className="list-group-item list-group-item-action" key={user.id}>
+                <List.Item key={user.id}>
                     <User
                         user={user}
                         width={25}
                         height={25}
                     />
-                </li>
+                </List.Item>
             ))}
-        </ul>
+        </List>
     )
     return (
         <>

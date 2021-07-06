@@ -1,12 +1,14 @@
 import {useEffect, useState} from "react";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import CommentForm from "./commentForm";
-import Loader from "../common/Loader";
 import User from "../users/user";
 import ParsedContent from "../common/ParsedContent";
 import {useMutation} from "@redux-requests/react";
 import {deleteComment, updateComment} from "../../redux/comments/action";
+import Card from "../common/card/Card";
+import LoaderButton from "../common/buttons/LoaderButton";
+import RemoveButton from "../common/buttons/RemoveButton";
+import MinEditButton from "../common/buttons/MinEditButton";
 
 const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
     const [editMode, setEditMode] = useState(false);
@@ -22,15 +24,15 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
                 comment={comment}
                 loading={loadingUpdate}
             />
-            <button
-                className="btn btn-danger m-1"
-                disabled={loadingDelete}
-                onClick={() => {
-                    onRemove(comment)
-                }}
-            >
-                {loadingDelete ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
-            </button>
+            {loadingDelete ? (
+                <LoaderButton/>
+            ) : (
+                <RemoveButton
+                    onClick={() => {
+                        onRemove(comment)
+                    }}
+                />
+            )}
         </>
     ) : (
         <ParsedContent
@@ -42,30 +44,24 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
         </ParsedContent>
     )
     const editButton = showCommentControls ? (
-        <button
-            className="btn-svg"
+        <MinEditButton
+            editMode={editMode}
             onClick={() => {
                 setEditMode(!editMode)
             }}
-        >
-            {editMode ? (
-                <FontAwesomeIcon icon="times-circle" size="xs"/>
-            ) : (
-                <FontAwesomeIcon icon="edit" size="xs"/>
-            )}
-        </button>
+        />
     ) : null
     return (
         <>
-            <h5 className="card-header">
-                <div className="d-inline-flex">
+            <Card.Header>
+                <h5 className="d-inline-flex">
                     <User user={comment.author}/>
                     {editButton}
-                </div>
-            </h5>
-            <div className="card-body">
+                </h5>
+            </Card.Header>
+            <Card.Body>
                 {commentContent}
-            </div>
+            </Card.Body>
         </>
     )
 }

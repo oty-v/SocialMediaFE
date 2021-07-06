@@ -1,8 +1,7 @@
 import {useCallback} from 'react';
 import {useDispatch} from 'react-redux';
 import Head from 'next/head';
-import Link from 'next/link'
-import "react-toastify/dist/ReactToastify.css";
+import Link from 'next/link';
 
 import PostForm from "../components/posts/postForm";
 import UserList from "../components/users/usersList";
@@ -11,6 +10,7 @@ import {fetchUsers} from "../redux/users/action";
 import {withRedux} from "../lib/withRedux";
 import {createPost} from "../redux/posts/action";
 import {useMutation} from "@redux-requests/react";
+import MiddleContent from "../components/common/layout/content/MiddleContent";
 
 export default function Home() {
     const {loading} = useMutation({type: createPost})
@@ -29,17 +29,18 @@ export default function Home() {
             <Head>
                 <title>Home</title>
             </Head>
-            <div className="central-column">
-                <div className="card-header central-column-header bg-transparent">
-                    <h3 className="mb-0">Home</h3>
-                </div>
-                <div className="card-body">
-                    <PostForm
-                        onSubmit={handlePostCreate}
-                        loading={loading}
-                    />
-                </div>
-            </div>
+            <MiddleContent
+                title={'Home'}
+            >
+                <MiddleContent.Body>
+                    <MiddleContent.Item>
+                        <PostForm
+                            onSubmit={handlePostCreate}
+                            loading={loading}
+                        />
+                    </MiddleContent.Item>
+                </MiddleContent.Body>
+            </MiddleContent>
             <div className="mx-5">
                 <div className="my-3">
                     <h4>Users</h4>

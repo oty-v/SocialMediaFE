@@ -1,17 +1,17 @@
 import Head from "next/head";
 import Link from "next/link";
-import "react-toastify/dist/ReactToastify.css";
 
 import {withAuth} from "../../lib/withAuth";
-import BackButton from "../../components/common/BackButton";
 import {withRedux} from "../../lib/withRedux";
 import {fetchUser} from "../../redux/users/action";
 import Loader from "../../components/common/Loader";
 import {useRouter} from "next/router";
-import UserAvatar from "../../components/users/userAvatar";
 import {useQuery} from "@redux-requests/react";
 import {fetchProfile} from "../../redux/auth/action";
 import {useCallback} from "react";
+import MiddleContent from "../../components/common/layout/content/MiddleContent";
+import ProfileCard from "../../components/profile/ProfileCard";
+import CenterInScreen from "../../components/common/CenterInScreen";
 
 function Profile({username}) {
     const router = useRouter();
@@ -21,9 +21,9 @@ function Profile({username}) {
 
     const handleClickEditProfile = useCallback(() => {
         router.push(`/settings/profile`);
-    },[]);
+    }, []);
 
-    if (loading||!user) {
+    if (loading || !user) {
         return (
             <CenterInScreen additionalClassName={"vh-100"}>
                 <Loader/>
@@ -45,31 +45,22 @@ function Profile({username}) {
             <Head>
                 <title>{user.username}</title>
             </Head>
-            <div className="central-column">
-                <div className="card-header central-column-header bg-transparent">
-                    <BackButton/>
-                    <div className="central-column-header-title">
-                        <h3 className="mb-0">User</h3>
-                        <span className="text-muted">{`@${user.username}`}</span>
-                    </div>
-                </div>
-                <div className="card-body">
-                    <div className="d-flex align-items-end justify-content-between mb-2">
-                        <UserAvatar
-                            userAvatar={user.avatar}
-                            width={125}
-                            height={125}
-                        />
-                        {editProfileBtn}
-                    </div>
-                    <h4 className="card-title">{user.name ? user.name : `ID: ${user.id}`}</h4>
-                    <p className="card-text">Data registration: {user.created_at}</p>
+            <MiddleContent
+                backBtn
+                title={'User'}
+                username={user.username}
+            >
+                <MiddleContent.Body>
+                    <MiddleContent.Item>
+                        <ProfileCard user={user} profileBtn={editProfileBtn}/>
+                    </MiddleContent.Item>
                     <Link href={`/${user.username}/posts`}>
                         <span className="btn btn-outline-primary mb-1">{user.username} posts</span>
                     </Link>
-                </div>
-            </div>
-        </>)
+                </MiddleContent.Body>
+            </MiddleContent>
+        </>
+    )
 }
 
 export const getServerSideProps = withRedux(withAuth(
