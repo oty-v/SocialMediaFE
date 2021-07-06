@@ -1,53 +1,39 @@
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-import ActiveLink from "./ActiveLink";
+import NavLink from "./NavLink";
 
 const Header = ({authUser, handleClickSignIn, handleClickSignUp, handleClickLogOut}) => {
     const navList = (authUser) => {
         if (authUser) {
             return (
                 <>
-                    <li className="nav-item mt-2">
-                        <ActiveLink activeClassName="active" href="/">
-                            <div className="nav-link link-dark">
-                                <FontAwesomeIcon className="me-2" icon="home" size="lg"/>
-                                <span>Home</span>
-                            </div>
-                        </ActiveLink>
-                    </li>
-                    <li className="nav-item mt-3">
-                        <ActiveLink activeClassName="active" href={`/${authUser}`}>
-                            <div className="nav-link link-dark ">
-                                <FontAwesomeIcon className="me-2" icon="user" size="lg"/>
-                                <span>Profile</span>
-                            </div>
-                        </ActiveLink>
-                    </li>
-                    <li className="nav-item mt-3">
-                        <ActiveLink activeClassName="active" href={`/${authUser}/posts`}>
-                            <div className="nav-link link-dark">
-                                <FontAwesomeIcon className="me-2" icon="stream" size="lg"/>
-                                <span>My Posts</span>
-                            </div>
-                        </ActiveLink>
-                    </li>
-                    <li className="nav-item mt-3">
-                        <button className="nav-link link-dark" onClick={handleClickLogOut}>
-                            <FontAwesomeIcon className="me-2" icon="sign-out-alt" size="lg"/>
-                            <span>Logout</span>
-                        </button>
-                    </li>
+                    <NavLink href={"/"}>
+                        <FontAwesomeIcon className="me-2" icon="home" size="lg"/>
+                        <span>Home</span>
+                    </NavLink>
+                    <NavLink href={`/${authUser}`}>
+                        <FontAwesomeIcon className="me-2" icon="user" size="lg"/>
+                        <span>Profile</span>
+                    </NavLink>
+                    <NavLink href={`/${authUser}/posts`}>
+                        <FontAwesomeIcon className="me-2" icon="user" size="lg"/>
+                        <span>My Posts</span>
+                    </NavLink>
+                    <NavLink onClick={handleClickLogOut}>
+                        <FontAwesomeIcon className="me-2" icon="sign-out-alt" size="lg"/>
+                        <span>Logout</span>
+                    </NavLink>
                 </>
             )
         }
         return (
             <>
-                <li className="nav-item m-3">
-                    <button className="nav-link link-dark" onClick={handleClickSignIn}>Sign in</button>
-                </li>
-                <li className="nav-item m-3">
-                    <button className="nav-link link-dark" onClick={handleClickSignUp}>Sign up</button>
-                </li>
+                <NavLink href={'/login'} onClick={handleClickSignIn}>
+                    SignIn
+                </NavLink>
+                <NavLink href={'/register'} onClick={handleClickSignUp}>
+                    SignUp
+                </NavLink>
             </>
         )
     }
