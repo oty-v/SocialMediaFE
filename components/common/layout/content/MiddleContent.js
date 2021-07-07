@@ -14,7 +14,7 @@ const MiddleContent = ({tagName, username, title, backBtn, children}) => {
                 <div className="central-column-header-title">
                     {!!title && <h3 className="mb-0">{title}</h3>}
                     {!!username && <span className="text-muted">{`@${username}`}</span>}
-                    {!!tagName && <span className="text-muted">{`#${tag}`}</span>}
+                    {!!tagName && <span className="text-muted">{`#${tagName}`}</span>}
                 </div>
             </CardHeader>
             {children}
