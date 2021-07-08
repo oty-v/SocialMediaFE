@@ -50,9 +50,7 @@ export const fetchProfile = createAction('FETCH_PROFILE', () => ({
         url: `/profile`,
     },
     meta: {
-        getData: data => ({
-            ...data.data,
-        }),
+        getData: data => data.data,
     },
 }));
 

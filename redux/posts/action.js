@@ -39,11 +39,7 @@ export const fetchPost = createAction('FETCH_POST', postId => ({
     meta: {
         requestKey: postId,
         requestsCapacity: 2,
-        getData: data => {
-            return ({
-                ...data.data,
-            })
-        },
+        getData: data => data.data,
     },
 }));
 

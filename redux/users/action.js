@@ -26,8 +26,6 @@ export const fetchUser = createAction('FETCH_USER', (username) => ({
     meta: {
         requestKey: username,
         requestsCapacity: 5,
-        getData: data => ({
-            ...data.data,
-        }),
+        getData: data => data.data,
     },
 }));
