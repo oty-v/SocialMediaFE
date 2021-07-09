@@ -2,8 +2,6 @@ import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 
 import {TextField} from '../common/field/textField';
-import {useCallback} from "react";
-import LoaderButton from "../common/buttons/LoaderButton";
 import SaveButton from "../common/buttons/SaveButton";
 
 const validationSchema = Yup.object({
@@ -13,11 +11,11 @@ const validationSchema = Yup.object({
 })
 
 function CommentForm({onSubmit, loading, comment = {content: ''}}) {
-    const handleSubmit = useCallback(async (values, actions) => {
+    const handleSubmit = async (values, actions) => {
         await onSubmit(values);
         actions.setSubmitting(false);
         actions.resetForm()
-    }, [onSubmit]);
+    };
     return (
         <Formik
             initialValues={comment}
@@ -30,13 +28,7 @@ function CommentForm({onSubmit, loading, comment = {content: ''}}) {
                     name="content"
                     type="text"
                 />
-                <div className="float-end">
-                    {loading ? (
-                        <LoaderButton/>
-                    ) : (
-                        <SaveButton/>
-                    )}
-                </div>
+                <SaveButton loading={loading} floatEnd/>
             </Form>
         </Formik>
     )

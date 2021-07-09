@@ -1,9 +1,6 @@
-const CenterInScreen = ({children, customClassName}) => {
-    const className = customClassName ?
-        `d-flex flex-column justify-content-center align-items-center ${customClassName}` :
-        'd-flex flex-column justify-content-center align-items-center'
+const CenterInScreen = ({children, customClassName = ''}) => {
     return (
-        <div className={className}>
+        <div className={`d-flex flex-column justify-content-center align-items-center ${customClassName}`}>
             {children}
         </div>
     )

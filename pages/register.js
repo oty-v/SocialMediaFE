@@ -1,4 +1,3 @@
-import {useCallback} from 'react'
 import Head from "next/head";
 import Link from "next/link";
 import {useRouter} from "next/router";
@@ -15,17 +14,17 @@ export default function Register() {
     const router = useRouter();
     const dispatch = useDispatch();
     const {loading} = useQuery({type: register})
-    const handleUserRegister = useCallback(async (userData) => {
+    const handleUserRegister = async (userData) => {
         await dispatch(register(userData));
         router.push(`/`);
-    },[]);
+    };
     return (
         <>
             <Head>
                 <title>Register</title>
                 <meta name="description" content="Please register before login"/>
             </Head>
-            <CenterInScreen customClassName={'vh-100'}>
+            <CenterInScreen customClassName="vh-100">
                 <Card>
                     <Card.Header>
                         <h3>Sign Up</h3>

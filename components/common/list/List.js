@@ -1,11 +1,10 @@
 import ListItem from "./ListItem";
 
-const CustomListItem = ({children}) => <ListItem customClassName={'list-group-item-action'}>{children}</ListItem>
+const CustomListItem = ({customClassName = '', children}) => <ListItem customClassName={`list-group-item-action ${customClassName}`}>{children}</ListItem>
 
-const List = ({customClassName, children}) => {
-    const className = customClassName ? `list-group list-group-flush ${customClassName}` : 'list-group list-group-flush'
+const List = ({customClassName = '', children}) => {
     return (
-        <ul className={className}>
+        <ul className={`list-group list-group-flush ${customClassName}`}>
             {children}
         </ul>
     )

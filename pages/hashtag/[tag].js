@@ -1,20 +1,18 @@
 import Head from 'next/head';
-import {useCallback, useEffect} from "react";
-import {useRouter} from "next/router";
+import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import {withAuth} from "../../lib/withAuth";
 import {withRedux} from "../../lib/withRedux";
 import {getCursorPosts} from "../../redux/posts/selectors";
-import {deletePost, fetchTagPosts, updatePost} from "../../redux/posts/action";
+import {fetchTagPosts} from "../../redux/posts/action";
 import Loader from "../../components/common/Loader";
 import PostsList from "../../components/posts/postList";
 import CenterInScreen from "../../components/common/CenterInScreen";
-import MiddleContent from "../../components/common/layout/content/MiddleContent";
+import MainContent from "../../components/common/layout/content/MainContent";
 
 export default function Tag({tag}) {
-    const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, 'FETCH_TAG_POSTS'));
-    const router = useRouter();
+    const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, fetchTagPosts));
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -22,28 +20,16 @@ export default function Tag({tag}) {
         return () => window.removeEventListener("scroll", handleScroll);
     });
 
-    const handleScroll = async () => {
+    const handleScroll = () => {
         const onBottom = window.innerHeight + document.documentElement.scrollTop ===
             document.documentElement.offsetHeight;
         if (onBottom && cursorPosts && !loading) {
-            await dispatch(fetchTagPosts(tag, cursorPosts));
+            dispatch(fetchTagPosts(tag, cursorPosts));
         }
     };
 
-    const handlePostRemove = useCallback(async (postId, postCursor) => {
-        await dispatch(deletePost(postId, postCursor));
-    }, []);
-
-    const handlePostEdit = useCallback(async (postUpdate, postId, postCursor) => {
-        await dispatch(updatePost(postUpdate, postId, postCursor));
-    }, []);
-
-    const handleClickPost = useCallback((post) => {
-        router.push(`/${post.author.username}/posts/${post.id}`)
-    }, []);
-
     const loadingNextPosts = !!loading && (
-        <CenterInScreen>
+        <CenterInScreen customClassName="my-3">
             <Loader/>
         </CenterInScreen>
     )
@@ -52,23 +38,20 @@ export default function Tag({tag}) {
             <Head>
                 <title>{tag}</title>
             </Head>
-            <MiddleContent
+            <MainContent
                 backBtn
-                title={'Posts List'}
+                title="Posts List"
                 tagName={tag}
             >
-                <MiddleContent.Body>
-                    <MiddleContent.Item>
+                <MainContent.Body>
+                    <MainContent.Item>
                         <PostsList
-                            onRemovePost={handlePostRemove}
-                            onEditPost={handlePostEdit}
-                            handleClickPost={handleClickPost}
                             posts={posts}
                         />
-                    </MiddleContent.Item>
+                    </MainContent.Item>
                     {loadingNextPosts}
-                </MiddleContent.Body>
-            </MiddleContent>
+                </MainContent.Body>
+            </MainContent>
         </>
     )
 }

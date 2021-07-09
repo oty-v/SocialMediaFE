@@ -1,7 +1,6 @@
-const CardFooter = ({customClassName, children}) => {
-    const className = customClassName ? `card-footer ${customClassName}` : 'card-footer'
+const CardFooter = ({customClassName = '', children}) => {
     return (
-        <div className={className}>
+        <div className={`card-footer ${customClassName}`}>
             {children}
         </div>
     )

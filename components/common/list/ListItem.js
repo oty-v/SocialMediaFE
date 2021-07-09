@@ -1,7 +1,6 @@
-const ListItem = ({customClassName, children}) => {
-    const className = customClassName ? `list-group-item ${customClassName}` : 'list-group-item'
+const ListItem = ({customClassName = '', children}) => {
     return (
-        <li className={className}>
+        <li className={`list-group-item ${customClassName}`}>
             {children}
         </li>
     )

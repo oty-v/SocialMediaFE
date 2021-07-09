@@ -1,12 +1,11 @@
 import {useEffect, useState} from "react";
+import {useMutation} from "@redux-requests/react";
 
 import CommentForm from "./commentForm";
 import User from "../users/user";
 import ParsedContent from "../common/ParsedContent";
-import {useMutation} from "@redux-requests/react";
 import {deleteComment, updateComment} from "../../redux/comments/action";
 import Card from "../common/card/Card";
-import LoaderButton from "../common/buttons/LoaderButton";
 import RemoveButton from "../common/buttons/RemoveButton";
 import MinEditButton from "../common/buttons/MinEditButton";
 
@@ -16,7 +15,7 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
     const {loading: loadingDelete} = useMutation({type: deleteComment, requestKey: comment.id});
     useEffect(() => {
         setEditMode(false);
-    }, [comment, comment.content])
+    }, [comment.content])
     const commentContent = editMode ? (
         <>
             <CommentForm
@@ -24,20 +23,17 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
                 comment={comment}
                 loading={loadingUpdate}
             />
-            {loadingDelete ? (
-                <LoaderButton/>
-            ) : (
-                <RemoveButton
-                    onClick={() => {
-                        onRemove(comment)
-                    }}
-                />
-            )}
+            <RemoveButton
+                loading={loadingDelete}
+                onClick={() => {
+                    onRemove(comment)
+                }}
+            />
         </>
     ) : (
         <ParsedContent
-            contentClass={"card-text"}
-            linkClass={"mx-1"}
+            contentClass="card-text"
+            linkClass="mx-1"
             parsedUsers={comment.mentionedUsers}
         >
             {comment.content}

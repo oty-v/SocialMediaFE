@@ -1,7 +1,6 @@
-const CardBody = ({customClassName, children}) => {
-    const className = customClassName ? `card-body ${customClassName}` : 'card-body'
+const CardBody = ({customClassName = '', children}) => {
     return (
-        <div className={className}>
+        <div className={`card-body ${customClassName}`}>
             {children}
         </div>
     )

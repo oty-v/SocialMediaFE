@@ -6,7 +6,6 @@ import {useMutation} from "@redux-requests/react";
 import {deletePost, updatePost} from "../../redux/posts/action";
 import ParsedContent from "../common/ParsedContent";
 import Card from "../common/card/Card";
-import LoaderButton from "../common/buttons/LoaderButton";
 import RemoveButton from "../common/buttons/RemoveButton";
 import MinEditButton from "../common/buttons/MinEditButton";
 import CommentsButton from "../common/buttons/CommentsButton";
@@ -17,24 +16,20 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
     const {loading: loadingDelete} = useMutation({type: deletePost, requestKey: post.id});
     useEffect(() => {
         setEditMode(false);
-    }, [post, post.content])
+    }, [post.content])
     const postContent = editMode ? (
         <>
             <PostForm
-                setEditMode={editMode && setEditMode}
                 onSubmit={onEdit}
                 post={post}
                 loading={loadingUpdate}
             />
-            {loadingDelete ? (
-                <LoaderButton/>
-            ) : (
-                <RemoveButton
-                    onClick={() => {
-                        onRemove(post.id, post.cursor)
-                    }}
-                />
-            )}
+            <RemoveButton
+                loading={loadingDelete}
+                onClick={() => {
+                    onRemove(post.id, post.cursor)
+                }}
+            />
         </>
     ) : (
         <ParsedContent
@@ -62,10 +57,10 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
         <>
             <Card.Header>
                 <h5 className="d-inline-flex">
-                        <User
-                            user={post.author}
-                        />
-                        {editButton}
+                    <User
+                        user={post.author}
+                    />
+                    {editButton}
                 </h5>
             </Card.Header>
             <Card.Body>

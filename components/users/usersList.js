@@ -11,7 +11,7 @@ const UserList = ({onSubmit, selectedPage=1}) => {
     const {data, loading} = useQuery({type: fetchUsers, requestKey: selectedPage});
     const users = data?.users;
     const userList = loading||!users ? (
-        <CenterInScreen>
+        <CenterInScreen customClassName="my-5">
             <Loader/>
         </CenterInScreen>
     ) : (

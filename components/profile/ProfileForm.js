@@ -3,8 +3,6 @@ import * as Yup from 'yup';
 
 import {InputField} from "../common/field/inputField";
 import {InputImageField} from "../common/field/inputImageField";
-import {useCallback} from "react";
-import LoaderButton from "../common/buttons/LoaderButton";
 import SaveButton from "../common/buttons/SaveButton";
 
 const FILE_SIZE = 5 * 1024 * 1024;
@@ -38,7 +36,7 @@ const validationSchema = Yup.object({
 })
 
 function ProfileForm({onSubmit, loading, profile = {name: ''}}) {
-    const handleSubmit = useCallback(async (values, actions) => {
+    const handleSubmit = async (values, actions) => {
         let data = new FormData();
         data.append("_method", "PUT");
         values.name && data.append("name", values.name);
@@ -46,7 +44,7 @@ function ProfileForm({onSubmit, loading, profile = {name: ''}}) {
         await onSubmit(profile.id, data);
         actions.setSubmitting(false);
         actions.resetForm()
-    }, [onSubmit]);
+    };
 
     return (
         <Formik
@@ -67,13 +65,7 @@ function ProfileForm({onSubmit, loading, profile = {name: ''}}) {
                     name="name"
                     type="text"
                 />
-                <div className="float-end">
-                    {loading ? (
-                        <LoaderButton/>
-                    ) : (
-                        <SaveButton/>
-                    )}
-                </div>
+                <SaveButton loading={loading} floatEnd/>
             </Form>
             )}
         </Formik>

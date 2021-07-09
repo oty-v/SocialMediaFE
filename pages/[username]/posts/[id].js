@@ -1,4 +1,3 @@
-import {useCallback} from "react";
 import {useRouter} from "next/router";
 import Head from "next/head";
 import {useMutation, useQuery} from "@redux-requests/react";
@@ -13,63 +12,57 @@ import {createComment, fetchPostComments} from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
 import {fetchProfile} from "../../../redux/auth/action";
 import Loader from "../../../components/common/Loader";
-import MiddleContent from "../../../components/common/layout/content/MiddleContent";
+import MainContent from "../../../components/common/layout/content/MainContent";
 import CenterInScreen from "../../../components/common/CenterInScreen";
 
 const PostPage = ({username, postId}) => {
     const router = useRouter();
     const {data: {username: authUser}} = useQuery({type: fetchProfile});
-    const {data: post, loading} = useQuery({type: fetchPost, requestKey: postId});
+    const {data: post} = useQuery({type: fetchPost, requestKey: postId});
     const {loading: loadingCreate} = useMutation({type: createComment, requestKey: postId})
-    const dispatch = useDispatch();
 
-    const handlePostRemove = useCallback((postId) => {
-        dispatch(deletePost(postId));
-    }, []);
-
-    const handlePostEdit = useCallback((postUpdate, postId) => {
-        dispatch(updatePost(postUpdate, postId));
-    }, []);
-
-    const handleCommentCreate = useCallback((commentData) => {
-        dispatch(createComment(postId, commentData));
-    }, []);
-
-    if (loading) {
-        return (
-            <CenterInScreen>
-                <Loader/>
-            </CenterInScreen>
-        )
-    }
     if (!post) {
         router.push(`/${username}/posts`)
         return (
-            <CenterInScreen>
+            <CenterInScreen customClassName="vh-100">
                 <Loader/>
             </CenterInScreen>
         )
     }
+
+    const dispatch = useDispatch();
+
+    const handlePostRemove = (postId) => {
+        dispatch(deletePost(postId));
+    };
+
+    const handlePostEdit = (postUpdate, postId) => {
+        dispatch(updatePost(postUpdate, postId));
+    };
+
+    const handleCommentCreate = (commentData) => {
+        dispatch(createComment(postId, commentData));
+    };
 
     return (
         <>
             <Head>
                 <title>Post: {post.id}</title>
             </Head>
-            <MiddleContent
+            <MainContent
                 backBtn
-                title={'Post'}
+                title="Post"
             >
-                <MiddleContent.Body>
-                    <MiddleContent.Item>
+                <MainContent.Body>
+                    <MainContent.Item>
                         <Post
                             onEdit={handlePostEdit}
                             onRemove={handlePostRemove}
                             post={post}
                             showPostControls={authUser === post.author?.username}
                         />
-                    </MiddleContent.Item>
-                    <MiddleContent.Item>
+                    </MainContent.Item>
+                    <MainContent.Item>
                         <div className="mb-5">
                             <CommentForm onSubmit={handleCommentCreate} loading={loadingCreate}/>
                         </div>
@@ -77,9 +70,9 @@ const PostPage = ({username, postId}) => {
                         <CommentsList
                             postId={post.id}
                         />
-                    </MiddleContent.Item>
-                </MiddleContent.Body>
-            </MiddleContent>
+                    </MainContent.Item>
+                </MainContent.Body>
+            </MainContent>
         </>
     )
 }

@@ -1,6 +1,5 @@
 import Head from "next/head";
 import {useDispatch} from "react-redux";
-import {useCallback} from "react";
 import {useRouter} from "next/router";
 
 import Loader from "../../components/common/Loader";
@@ -10,7 +9,7 @@ import {withAuth} from "../../lib/withAuth";
 import {fetchProfile, updateProfile} from "../../redux/auth/action";
 import {useMutation, useQuery} from "@redux-requests/react";
 import CenterInScreen from "../../components/common/CenterInScreen";
-import MiddleContent from "../../components/common/layout/content/MiddleContent";
+import MainContent from "../../components/common/layout/content/MainContent";
 
 
 function SettingsProfile() {
@@ -19,16 +18,14 @@ function SettingsProfile() {
     const {loading} = useMutation({type: updateProfile});
     const dispatch = useDispatch();
 
-    const handleProfileEdit = useCallback(async (profileId, editProfile) => {
-            await dispatch(updateProfile(profileId, editProfile));
-            !loading && router.push(`/${profile.username}`);
-        },
-        [profile],
-    )
-
+    const handleProfileEdit = async (profileId, editProfile) => {
+        await dispatch(updateProfile(profileId, editProfile));
+        router.push(`/${profile.username}`);
+    }
     if (!profile) {
+        router.push(`/`)
         return (
-            <CenterInScreen additionalClassName={"vh-100"}>
+            <CenterInScreen customClassName="vh-100">
                 <Loader/>
             </CenterInScreen>
         )
@@ -39,21 +36,21 @@ function SettingsProfile() {
             <Head>
                 <title>{profile.username}</title>
             </Head>
-            <MiddleContent
+            <MainContent
                 backBtn
-                title={'Settings'}
+                title="Settings"
                 username={profile.username}
             >
-                <MiddleContent.Body>
-                    <MiddleContent.Item>
+                <MainContent.Body>
+                    <MainContent.Item>
                         <ProfileForm
                             onSubmit={handleProfileEdit}
                             profile={profile}
                             loading={loading}
                         />
-                    </MiddleContent.Item>
-                </MiddleContent.Body>
-            </MiddleContent>
+                    </MainContent.Item>
+                </MainContent.Body>
+            </MainContent>
         </>
     )
 }

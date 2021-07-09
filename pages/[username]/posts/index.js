@@ -1,20 +1,18 @@
-import {useCallback, useEffect} from "react";
+import {useEffect} from "react";
 import Head from "next/head";
 import {useDispatch, useSelector} from "react-redux";
 
-import {useRouter} from "next/router";
 import PostsList from "../../../components/posts/postList";
 import {withAuth} from "../../../lib/withAuth";
-import {fetchUserPosts, updatePost, deletePost} from "../../../redux/posts/action";
+import {fetchUserPosts} from "../../../redux/posts/action";
 import {withRedux} from "../../../lib/withRedux";
 import Loader from "../../../components/common/Loader";
 import {getCursorPosts} from "../../../redux/posts/selectors";
 import CenterInScreen from "../../../components/common/CenterInScreen";
-import MiddleContent from "../../../components/common/layout/content/MiddleContent";
+import MainContent from "../../../components/common/layout/content/MainContent";
 
 function Posts({username}) {
-    const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, 'FETCH_USER_POSTS'));
-    const router = useRouter();
+    const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, fetchUserPosts));
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -30,20 +28,8 @@ function Posts({username}) {
         }
     };
 
-    const handlePostRemove = useCallback((postId, postCursor) => {
-        dispatch(deletePost(postId, postCursor));
-    }, []);
-
-    const handlePostEdit = useCallback((postUpdate, postId, postCursor) => {
-        dispatch(updatePost(postUpdate, postId, postCursor));
-    }, []);
-
-    const handleClickPost = useCallback((post) => {
-        router.push(`/${post.author.username}/posts/${post.id}`)
-    }, []);
-
     const loadingNextPosts = !!loading && (
-        <CenterInScreen>
+        <CenterInScreen customClassName="my-3">
             <Loader/>
         </CenterInScreen>
     )
@@ -53,23 +39,20 @@ function Posts({username}) {
             <Head>
                 <title>Posts</title>
             </Head>
-            <MiddleContent
+            <MainContent
                 backBtn
-                title={'Posts List'}
+                title="Posts List"
                 username={username}
             >
-                <MiddleContent.Body>
-                    <MiddleContent.Item>
+                <MainContent.Body>
+                    <MainContent.Item>
                         <PostsList
-                            onRemovePost={handlePostRemove}
-                            onEditPost={handlePostEdit}
-                            handleClickPost={handleClickPost}
                             posts={posts}
                         />
-                    </MiddleContent.Item>
+                    </MainContent.Item>
                     {loadingNextPosts}
-                </MiddleContent.Body>
-            </MiddleContent>
+                </MainContent.Body>
+            </MainContent>
         </>
     )
 

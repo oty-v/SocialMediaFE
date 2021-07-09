@@ -8,24 +8,24 @@ import Loader from "../../components/common/Loader";
 import {useRouter} from "next/router";
 import {useQuery} from "@redux-requests/react";
 import {fetchProfile} from "../../redux/auth/action";
-import {useCallback} from "react";
-import MiddleContent from "../../components/common/layout/content/MiddleContent";
+import MainContent from "../../components/common/layout/content/MainContent";
 import ProfileCard from "../../components/profile/ProfileCard";
 import CenterInScreen from "../../components/common/CenterInScreen";
 
 function Profile({username}) {
     const router = useRouter();
     const {data} = useQuery({type: fetchProfile});
-    const {data: user, loading} = useQuery({type: fetchUser, requestKey: username});
+    const {data: user} = useQuery({type: fetchUser, requestKey: username});
     const authUser = data?.username;
 
-    const handleClickEditProfile = useCallback(() => {
+    const handleClickEditProfile = () => {
         router.push(`/settings/profile`);
-    }, []);
+    };
 
-    if (loading || !user) {
+    if (!user) {
+        router.push(`/`)
         return (
-            <CenterInScreen additionalClassName={"vh-100"}>
+            <CenterInScreen customClassName="vh-100">
                 <Loader/>
             </CenterInScreen>
         )
@@ -45,20 +45,22 @@ function Profile({username}) {
             <Head>
                 <title>{user.username}</title>
             </Head>
-            <MiddleContent
+            <MainContent
                 backBtn
-                title={'User'}
+                title="User"
                 username={user.username}
             >
-                <MiddleContent.Body>
-                    <MiddleContent.Item>
-                        <ProfileCard user={user} profileBtn={editProfileBtn}/>
-                    </MiddleContent.Item>
+                <MainContent.Body>
+                    <MainContent.Item>
+                        <ProfileCard user={user}>
+                            {editProfileBtn}
+                        </ProfileCard>
+                    </MainContent.Item>
                     <Link href={`/${user.username}/posts`}>
-                        <span className="btn btn-outline-primary mb-1">{user.username} posts</span>
+                        <span className="btn btn-outline-primary mb-1">{`${user.username} posts`}</span>
                     </Link>
-                </MiddleContent.Body>
-            </MiddleContent>
+                </MainContent.Body>
+            </MainContent>
         </>
     )
 }

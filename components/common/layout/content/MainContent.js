@@ -6,7 +6,7 @@ import CardHeader from "../../card/CardHeader";
 
 const ContentBody = ({children}) => <CardBody><List>{children}</List></CardBody>
 
-const MiddleContent = ({tagName, username, title, backBtn, children}) => {
+const MainContent = ({tagName, username, title, backBtn, children}) => {
     return (
         <div className="central-column">
             <CardHeader customClassName={'central-column-header bg-transparent'}>
@@ -22,7 +22,7 @@ const MiddleContent = ({tagName, username, title, backBtn, children}) => {
     )
 }
 
-export default Object.assign(MiddleContent, {
+export default Object.assign(MainContent, {
     Item: ListItem,
     Body: ContentBody,
 });

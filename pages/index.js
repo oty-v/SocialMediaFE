@@ -1,4 +1,3 @@
-import {useCallback} from 'react';
 import {useDispatch} from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -10,37 +9,37 @@ import {fetchUsers} from "../redux/users/action";
 import {withRedux} from "../lib/withRedux";
 import {createPost} from "../redux/posts/action";
 import {useMutation} from "@redux-requests/react";
-import MiddleContent from "../components/common/layout/content/MiddleContent";
+import MainContent from "../components/common/layout/content/MainContent";
 
 export default function Home() {
     const {loading} = useMutation({type: createPost})
     const dispatch = useDispatch();
 
-    const handlePostCreate = useCallback(async (postData) => {
-        await dispatch(createPost(postData));
-    }, []);
+    const handlePostCreate = (postData) => {
+        dispatch(createPost(postData));
+    };
 
-    const handleUserSearch = useCallback(async (search) => {
-        await dispatch(fetchUsers(search.query));
-    }, []);
+    const handleUserSearch = (search) => {
+        dispatch(fetchUsers(search.query));
+    };
 
     return (
         <>
             <Head>
                 <title>Home</title>
             </Head>
-            <MiddleContent
-                title={'Home'}
+            <MainContent
+                title="Home"
             >
-                <MiddleContent.Body>
-                    <MiddleContent.Item>
+                <MainContent.Body>
+                    <MainContent.Item>
                         <PostForm
                             onSubmit={handlePostCreate}
                             loading={loading}
                         />
-                    </MiddleContent.Item>
-                </MiddleContent.Body>
-            </MiddleContent>
+                    </MainContent.Item>
+                </MainContent.Body>
+            </MainContent>
             <div className="mx-5">
                 <div className="my-3">
                     <h4>Users</h4>

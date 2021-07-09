@@ -2,13 +2,12 @@ import CardBody from "./CardBody";
 import CardHeader from "./CardHeader";
 import CardFooter from "./CardFooter";
 
-const CustomCardHeader = ({children}) => {
-    return <CardHeader customClassName={'bg-transparent'}>{children}</CardHeader>
+const CustomCardHeader = ({customClassName = '', children}) => {
+    return <CardHeader customClassName={`bg-transparent ${customClassName}`}>{children}</CardHeader>
 }
-const Card = ({customClassName, children}) => {
-    const className = customClassName ? `card ${customClassName}` : 'card'
+const Card = ({customClassName = '', children}) => {
     return (
-        <div className={className}>
+        <div className={`card ${customClassName}`}>
             {children}
         </div>
     )

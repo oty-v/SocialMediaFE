@@ -1,6 +1,6 @@
 import UserAvatar from "../users/userAvatar";
 
-const ProfileCard = ({user, profileBtn}) => {
+const ProfileCard = ({user, children}) => {
     return (
         <>
             <div className="d-flex align-items-end justify-content-between mb-2">
@@ -9,11 +9,11 @@ const ProfileCard = ({user, profileBtn}) => {
                     width={125}
                     height={125}
                 />
-                {profileBtn}
+                {children}
             </div>
             <h4 className="card-title">{user.name ? user.name : `ID: ${user.id}`}</h4>
             <p className="card-text">Data registration: {user.created_at}</p>
         </>
     )
 }
-export default ProfileCard
+export default ProfileCard;

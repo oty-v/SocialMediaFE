@@ -1,4 +1,3 @@
-import {useCallback} from 'react'
 import {useRouter} from "next/router";
 import Head from "next/head";
 import Link from "next/link";
@@ -15,16 +14,16 @@ export default function Login() {
     const router = useRouter();
     const dispatch = useDispatch();
     const {loading} = useQuery({type: login})
-    const handleUserLogin = useCallback(async (credentials) => {
+    const handleUserLogin = async (credentials) => {
         await dispatch(login(credentials));
         router.push(`/`);
-    }, []);
+    };
     return (
         <>
             <Head>
                 <title>Login</title>
             </Head>
-            <CenterInScreen customClassName={'vh-100'}>
+            <CenterInScreen customClassName="vh-100">
                 <Card>
                     <Card.Header>
                         <h3>Sign in</h3>
