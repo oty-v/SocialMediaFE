@@ -1,60 +1,59 @@
-import {SET_COMMENTS, ADD_COMMENT, UPDATE_COMMENT, REMOVE_COMMENT} from "./types";
-import {createComment, deleteComment, editComment, getPostComments} from "../../api/comments";
+import {createAction} from "redux-smart-actions";
 
-export const setComments = (comments) => {
+export const fetchPostComments = createAction('FETCH_POST_COMMENTS', (postId) => ({
+    request: {
+        url: `/posts/${postId}/comments`,
+    },
+    meta: {
+        requestKey: postId,
+        requestsCapacity: 2,
+        getData: data => data.data,
+    },
+}));
+
+export const createComment = createAction('CREATE_COMMENT', (postId, createdData) => ({
+    request: {
+        url: `/posts/${postId}/comments`,
+        method: 'post',
+        data: createdData
+    },
+    meta: {
+        requestKey: postId,
+        mutations: {
+            [fetchPostComments + postId]: (data, mutationData) => [...data, mutationData.data]
+        },
+    },
+}));
+
+export const updateComment = createAction('UPDATE_COMMENT', (postId, commentId, updatedData) => {
     return {
-        type: SET_COMMENTS,
-        payload: comments
-    };
-}
-
-export const addComment = (comment) => {
-    return {
-        type: ADD_COMMENT,
-        payload: comment
+        request: {
+            url: `/comments/${commentId}`,
+            method: 'put',
+            data: updatedData
+        },
+        meta: {
+            requestKey: commentId,
+            mutations: {
+                [fetchPostComments + postId]: (data, mutationData) => {
+                    return data.map(comment => (comment.id === commentId ? mutationData.data : comment))
+                },
+            },
+        },
     }
-}
+});
 
-export const updateComment = (updatedComment) => {
-    return {
-        type: UPDATE_COMMENT,
-        payload: updatedComment
-    };
-}
-
-
-export const removeComment = (commentId) => {
-    return {
-        type: REMOVE_COMMENT,
-        payload: commentId
-    };
-}
-
-export const getCommentsAsync = (postId) => {
-    return async (dispatch) => {
-        const {data: {data: comments}} = await getPostComments(postId);
-        dispatch(setComments(comments));
-    }
-}
-
-export const updateCommentAsync = (commentId, updatedData) => {
-    return async (dispatch) => {
-        const {data: {data: updatedComment}} = await editComment(commentId, updatedData);
-        dispatch(updateComment(updatedComment));
-    }
-}
-
-export const removeCommentAsync = (commentId) => {
-    return async (dispatch) => {
-        await deleteComment(commentId);
-        dispatch(removeComment(commentId));
-    }
-}
-
-export const createCommentAsync = (postId, createdData) => {
-    return async (dispatch) => {
-        const {data: {data: comment}} = await createComment(postId, createdData);
-        dispatch(addComment(comment));
-    }
-}
-
+export const deleteComment = createAction('DELETE_COMMENT', (postId, commentId) => ({
+    request: {
+        url: `/comments/${commentId}`,
+        method: 'delete',
+    },
+    meta: {
+        requestKey: commentId,
+        mutations: {
+            [fetchPostComments + postId]: (data) => {
+                return data.filter(comment => comment.id !== commentId)
+            },
+        },
+    },
+}));

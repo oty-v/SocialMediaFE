@@ -1,61 +1,63 @@
 import {useEffect, useState} from "react";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {useMutation} from "@redux-requests/react";
 
 import CommentForm from "./commentForm";
-import Loader from "../common/Loader";
 import User from "../users/user";
+import ParsedContent from "../common/ParsedContent";
+import {deleteComment, updateComment} from "../../redux/comments/action";
+import Card from "../common/card/Card";
+import RemoveButton from "../common/buttons/RemoveButton";
+import MinEditButton from "../common/buttons/MinEditButton";
 
-const Comment = ({onRemove, onEdit, comment, showCommentControls, loading}) => {
+const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
     const [editMode, setEditMode] = useState(false);
+    const {loading: loadingUpdate} = useMutation({type: updateComment, requestKey: comment.id});
+    const {loading: loadingDelete} = useMutation({type: deleteComment, requestKey: comment.id});
     useEffect(() => {
         setEditMode(false);
-    }, [comment])
+    }, [comment.content])
     const commentContent = editMode ? (
         <>
             <CommentForm
                 onSubmit={onEdit}
                 comment={comment}
-                loading={loading}
+                loading={loadingUpdate}
             />
-            <button
-                className="btn btn-danger m-1"
-                disabled={loading}
+            <RemoveButton
+                loading={loadingDelete}
                 onClick={() => {
                     onRemove(comment)
-                    setEditMode(false)
                 }}
-            >
-                {loading ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
-            </button>
+            />
         </>
     ) : (
-        <p className="card-text">{comment.body}</p>
+        <ParsedContent
+            contentClass="card-text"
+            linkClass="mx-1"
+            parsedUsers={comment.mentionedUsers}
+        >
+            {comment.content}
+        </ParsedContent>
     )
     const editButton = showCommentControls ? (
-        <button
-            className="btn btn-light ms-1 p-0 icon focus-off"
+        <MinEditButton
+            editMode={editMode}
             onClick={() => {
                 setEditMode(!editMode)
             }}
-        >
-            {editMode ? (
-                <FontAwesomeIcon icon="times-circle"/>
-            ) : (
-                <FontAwesomeIcon icon="edit"/>
-            )}
-        </button>
+        />
     ) : null
     return (
         <>
-            <h5 className="card-header">
-                <div className="d-inline-flex">
+            <Card.Header>
+                <h5 className="d-inline-flex">
                     <User user={comment.author}/>
                     {editButton}
-                </div>
-            </h5>
-            <div className="card-body">
+                </h5>
+            </Card.Header>
+            <Card.Body>
                 {commentContent}
-            </div>
+            </Card.Body>
         </>
     )
 }

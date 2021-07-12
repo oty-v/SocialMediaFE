@@ -1,32 +1,43 @@
 import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 
-import Loader from "../common/Loader";
 import {InputField} from '../common/field/inputField';
+import ResetButton from "../common/buttons/ResetButton";
+import LoaderButton from "../common/buttons/LoaderButton";
+
+const validationSchema = Yup.object({
+    username: Yup.string()
+        .max(25, 'Must be 25 characters or less')
+        .required('Required'),
+    email: Yup.string()
+        .email('Email is invalid')
+        .required('Email is required'),
+    password: Yup.string()
+        .min(8, 'Password must be at least 8 characters')
+        .required('Password is required'),
+    password_confirmation: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Password must match')
+        .required('Confirm password is required'),
+})
+
+const initialValues = {
+    username: '',
+    email: '',
+    password: '',
+    password_confirmation: ''
+}
 
 const RegisterForm = ({onSubmit, loading}) => {
-    const validationSchema = Yup.object({
-        username: Yup.string()
-            .max(25, 'Must be 25 characters or less')
-            .required('Required'),
-        email: Yup.string()
-            .email('Email is invalid')
-            .required('Email is required'),
-        password: Yup.string()
-            .min(8, 'Password must be at least 8 characters')
-            .required('Password is required'),
-        password_confirmation: Yup.string()
-            .oneOf([Yup.ref('password'), null], 'Password must match')
-            .required('Confirm password is required'),
-    })
+    const signUpBtn = loading ? (
+        <LoaderButton/>
+    ) : (
+        <button className="btn btn-primary m-1" type="submit">
+            Sign Up
+        </button>
+    )
     return (
         <Formik
-            initialValues={{
-                username: '',
-                email: '',
-                password: '',
-                password_confirmation: ''
-            }}
+            initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
         >
@@ -52,10 +63,8 @@ const RegisterForm = ({onSubmit, loading}) => {
                     type="password"
                 />
                 <div className="field-container">
-                    <button className="btn btn-primary m-1" type="submit" disabled={loading}>
-                        {loading ? (<Loader/>) : ("Sign Up")}
-                    </button>
-                    <button className="btn btn-outline-danger m-1" type="reset">Reset</button>
+                    {signUpBtn}
+                    <ResetButton/>
                 </div>
             </Form>
         </Formik>

@@ -1,31 +1,28 @@
 import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 
-import Loader from "../common/Loader";
 import {TextField} from '../common/field/textField';
+import SaveButton from "../common/buttons/SaveButton";
 
-function PostForm({
-                      onSubmit,
-                      loading,
-                      post = {
-                          content: ''
-                      }
-                  }) {
-    const validationSchema = Yup.object({
-        content: Yup.string()
-            .max(280, 'Must be 280 characters or less')
-            .required('Required'),
-    })
+const validationSchema = Yup.object({
+    content: Yup.string()
+        .max(280, 'Must be 280 characters or less')
+        .required('Required'),
+})
+
+function PostForm({onSubmit, loading, post = {content: ''}}) {
+    const handleSubmit = async (values, actions) => {
+        await onSubmit(values, post.id, post.cursor);
+        actions.setSubmitting(false);
+        actions.resetForm();
+    };
+
     return (
         <Formik
             enableReinitialize={true}
             initialValues={post}
             validationSchema={validationSchema}
-            onSubmit={async (values, actions) => {
-                await onSubmit(values);
-                actions.setSubmitting(false);
-                actions.resetForm()
-            }}
+            onSubmit={handleSubmit}
         >
             <Form>
                 <TextField
@@ -33,13 +30,7 @@ function PostForm({
                     name="content"
                     type="text"
                 />
-                <button
-                    className="btn btn-primary float-end m-1"
-                    type="submit"
-                    disabled={loading}
-                >
-                    {loading ? (<Loader/>) : ("Save")}
-                </button>
+                <SaveButton loading={loading} floatEnd/>
             </Form>
         </Formik>
     )

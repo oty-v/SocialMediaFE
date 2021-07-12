@@ -1,36 +1,44 @@
-import {useSelector} from "react-redux";
+import {useQuery} from "@redux-requests/react";
+import {useDispatch} from "react-redux";
 
 import Comment from "./comment";
-import Loader from "../common/Loader";
+import {fetchProfile} from "../../redux/auth/action";
+import {deleteComment, fetchPostComments, updateComment} from "../../redux/comments/action";
+import CenterInScreen from "../common/CenterInScreen";
+import List from "../common/list/List";
 
-const CommentsList = ({onRemoveComment, onEditComment, loading}) => {
-    const auth = useSelector((state) => state.auth);
-    const comments = useSelector((state) => state.comments.comments);
-    const authUser = auth.profile.username;
-    if (loading) {
+const CommentsList = ({postId}) => {
+    const {data: {username: authUser}} = useQuery({type: fetchProfile});
+    const {data: comments} = useQuery({type: fetchPostComments, requestKey: postId});
+    const dispatch = useDispatch();
+    const handleCommentRemove = (comment) => {
+        dispatch(deleteComment(postId, comment.id));
+    };
+
+    const handleCommentEdit = (comment) => {
+        dispatch(updateComment(postId, comment.id, comment));
+    };
+
+    if (!comments.length) {
         return (
-            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
-                <Loader/>
-            </div>
+            <CenterInScreen customClassName="my-3">
+                No Comments
+            </CenterInScreen>
         )
     }
-    if (!comments.length) {
-        return <span>No Comments</span>
-    }
     return (
-        <ul className="list-group">
+        <List>
             {comments.map(comment => (
-                <li className="list-group-item list-group-item-action" key={comment.id}>
+                <List.Item key={comment.id}>
                     <Comment
                         comment={comment}
                         showCommentControls={authUser === comment.author.username}
-                        onEdit={onEditComment}
-                        onRemove={onRemoveComment}
-                        loading={loading}
+                        onEdit={handleCommentEdit}
+                        onRemove={handleCommentRemove}
                     />
-                </li>
+                </List.Item>
             ))}
-        </ul>
+        </List>
     )
 }
 

@@ -1,37 +1,56 @@
-import {useSelector} from "react-redux";
+import {useQuery} from "@redux-requests/react";
 
 import Post from "./post";
-import Loader from "../common/Loader";
+import {fetchProfile} from "../../redux/auth/action";
+import CenterInScreen from "../common/CenterInScreen";
+import List from "../common/list/List";
+import {deletePost, updatePost} from "../../redux/posts/action";
+import {useDispatch} from "react-redux";
+import {useRouter} from "next/router";
 
-const PostsList = ({onRemovePost, onEditPost, handleClickPost, loading}) => {
-    const auth = useSelector((state) => state.auth);
-    const posts = useSelector((state) => state.posts.posts);
-    const authUser = auth.profile.username;
-    if (loading) {
+const PostsList = ({customHandleClick, posts}) => {
+    const {data:{username:authUser}} = useQuery({ type: fetchProfile });
+    const router = useRouter();
+    const dispatch = useDispatch();
+    
+    if (!posts.length) {
         return (
-            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
-                <Loader/>
-            </div>
+            <CenterInScreen customClassName="my-3">
+                No posts
+            </CenterInScreen>
         )
     }
-    if (!posts.length) {
-        return <span>No posts</span>
+    
+    const handlePostRemove = (postId, postCursor) => {
+        dispatch(deletePost(postId, postCursor));
+    };
+
+    const handlePostEdit = (postUpdate, postId, postCursor) => {
+        dispatch(updatePost(postUpdate, postId, postCursor));
+    };
+
+    const baseHandleClick = (post) => {
+        router.push(`/${post.author.username}/posts/${post.id}`)
     }
+
+    const handleClick = (post) => {
+        customHandleClick ? customHandleClick(post) : baseHandleClick(post)
+    };
+    
     return (
-        <ul className="list-group list-group-flush">
+        <List customClassName="list-group-flush">
             {posts.map(post => (
-                <li className="list-group-item list-group-item-action" key={post.id}>
+                <List.Item key={post.id}>
                     <Post
-                        onEdit={onEditPost}
-                        onRemove={onRemovePost}
-                        onClick={() => handleClickPost(post)}
+                        onEdit={handlePostEdit}
+                        onRemove={handlePostRemove}
+                        onClick={() => handleClick(post)}
                         post={post}
                         showPostControls={authUser === post.author.username}
-                        loading={loading}
                     />
-                </li>
+                </List.Item>
             ))}
-        </ul>
+        </List>
     )
 }
 

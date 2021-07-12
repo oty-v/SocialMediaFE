@@ -12,10 +12,10 @@ export const InputField = ({label, ...props}) => {
                 {...props}
             />
             <label htmlFor={field.name} className="form-label">{label}</label>
-                <ErrorMessage
-                    component="span" name={field.name}
-                    className="error"
-                />
+            <ErrorMessage
+                component="span" name={field.name}
+                className="error"
+            />
         </div>
-)
+    )
 }

@@ -1,30 +1,30 @@
 import {useRouter} from "next/router";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import Header from "./header";
-import {Bounce, toast, ToastContainer} from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import {Bounce, ToastContainer} from "react-toastify";
 
-import {logout} from "../../../redux/auth/action";
+import {fetchProfile, logout} from "../../../redux/auth/action";
+import {useQuery} from "@redux-requests/react";
 
 function Layout({children}) {
     const router = useRouter();
-    const auth = useSelector((state) => state.auth);
+    const {data} = useQuery({ type: fetchProfile });
+    const authUser = data?.username;
     const dispatch = useDispatch();
-    const authUser = auth.profile.username;
+
     const handleClickSignIn = () => {
         router.push(`/login`);
-    }
+    };
+
     const handleClickSignUp = () => {
         router.push(`/register`);
-    }
+    };
+
     const handleClickLogOut = async () => {
-        try {
-            dispatch(logout());
+            await dispatch(logout());
             router.push('/login');
-        } catch (error) {
-            toast.error(error.toString())
-        }
     }
+
     return (
         <div className="container-fluid d-flex flex-row">
             <ToastContainer
@@ -34,7 +34,6 @@ function Layout({children}) {
             />
             <Header
                 authUser={authUser}
-                isLoggedIn={auth.isLoggedIn}
                 handleClickSignIn={handleClickSignIn}
                 handleClickSignUp={handleClickSignUp}
                 handleClickLogOut={handleClickLogOut}

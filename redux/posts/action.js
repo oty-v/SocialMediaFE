@@ -1,93 +1,101 @@
-import {SET_POST, SET_POSTS, ADD_POSTS, SET_CURSOR_POSTS, ADD_POST, UPDATE_POST, REMOVE_POST} from "./types";
-import {createPost, deletePost, editPost, getPost, getUserPosts} from "../../api/posts";
+import {createAction} from "redux-smart-actions";
 
-export const setPosts = (posts) => {
-    return ({
-        type: SET_POSTS,
-        payload: posts,
-    });
-}
+export const fetchUserPosts = createAction('FETCH_USER_POSTS', (username, cursor = '') => ({
+    request: {
+        url: `/users/${username}/posts`,
+        params: {
+            cursor,
+        },
+    },
+    meta: {
+        requestKey: cursor,
+        getData: data => ({
+            posts: data.data,
+            cursorPosts: data.links.next && data.links.next.match(/cursor=(\w+)/)[1]
+        }),
+    },
+}));
 
-export const addPosts = (posts) => {
-    return {
-        type: ADD_POSTS,
-        payload: posts,
-    };
-}
+export const fetchTagPosts = createAction('FETCH_TAG_POSTS', (tag, cursor = '') => ({
+    request: {
+        url: `/tags/${tag}/posts`,
+        params: {
+            cursor,
+        },
+    },
+    meta: {
+        requestKey: cursor,
+        getData: data => ({
+            posts: data.data,
+            cursorPosts: data.links.next && data.links.next.match(/cursor=(\w+)/)[1]
+        }),
+    },
+}));
 
-export const setCursorPosts = (srcCursorPosts) => {
-    return {
-        type: SET_CURSOR_POSTS,
-        payload: srcCursorPosts
-    }
-}
+export const fetchPost = createAction('FETCH_POST', postId => ({
+    request: {
+        url: `/posts/${postId}`
+    },
+    meta: {
+        requestKey: postId,
+        requestsCapacity: 2,
+        getData: data => data.data,
+    },
+}));
 
-export const setPost = (post) => {
-    return {
-        type: SET_POST,
-        payload: post
-    };
-}
+export const createPost = createAction('CREATE_POST', (createdData) => ({
+    request: {
+        url: `/posts/`,
+        method: 'post',
+        data: createdData
+    },
+}));
 
-export const addPost = (post) => {
-    return {
-        type: ADD_POST,
-        payload: post
-    };
-}
+export const updatePost = createAction('UPDATE_POST', (updatedData, postId, cursor) => ({
+    request: {
+        url: `/posts/${postId}`,
+        method: 'put',
+        data: updatedData
+    },
+    meta: {
+        requestKey: cursor || postId,
+        mutations: {
+            [fetchUserPosts + cursor]: (data, mutationData) => {
+                const posts = data.posts.map(post =>
+                    post.id === postId ? mutationData.data : post
+                )
+                return Object.assign(data, {posts})
+            },
+            [fetchTagPosts + cursor]: (data, mutationData) => {
+                const posts = data.posts.map(post =>
+                    post.id === postId ? mutationData.data : post
+                )
+                return Object.assign(data, {posts})
+            },
+            [fetchPost + postId]: (data, mutationData) => Object.assign(data, mutationData.data)
+        },
+    },
+}));
 
-export const updatePost = (updatedPost) => {
-    return {
-        type: UPDATE_POST,
-        payload: updatedPost
-    };
-}
-
-
-export const removePost = (postId) => {
-    return {
-        type: REMOVE_POST,
-        payload: postId
-    };
-}
-
-export const getPostAsync = (postId) => {
-    return async (dispatch) => {
-        const {data: {data: post}} = await getPost(postId);
-        dispatch(setPost(post));
-    }
-}
-
-export const getPostsAsync = (authorUsername, cursor) => {
-    return async (dispatch) => {
-        const {data: {data: posts, links:{next: nextPosts}}} = await getUserPosts(authorUsername, cursor);
-        dispatch(setCursorPosts(nextPosts));
-        if (cursor) {
-            dispatch(addPosts(posts));
-        } else {
-            dispatch(setPosts(posts));
-        }
-    }
-}
-
-export const createPostAsync = (createdData) => {
-    return async (dispatch) => {
-        const {data: {data: post}} = await createPost(createdData);
-        dispatch(addPost(post));
-    }
-}
-
-export const updatePostAsync = (postId, updatedData) => {
-    return async (dispatch) => {
-        const {data: {data: updatedPost}} = await editPost(postId, updatedData);
-        dispatch(updatePost(updatedPost));
-        dispatch(setPost(updatedPost));
-    }
-}
-
-export const removePostAsync = (postId) => {
-    return async (dispatch) => {
-        await deletePost(postId);
-        dispatch(removePost(postId))
-    }
-}
+export const deletePost = createAction('DELETE_POST', (postId, cursor) => ({
+    request: {
+        url: `/posts/${postId}`,
+        method: 'delete',
+    },
+    meta: {
+        requestKey: cursor || postId,
+        mutations: {
+            [fetchUserPosts + cursor]: (data) => {
+                const postIndex = data.posts.findIndex(post => post.id === postId)
+                data.posts.splice(postIndex, 1)
+                return data
+            },
+            [fetchTagPosts + cursor]: (data) => {
+                const postIndex = data.posts.findIndex(post => post.id === postId)
+                data.posts.splice(postIndex, 1)
+                return data
+            },
+            [fetchPost + postId]: () => {},
+        },
+    },
+}));

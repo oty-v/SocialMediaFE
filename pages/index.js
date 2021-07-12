@@ -1,52 +1,45 @@
-import {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import Head from 'next/head';
-import Link from 'next/link'
-import {toast} from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Link from 'next/link';
 
 import PostForm from "../components/posts/postForm";
 import UserList from "../components/users/usersList";
 import {withAuth} from "../lib/withAuth";
-import {getUsersAsync} from "../redux/users/action";
+import {fetchUsers} from "../redux/users/action";
 import {withRedux} from "../lib/withRedux";
-import {createPostAsync} from "../redux/posts/action";
+import {createPost} from "../redux/posts/action";
+import {useMutation} from "@redux-requests/react";
+import MainContent from "../components/common/layout/content/MainContent";
 
 export default function Home() {
-    const [loading, setLoading] = useState(false);
+    const {loading} = useMutation({type: createPost})
     const dispatch = useDispatch();
-    const handlePostCreate = async (postData) => {
-        setLoading(true);
-        try {
-            await dispatch(createPostAsync(postData));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-        setLoading(false);
-    }
-    const handleUserSearch = async (search) => {
-        try {
-            await dispatch(getUsersAsync(search.query));
-        } catch (error) {
-            toast.error(error.toString())
-        }
-    }
+
+    const handlePostCreate = (postData) => {
+        dispatch(createPost(postData));
+    };
+
+    const handleUserSearch = (search) => {
+        dispatch(fetchUsers(search.query));
+    };
+
     return (
         <>
             <Head>
                 <title>Home</title>
             </Head>
-            <div className="central-column">
-                <div className="card-header central-column-header">
-                    <h3 className="mb-0">Home</h3>
-                </div>
-                <div className="card-body">
-                    <PostForm
-                        onSubmit={handlePostCreate}
-                        loading={loading}
-                    />
-                </div>
-            </div>
+            <MainContent
+                title="Home"
+            >
+                <MainContent.Body>
+                    <MainContent.Item>
+                        <PostForm
+                            onSubmit={handlePostCreate}
+                            loading={loading}
+                        />
+                    </MainContent.Item>
+                </MainContent.Body>
+            </MainContent>
             <div className="mx-5">
                 <div className="my-3">
                     <h4>Users</h4>
@@ -64,19 +57,18 @@ export default function Home() {
     )
 }
 
-export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
-    try {
-        await dispatch(getUsersAsync());
+export const getServerSideProps = withRedux(withAuth(
+    async (ctx, dispatch) => {
+        const {error} = await dispatch(fetchUsers());
+        if (error?.response.status === 404) {
+            return {
+                notFound: true,
+            }
+        }
         return {
             props: {
                 page: ctx.query
             }
         };
-    } catch (e) {
-        if (e.response.status === 404) {
-            return {
-                notFound: true,
-            }
-        }
     }
-}))
+))

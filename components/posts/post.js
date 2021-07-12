@@ -1,74 +1,74 @@
 import {useEffect, useState} from "react";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import PostForm from "./postForm";
-import Loader from "../common/Loader";
 import User from "../users/user";
+import {useMutation} from "@redux-requests/react";
+import {deletePost, updatePost} from "../../redux/posts/action";
+import ParsedContent from "../common/ParsedContent";
+import Card from "../common/card/Card";
+import RemoveButton from "../common/buttons/RemoveButton";
+import MinEditButton from "../common/buttons/MinEditButton";
+import CommentsButton from "../common/buttons/CommentsButton";
 
-const Post = ({onEdit, onRemove, onClick, post, showPostControls, loading}) => {
+const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
     const [editMode, setEditMode] = useState(false);
+    const {loading: loadingUpdate} = useMutation({type: updatePost, requestKey: post.id});
+    const {loading: loadingDelete} = useMutation({type: deletePost, requestKey: post.id});
     useEffect(() => {
         setEditMode(false);
-    }, [post])
+    }, [post.content])
     const postContent = editMode ? (
         <>
             <PostForm
                 onSubmit={onEdit}
                 post={post}
-                loading={loading}
+                loading={loadingUpdate}
             />
-            <button
-                className="btn btn-danger m-1"
-                disabled={loading}
+            <RemoveButton
+                loading={loadingDelete}
                 onClick={() => {
-                    onRemove(post)
-                    setEditMode(false)
+                    onRemove(post.id, post.cursor)
                 }}
-            >
-                {loading ? (<Loader/>) : (<FontAwesomeIcon icon="trash-alt"/>)}
-            </button>
+            />
         </>
     ) : (
-        <p className="card-text">{post.content}</p>
+        <ParsedContent
+            contentClass={"card-text"}
+            linkClass={"mx-1"}
+            parsedUsers={post.mentionedUsers}
+        >
+            {post.content}
+        </ParsedContent>
     )
     const editButton = showPostControls ? (
-        <button
-            className="btn btn-light ms-1 p-0 icon focus-off"
+        <MinEditButton
+            editMode={editMode}
             onClick={() => {
                 setEditMode(!editMode)
             }}
-        >
-            {editMode ? (
-                <FontAwesomeIcon icon="times-circle"/>
-            ) : (
-                <FontAwesomeIcon icon="edit"/>
-            )}
-        </button>
+        />
     ) : null
     const commentsButton = onClick ? (
-        <button
-            className="btn btn-light icon focus-off"
+        <CommentsButton
             onClick={onClick}
-        >
-            <FontAwesomeIcon icon="comment"/>
-        </button>
+        />
     ) : null
     return (
         <>
-            <h5 className="card-header">
-                <div className="d-inline-flex">
+            <Card.Header>
+                <h5 className="d-inline-flex">
                     <User
                         user={post.author}
                     />
                     {editButton}
-                </div>
-            </h5>
-            <div className="card-body">
+                </h5>
+            </Card.Header>
+            <Card.Body>
                 {postContent}
-            </div>
-            <div className="card-footer text-muted">
+            </Card.Body>
+            <Card.Footer customClassName={"bg-transparent text-muted"}>
                 {commentsButton}
-            </div>
+            </Card.Footer>
         </>
     )
 }

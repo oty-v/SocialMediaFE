@@ -1,44 +1,35 @@
-import { useMemo } from 'react'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { handleRequests } from '@redux-requests/core';
+import { createDriver } from '@redux-requests/axios';
 import thunkMiddleware from 'redux-thunk'
-import AuthReducer from "./auth/reducer";
-import UsersListReducer from "./users/reducer";
-import PostsReducer from "./posts/reducer";
-import CommentsListReducer from "./comments/reducer";
+import { composeWithDevTools } from 'redux-devtools-extension'
 
-const reducers = combineReducers({
-    auth: AuthReducer,
-    users: UsersListReducer,
-    posts: PostsReducer,
-    comments: CommentsListReducer,
-});
+import {axiosController} from "../lib/axiosController";
+import {onError} from "./interceptors";
 
-let store
+export const configureStore = (initialState = undefined) => {
+    const ssr = !initialState;
 
-function initStore(initialState) {
-    return createStore(
+    const {
+        requestsReducer,
+        requestsMiddleware,
+        requestsPromise,
+    } = handleRequests({
+        driver: createDriver(axiosController.instance),
+        ssr: ssr ? 'server' : 'client',
+        cache: true,
+        onError,
+    });
+
+    const reducers = combineReducers({
+        requests: requestsReducer,
+    });
+
+    const store = createStore(
         reducers,
         initialState,
-        composeWithDevTools(applyMiddleware(thunkMiddleware))
-    )
-}
+        composeWithDevTools(applyMiddleware(thunkMiddleware,...requestsMiddleware)),
+    );
 
-export const initializeStore = (preloadedState) => {
-    let _store = store ?? initStore(preloadedState)
-    if (preloadedState && store) {
-        _store = initStore({
-            ...store.getState(),
-            ...preloadedState,
-        })
-        store = undefined
-    }
-    if (typeof window === 'undefined') return _store
-    if (!store) store = _store
-    return _store
-}
-
-export function useStore(initialState) {
-    const store = useMemo(() => initializeStore(initialState), [initialState])
-    return store
-}
+    return { store, requestsPromise };
+};

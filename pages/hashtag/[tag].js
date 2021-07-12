@@ -1,18 +1,18 @@
+import Head from 'next/head';
 import {useEffect} from "react";
-import Head from "next/head";
 import {useDispatch, useSelector} from "react-redux";
 
-import PostsList from "../../../components/posts/postList";
-import {withAuth} from "../../../lib/withAuth";
-import {fetchUserPosts} from "../../../redux/posts/action";
-import {withRedux} from "../../../lib/withRedux";
-import Loader from "../../../components/common/Loader";
-import {getCursorPosts} from "../../../redux/posts/selectors";
-import CenterInScreen from "../../../components/common/CenterInScreen";
-import MainContent from "../../../components/common/layout/content/MainContent";
+import {withAuth} from "../../lib/withAuth";
+import {withRedux} from "../../lib/withRedux";
+import {getCursorPosts} from "../../redux/posts/selectors";
+import {fetchTagPosts} from "../../redux/posts/action";
+import Loader from "../../components/common/Loader";
+import PostsList from "../../components/posts/postList";
+import CenterInScreen from "../../components/common/CenterInScreen";
+import MainContent from "../../components/common/layout/content/MainContent";
 
-function Posts({username}) {
-    const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, fetchUserPosts));
+export default function Tag({tag}) {
+    const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, fetchTagPosts));
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -24,7 +24,7 @@ function Posts({username}) {
         const onBottom = window.innerHeight + document.documentElement.scrollTop ===
             document.documentElement.offsetHeight;
         if (onBottom && cursorPosts && !loading) {
-            dispatch(fetchUserPosts(username, cursorPosts));
+            dispatch(fetchTagPosts(tag, cursorPosts));
         }
     };
 
@@ -33,16 +33,15 @@ function Posts({username}) {
             <Loader/>
         </CenterInScreen>
     )
-
     return (
         <>
             <Head>
-                <title>Posts</title>
+                <title>{tag}</title>
             </Head>
             <MainContent
                 backBtn
                 title="Posts List"
-                username={username}
+                tagName={tag}
             >
                 <MainContent.Body>
                     <MainContent.Item>
@@ -55,12 +54,11 @@ function Posts({username}) {
             </MainContent>
         </>
     )
-
 }
 
 export const getServerSideProps = withRedux(withAuth(
     async (ctx, dispatch) => {
-        const {error} = await dispatch(fetchUserPosts(ctx.query.username));
+        const {error} = await dispatch(fetchTagPosts(ctx.query.tag));
         if (error?.response.status === 404) {
             return {
                 notFound: true,
@@ -68,10 +66,9 @@ export const getServerSideProps = withRedux(withAuth(
         }
         return {
             props: {
-                username: ctx.query.username,
+                tag: ctx.query.tag
             }
         };
     }
 ))
 
-export default Posts;

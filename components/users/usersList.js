@@ -1,17 +1,32 @@
 import Loader from "../common/Loader";
-import {useSelector} from "react-redux";
 import User from "./user";
 import SearchForm from "../common/SearchForm";
+import {useQuery} from "@redux-requests/react";
+import {fetchUsers} from "../../redux/users/action";
+import CenterInScreen from "../common/CenterInScreen";
+import List from "../common/list/List";
 
-const UserList = ({onSubmit}) => {
-    const users = useSelector((state) => state.users.users);
-    if (!users) {
-        return (
-            <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
-                <Loader/>
-            </div>
-        )
-    }
+
+const UserList = ({onSubmit, selectedPage=1}) => {
+    const {data, loading} = useQuery({type: fetchUsers, requestKey: selectedPage});
+    const users = data?.users;
+    const userList = loading||!users ? (
+        <CenterInScreen customClassName="my-5">
+            <Loader/>
+        </CenterInScreen>
+    ) : (
+        <List>
+            {users.map(user => (
+                <List.Item key={user.id}>
+                    <User
+                        user={user}
+                        width={25}
+                        height={25}
+                    />
+                </List.Item>
+            ))}
+        </List>
+    )
     return (
         <>
             <SearchForm
@@ -19,17 +34,7 @@ const UserList = ({onSubmit}) => {
                 label="Search user"
                 maxSearchLength={25}
             />
-            <ul className="list-group">
-                {users.map(user => (
-                    <li className="list-group-item list-group-item-action" key={user.id}>
-                        <User
-                            user={user}
-                            width={25}
-                            height={25}
-                        />
-                    </li>
-                ))}
-            </ul>
+            {userList}
         </>
     )
 }
