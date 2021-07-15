@@ -61,6 +61,7 @@ export const followUser = createAction('FOLLOW_USER', (username, authUser) => ({
         requestKey: username,
         mutations: {
             [fetchUserFollowers + username]: (data) => [authUser, ...data],
+            [fetchUserFollowings + authUser?.username]: (data) => [{username: username}, ...data],
         }
     }
 }))

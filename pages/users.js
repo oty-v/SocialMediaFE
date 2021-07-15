@@ -5,7 +5,7 @@ import ReactPaginate from 'react-paginate';
 import UserList from "../components/users/usersList";
 import {withRedux} from "../lib/withRedux";
 import {withAuth} from "../lib/withAuth";
-import {fetchUsers} from "../redux/users/action";
+import {fetchUserFollowings, fetchUsers} from "../redux/users/action";
 import {useQuery} from "@redux-requests/react";
 import {useState} from "react";
 import MainContent from "../components/common/layout/content/MainContent";
@@ -78,8 +78,10 @@ const UsersPage = () => {
 }
 
 export const getServerSideProps = withRedux(withAuth(
-    async (ctx, dispatch) => {
-        const {error} = await dispatch(fetchUsers());
+    async (ctx, dispatch, auth) => {
+        const {error: errorUsers} = await dispatch(fetchUsers());
+        const {error: errorUserFollowings} = await dispatch(fetchUserFollowings(auth.user.username));
+        const error = errorUsers || errorUserFollowings;
         if (error?.response.status === 404) {
             return {
                 notFound: true,

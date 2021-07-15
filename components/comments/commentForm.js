@@ -28,7 +28,9 @@ function CommentForm({onSubmit, loading, comment = {content: ''}}) {
                     name="content"
                     type="text"
                 />
-                <SaveButton loading={loading} floatEnd/>
+                <div className="float-end">
+                    <SaveButton loading={loading}/>
+                </div>
             </Form>
         </Formik>
     )

@@ -10,7 +10,7 @@ import RemoveButton from "../common/buttons/RemoveButton";
 import MinEditButton from "../common/buttons/MinEditButton";
 import CommentsButton from "../common/buttons/CommentsButton";
 
-const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
+const Post = ({onEdit, onRemove, onClick, post, showPostControls, following}) => {
     const [editMode, setEditMode] = useState(false);
     const {loading: loadingUpdate} = useMutation({type: updatePost, requestKey: post.id});
     const {loading: loadingDelete} = useMutation({type: deletePost, requestKey: post.id});
@@ -59,6 +59,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls}) => {
                 <h5 className="d-inline-flex">
                     <User
                         user={post.author}
+                        following={following}
                     />
                     {editButton}
                 </h5>
