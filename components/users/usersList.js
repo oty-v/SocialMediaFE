@@ -1,16 +1,12 @@
 import Loader from "../common/Loader";
 import User from "./user";
 import SearchForm from "../common/SearchForm";
-import {useQuery} from "@redux-requests/react";
-import {fetchUsers} from "../../redux/users/action";
 import CenterInScreen from "../common/CenterInScreen";
 import List from "../common/list/List";
 
 
-const UserList = ({onSubmit, selectedPage=1}) => {
-    const {data, loading} = useQuery({type: fetchUsers, requestKey: selectedPage});
-    const users = data?.users;
-    const userList = loading||!users ? (
+const UserList = ({onSubmit, users, loading}) => {
+    const userList = loading || !users ? (
         <CenterInScreen customClassName="my-5">
             <Loader/>
         </CenterInScreen>
@@ -27,13 +23,15 @@ const UserList = ({onSubmit, selectedPage=1}) => {
             ))}
         </List>
     )
+
+    const searchForm = onSubmit && <SearchForm
+        onSubmit={onSubmit}
+        label="Search user"
+        maxSearchLength={25}
+    />
     return (
         <>
-            <SearchForm
-                onSubmit={onSubmit}
-                label="Search user"
-                maxSearchLength={25}
-            />
+            {searchForm}
             {userList}
         </>
     )

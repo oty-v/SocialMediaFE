@@ -13,7 +13,7 @@ import CenterInScreen from "../components/common/CenterInScreen";
 
 const UsersPage = () => {
     const [selectedPage, setSelectedPage] = useState(1)
-    const {data} = useQuery({type: fetchUsers, requestKey: selectedPage});
+    const {data, loading} = useQuery({type: fetchUsers, requestKey: selectedPage});
     const lastPage = data?.lastPage;
     const searchQuery = data?.searchQuery;
     const dispatch = useDispatch();
@@ -66,7 +66,8 @@ const UsersPage = () => {
                     <MainContent.Item>
                         <UserList
                             onSubmit={handleUserSearch}
-                            selectedPage={selectedPage}
+                            users={data.users}
+                            loading={loading}
                         />
                     </MainContent.Item>
                     {paginationComponent}

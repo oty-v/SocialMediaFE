@@ -1,6 +1,7 @@
 import {useDispatch} from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
+import {useMutation, useQuery} from "@redux-requests/react";
 
 import PostForm from "../components/posts/postForm";
 import UserList from "../components/users/usersList";
@@ -8,10 +9,10 @@ import {withAuth} from "../lib/withAuth";
 import {fetchUsers} from "../redux/users/action";
 import {withRedux} from "../lib/withRedux";
 import {createPost} from "../redux/posts/action";
-import {useMutation} from "@redux-requests/react";
 import MainContent from "../components/common/layout/content/MainContent";
 
 export default function Home() {
+    const {data, loading: loadingUsers} = useQuery({type:fetchUsers, requestKey: 1});
     const {loading} = useMutation({type: createPost})
     const dispatch = useDispatch();
 
@@ -45,6 +46,8 @@ export default function Home() {
                     <h4>Users</h4>
                     <UserList
                         onSubmit={handleUserSearch}
+                        users={data.users}
+                        loading={loadingUsers}
                     />
                     <div className="d-inline-flex justify-content-center w-100">
                         <Link href="/users">
