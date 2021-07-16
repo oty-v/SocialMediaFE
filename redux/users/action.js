@@ -19,6 +19,19 @@ export const fetchUsers = createAction('FETCH_USERS', (query, page = 1) => ({
     },
 }));
 
+export const fetchMentions = createAction('FETCH_MENTIONS', (query) => ({
+    request: {
+        url: `/users`,
+        params: {
+            page: 1,
+            username: !!query ? query : undefined,
+        },
+    },
+    meta: {
+        getData: data => data.data,
+    },
+}));
+
 export const fetchUser = createAction('FETCH_USER', (username) => ({
     request: {
         url: `/users/${username}`,

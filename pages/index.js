@@ -8,7 +8,7 @@ import {useEffect} from "react";
 import PostForm from "../components/posts/postForm";
 import UserList from "../components/users/usersList";
 import {withAuth} from "../lib/withAuth";
-import {fetchUserFollowings, fetchUsers} from "../redux/users/action";
+import {fetchMentions, fetchUserFollowings, fetchUsers} from "../redux/users/action";
 import {getCursorPosts} from "../redux/posts/selectors"
 import {withRedux} from "../lib/withRedux";
 import {createPost, fetchFollowPosts} from "../redux/posts/action";
@@ -94,7 +94,8 @@ export const getServerSideProps = withRedux(withAuth(
         const {error: errorUsers} = await dispatch(fetchUsers());
         const {error: errorFollowPosts} = await dispatch(fetchFollowPosts());
         const {error: errorUserFollowings} = await dispatch(fetchUserFollowings(auth.user.username));
-        const error = errorUsers || errorFollowPosts || errorUserFollowings;
+        const {error: errorMentions} = await dispatch(fetchMentions());
+        const error = errorUsers || errorFollowPosts || errorUserFollowings || errorMentions;
         if (error?.response.status === 404) {
             return {
                 notFound: true,

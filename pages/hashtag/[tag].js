@@ -10,7 +10,7 @@ import Loader from "../../components/common/Loader";
 import PostsList from "../../components/posts/postList";
 import CenterInScreen from "../../components/common/CenterInScreen";
 import MainContent from "../../components/common/layout/content/MainContent";
-import {fetchUserFollowings} from "../../redux/users/action";
+import {fetchMentions, fetchUserFollowings} from "../../redux/users/action";
 
 export default function Tag({tag}) {
     const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, fetchTagPosts));
@@ -61,7 +61,8 @@ export const getServerSideProps = withRedux(withAuth(
     async (ctx, dispatch, auth) => {
         const {error: errorTagPosts} = await dispatch(fetchTagPosts(ctx.query.tag));
         const {error: errorUserFollowings} = await dispatch(fetchUserFollowings(auth.user.username));
-        const error = errorTagPosts || errorUserFollowings;
+        const {error: errorMentions} = await dispatch(fetchMentions());
+        const error = errorTagPosts || errorUserFollowings || errorMentions;
         if (error?.response.status === 404) {
             return {
                 notFound: true,
