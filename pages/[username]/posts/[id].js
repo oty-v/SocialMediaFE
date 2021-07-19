@@ -7,7 +7,7 @@ import {withAuth} from "../../../lib/withAuth";
 import CommentsList from "../../../components/comments/commentsList";
 import Post from "../../../components/posts/post";
 import CommentForm from "../../../components/comments/commentForm";
-import {deletePost, fetchPost, updatePost} from "../../../redux/posts/action";
+import {deletePost, fetchPost, likePost, unlikePost, updatePost} from "../../../redux/posts/action";
 import {createComment, fetchPostComments} from "../../../redux/comments/action";
 import {withRedux} from "../../../lib/withRedux";
 import {fetchProfile} from "../../../redux/auth/action";
@@ -45,6 +45,14 @@ const PostPage = ({username, postId}) => {
         dispatch(createComment(postId, commentData));
     };
 
+    const handleLike = (postId, userLiked) => {
+        userLiked ? (
+            dispatch(unlikePost(postId))
+        ) : (
+            dispatch(likePost(postId))
+        )
+    }
+
     return (
         <>
             <Head>
@@ -59,6 +67,7 @@ const PostPage = ({username, postId}) => {
                         <Post
                             onEdit={handlePostEdit}
                             onRemove={handlePostRemove}
+                            onLike={() => handleLike(post.id, post.userLiked)}
                             post={post}
                             showPostControls={authUser === post.author?.username}
                         />

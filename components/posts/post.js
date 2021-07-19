@@ -9,11 +9,13 @@ import Card from "../common/card/Card";
 import RemoveButton from "../common/buttons/RemoveButton";
 import MinEditButton from "../common/buttons/MinEditButton";
 import CommentsButton from "../common/buttons/CommentsButton";
+import LikesButton from "../common/buttons/LikesButton";
 
-const Post = ({onEdit, onRemove, onClick, post, showPostControls, following}) => {
+const Post = ({onEdit, onRemove, onClick, onLike, post, showPostControls, following}) => {
     const [editMode, setEditMode] = useState(false);
     const {loading: loadingUpdate} = useMutation({type: updatePost, requestKey: post.id});
     const {loading: loadingDelete} = useMutation({type: deletePost, requestKey: post.id});
+
     useEffect(() => {
         setEditMode(false);
     }, [post.content])
@@ -53,6 +55,7 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, following}) =>
             onClick={onClick}
         />
     ) : null
+
     return (
         <>
             <Card.Header>
@@ -68,7 +71,14 @@ const Post = ({onEdit, onRemove, onClick, post, showPostControls, following}) =>
                 {postContent}
             </Card.Body>
             <Card.Footer customClassName={"bg-transparent text-muted"}>
-                {commentsButton}
+                <div className="d-flex">
+                    {commentsButton}
+                    <LikesButton
+                        onClick={onLike}
+                        liked={post.userLiked}
+                        numberOfLikes={post.numberOfLikes}
+                    />
+                </div>
             </Card.Footer>
         </>
     )

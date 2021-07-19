@@ -8,11 +8,13 @@ import {deleteComment, updateComment} from "../../redux/comments/action";
 import Card from "../common/card/Card";
 import RemoveButton from "../common/buttons/RemoveButton";
 import MinEditButton from "../common/buttons/MinEditButton";
+import LikesButton from "../common/buttons/LikesButton";
 
-const Comment = ({onRemove, onEdit, comment, showCommentControls, following}) => {
+const Comment = ({onRemove, onEdit, onLike, comment, showCommentControls, following}) => {
     const [editMode, setEditMode] = useState(false);
     const {loading: loadingUpdate} = useMutation({type: updateComment, requestKey: comment.id});
     const {loading: loadingDelete} = useMutation({type: deleteComment, requestKey: comment.id});
+
     useEffect(() => {
         setEditMode(false);
     }, [comment.content])
@@ -47,6 +49,7 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, following}) =>
             }}
         />
     ) : null
+
     return (
         <>
             <Card.Header>
@@ -61,6 +64,13 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls, following}) =>
             <Card.Body>
                 {commentContent}
             </Card.Body>
+            <Card.Footer customClassName={"bg-transparent text-muted"}>
+                <LikesButton
+                    onClick={onLike}
+                    liked={comment.userLiked}
+                    numberOfLikes={comment.numberOfLikes}
+                />
+            </Card.Footer>
         </>
     )
 }

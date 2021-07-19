@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 
 import Comment from "./comment";
 import {fetchProfile} from "../../redux/auth/action";
-import {deleteComment, fetchPostComments, updateComment} from "../../redux/comments/action";
+import {deleteComment, fetchPostComments, likeComment, unlikeComment, updateComment} from "../../redux/comments/action";
 import CenterInScreen from "../common/CenterInScreen";
 import List from "../common/list/List";
 import {fetchUserFollowings} from "../../redux/users/action";
@@ -21,6 +21,14 @@ const CommentsList = ({postId}) => {
         dispatch(updateComment(postId, comment.id, comment));
     };
 
+    const handleLike = (commentId, postId, userLiked) => {
+        userLiked ? (
+            dispatch(unlikeComment(commentId, postId))
+        ) : (
+            dispatch(likeComment(commentId, postId))
+        )
+    }
+
     if (!comments.length) {
         return (
             <CenterInScreen customClassName="my-3">
@@ -37,6 +45,7 @@ const CommentsList = ({postId}) => {
                         showCommentControls={authUser?.username === comment.author.username}
                         onEdit={handleCommentEdit}
                         onRemove={handleCommentRemove}
+                        onLike={() => handleLike(comment.id, postId, comment.userLiked)}
                         following={followings && followings.some(following => following.username === comment.author.username)}
                     />
                 </List.Item>

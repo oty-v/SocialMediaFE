@@ -78,3 +78,8 @@ main {
 .mention {
     height: 2.5rem;
 }
+
+.liked {
+    color: #dc3545;
+    fill: #dc3545;
+}

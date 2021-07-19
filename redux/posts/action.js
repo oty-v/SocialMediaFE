@@ -115,3 +115,68 @@ export const deletePost = createAction('DELETE_POST', (postId, cursor) => ({
         },
     },
 }));
+
+export const likePost = createAction('LIKE_POST', (postId, cursor = '') => ({
+    request: {
+        url: `/posts/${postId}/like`
+    },
+    meta: {
+        requestKey: cursor || postId,
+        mutations: {
+            [fetchUserPosts + cursor]: (data) => {
+                const post = data.posts.find(post => post.id === postId)
+                const postIndex = data.posts.findIndex(post => post.id === postId)
+                data.posts.splice(postIndex, 1, {...post, userLiked: true, numberOfLikes: post.numberOfLikes+1})
+                return data
+            },
+            [fetchTagPosts + cursor]: (data) => {
+                const post = data.posts.find(post => post.id === postId)
+                const postIndex = data.posts.findIndex(post => post.id === postId)
+                data.posts.splice(postIndex, 1, {...post, userLiked: true, numberOfLikes: post.numberOfLikes+1})
+                return data
+            },
+            [fetchFollowPosts + cursor]: (data) => {
+                const post = data.posts.find(post => post.id === postId)
+                const postIndex = data.posts.findIndex(post => post.id === postId)
+                data.posts.splice(postIndex, 1, {...post, userLiked: true, numberOfLikes: post.numberOfLikes+1})
+                return {...data}
+            },
+            [fetchPost + postId]: (data) => {
+                return {...data, userLiked: true, numberOfLikes: data.numberOfLikes+1}
+            },
+        },
+    },
+
+}))
+
+export const unlikePost = createAction('UNLIKE_POST', (postId, cursor = '') => ({
+    request: {
+        url: `/posts/${postId}/unlike`
+    },
+    meta: {
+        requestKey: cursor || postId,
+        mutations: {
+            [fetchUserPosts + cursor]: (data) => {
+                const post = data.posts.find(post => post.id === postId)
+                const postIndex = data.posts.findIndex(post => post.id === postId)
+                data.posts.splice(postIndex, 1, {...post, userLiked: false, numberOfLikes: post.numberOfLikes-1})
+                return data
+            },
+            [fetchTagPosts + cursor]: (data) => {
+                const post = data.posts.find(post => post.id === postId)
+                const postIndex = data.posts.findIndex(post => post.id === postId)
+                data.posts.splice(postIndex, 1, {...post, userLiked: false, numberOfLikes: post.numberOfLikes-1})
+                return data
+            },
+            [fetchFollowPosts + cursor]: (data) => {
+                const post = data.posts.find(post => post.id === postId)
+                const postIndex = data.posts.findIndex(post => post.id === postId)
+                data.posts.splice(postIndex, 1, {...post, userLiked: false, numberOfLikes: post.numberOfLikes-1})
+                return data
+            },
+            [fetchPost + postId]: (data) => {
+                return {...data, userLiked: false, numberOfLikes: data.numberOfLikes-1}
+            },
+        },
+    },
+}))
