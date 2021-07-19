@@ -11,9 +11,7 @@ const MentionsInput = ({value, onChange}) => {
     const {data: mentions, loading} = useQuery({type:fetchMentions});
     const dispatch = useDispatch();
 
-    console.log(mentions)
     const handleSearch = (query) => {
-        console.log(query)
         dispatch(fetchMentions(query))
     }
     return (
