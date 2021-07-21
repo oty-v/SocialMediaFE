@@ -60,7 +60,8 @@ export const deleteComment = createAction('DELETE_COMMENT', (postId, commentId) 
 
 export const likeComment = createAction('LIKE_COMMENT', (commentId, postId) => ({
     request: {
-        url: `/comments/${commentId}/like`
+        url: `/comments/${commentId}/like`,
+        method: 'post'
     },
     meta: {
         requestKey: commentId,
@@ -77,7 +78,8 @@ export const likeComment = createAction('LIKE_COMMENT', (commentId, postId) => (
 
 export const unlikeComment = createAction('UNLIKE_COMMENT', (commentId, postId) => ({
     request: {
-        url: `/comments/${commentId}/unlike`
+        url: `/comments/${commentId}/unlike`,
+        method: 'post'
     },
     meta: {
         requestKey: commentId,

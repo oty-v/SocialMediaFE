@@ -118,7 +118,8 @@ export const deletePost = createAction('DELETE_POST', (postId, cursor) => ({
 
 export const likePost = createAction('LIKE_POST', (postId, cursor = '') => ({
     request: {
-        url: `/posts/${postId}/like`
+        url: `/posts/${postId}/like`,
+        method: 'post'
     },
     meta: {
         requestKey: cursor || postId,
@@ -151,7 +152,8 @@ export const likePost = createAction('LIKE_POST', (postId, cursor = '') => ({
 
 export const unlikePost = createAction('UNLIKE_POST', (postId, cursor = '') => ({
     request: {
-        url: `/posts/${postId}/unlike`
+        url: `/posts/${postId}/unlike`,
+        method: 'post'
     },
     meta: {
         requestKey: cursor || postId,
