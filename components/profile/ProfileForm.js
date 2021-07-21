@@ -65,7 +65,9 @@ function ProfileForm({onSubmit, loading, profile = {name: ''}}) {
                     name="name"
                     type="text"
                 />
-                <SaveButton loading={loading} floatEnd/>
+                <div className="float-end">
+                    <SaveButton loading={loading}/>
+                </div>
             </Form>
             )}
         </Formik>

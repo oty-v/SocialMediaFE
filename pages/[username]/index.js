@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import {withAuth} from "../../lib/withAuth";
 import {withRedux} from "../../lib/withRedux";
-import {fetchUser} from "../../redux/users/action";
+import {fetchUser, fetchUserFollowers, fetchUserFollowings, followUser, unfollowUser} from "../../redux/users/action";
 import Loader from "../../components/common/Loader";
 import {useRouter} from "next/router";
 import {useQuery} from "@redux-requests/react";
@@ -11,12 +11,16 @@ import {fetchProfile} from "../../redux/auth/action";
 import MainContent from "../../components/common/layout/content/MainContent";
 import ProfileCard from "../../components/profile/ProfileCard";
 import CenterInScreen from "../../components/common/CenterInScreen";
+import FollowButton from "../../components/common/buttons/FollowButton";
+import {useDispatch} from "react-redux";
 
 function Profile({username}) {
     const router = useRouter();
-    const {data} = useQuery({type: fetchProfile});
+    const {data: authUser} = useQuery({type: fetchProfile});
     const {data: user} = useQuery({type: fetchUser, requestKey: username});
-    const authUser = data?.username;
+    const {data: followings} = useQuery({type: fetchUserFollowings, requestKey: username});
+    const {data: followers} = useQuery({type: fetchUserFollowers, requestKey: username});
+    const dispatch = useDispatch();
 
     const handleClickEditProfile = () => {
         router.push(`/settings/profile`);
@@ -31,13 +35,25 @@ function Profile({username}) {
         )
     }
 
-    const editProfileBtn = (authUser === user.username) && (
+    const following = followers && followers.some(user => user.id === authUser?.id);
+
+    const handleClickFollow = () => {
+        dispatch(followUser(username, authUser))
+    }
+
+    const handleClickUnfollow = () => {
+        dispatch(unfollowUser(username, authUser.username))
+    }
+
+    const profileBtn = (authUser?.username === user.username) ? (
         <button
             className="btn btn-outline-primary mb-2"
             onClick={handleClickEditProfile}
         >
             Edit profile
         </button>
+    ) : (
+        <FollowButton onClick={following ? handleClickUnfollow : handleClickFollow} following={following}/>
     )
 
     return (
@@ -53,8 +69,14 @@ function Profile({username}) {
                 <MainContent.Body>
                     <MainContent.Item>
                         <ProfileCard user={user}>
-                            {editProfileBtn}
+                            {profileBtn}
                         </ProfileCard>
+                        <Link href={`/${user.username}/following`}>
+                            <span className="btn btn-link mb-1">{`${followings.length} following`}</span>
+                        </Link>
+                        <Link href={`/${user.username}/followers`}>
+                            <span className="btn btn-link mb-1">{`${followers.length} followers`}</span>
+                        </Link>
                     </MainContent.Item>
                     <Link href={`/${user.username}/posts`}>
                         <span className="btn btn-outline-primary mb-1">{`${user.username} posts`}</span>
@@ -67,7 +89,10 @@ function Profile({username}) {
 
 export const getServerSideProps = withRedux(withAuth(
     async (ctx, dispatch) => {
-        const {error} = await dispatch(fetchUser(ctx.query.username));
+        const {error: errorUser} = await dispatch(fetchUser(ctx.query.username));
+        const {error: errorUserFollowings} = await dispatch(fetchUserFollowings(ctx.query.username));
+        const {error: errorUserFollowers} = await dispatch(fetchUserFollowers(ctx.query.username));
+        const error = errorUser || errorUserFollowings || errorUserFollowers;
         if (error?.response.status === 404) {
             return {
                 notFound: true,
@@ -75,7 +100,7 @@ export const getServerSideProps = withRedux(withAuth(
         }
         return {
             props: {
-                username: ctx.query.username
+                username: ctx.query.username,
             }
         };
     }

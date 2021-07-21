@@ -32,6 +32,22 @@ export const fetchTagPosts = createAction('FETCH_TAG_POSTS', (tag, cursor = '') 
     },
 }));
 
+export const fetchFollowPosts = createAction('FETCH_FOLLOW_POSTS', (cursor = '') => ({
+    request: {
+        url: '/followings/posts',
+        params: {
+            cursor,
+        },
+    },
+    meta: {
+        requestKey: cursor,
+        getData: data => ({
+            posts: data.data,
+            cursorPosts: data.links.next && data.links.next.match(/cursor=(\w+)/)[1]
+        })
+    }
+}))
+
 export const fetchPost = createAction('FETCH_POST', postId => ({
     request: {
         url: `/posts/${postId}`

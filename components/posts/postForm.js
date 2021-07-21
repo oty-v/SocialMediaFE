@@ -1,8 +1,8 @@
 import {Formik, Form} from 'formik';
 import * as Yup from 'yup';
 
-import {TextField} from '../common/field/textField';
 import SaveButton from "../common/buttons/SaveButton";
+import MentionsInput from "../common/field/mentionsField/MentionsInput";
 
 const validationSchema = Yup.object({
     content: Yup.string()
@@ -23,16 +23,20 @@ function PostForm({onSubmit, loading, post = {content: ''}}) {
             initialValues={post}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
-        >
-            <Form>
-                <TextField
-                    label="Write your post"
-                    name="content"
-                    type="text"
-                />
-                <SaveButton loading={loading} floatEnd/>
-            </Form>
-        </Formik>
+            render={({
+                         values,
+                         setFieldValue
+                     }) => {
+                return (
+                    <Form>
+                        <MentionsInput value={values.content} onChange={value => setFieldValue("content", value)}/>
+                        <div className="float-end">
+                            <SaveButton loading={loading}/>
+                        </div>
+                    </Form>
+                )
+            }}
+        />
     )
 }
 

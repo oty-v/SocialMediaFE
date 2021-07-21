@@ -5,7 +5,7 @@ import ReactPaginate from 'react-paginate';
 import UserList from "../components/users/usersList";
 import {withRedux} from "../lib/withRedux";
 import {withAuth} from "../lib/withAuth";
-import {fetchUsers} from "../redux/users/action";
+import {fetchUserFollowings, fetchUsers} from "../redux/users/action";
 import {useQuery} from "@redux-requests/react";
 import {useState} from "react";
 import MainContent from "../components/common/layout/content/MainContent";
@@ -13,7 +13,7 @@ import CenterInScreen from "../components/common/CenterInScreen";
 
 const UsersPage = () => {
     const [selectedPage, setSelectedPage] = useState(1)
-    const {data} = useQuery({type: fetchUsers, requestKey: selectedPage});
+    const {data, loading} = useQuery({type: fetchUsers, requestKey: selectedPage});
     const lastPage = data?.lastPage;
     const searchQuery = data?.searchQuery;
     const dispatch = useDispatch();
@@ -66,7 +66,8 @@ const UsersPage = () => {
                     <MainContent.Item>
                         <UserList
                             onSubmit={handleUserSearch}
-                            selectedPage={selectedPage}
+                            users={data.users}
+                            loading={loading}
                         />
                     </MainContent.Item>
                     {paginationComponent}
@@ -77,8 +78,10 @@ const UsersPage = () => {
 }
 
 export const getServerSideProps = withRedux(withAuth(
-    async (ctx, dispatch) => {
-        const {error} = await dispatch(fetchUsers());
+    async (ctx, dispatch, auth) => {
+        const {error: errorUsers} = await dispatch(fetchUsers());
+        const {error: errorUserFollowings} = await dispatch(fetchUserFollowings(auth.user.username));
+        const error = errorUsers || errorUserFollowings;
         if (error?.response.status === 404) {
             return {
                 notFound: true,
