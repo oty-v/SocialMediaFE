@@ -6,9 +6,11 @@ import {fetchProfile} from "../../redux/auth/action";
 import {deleteComment, fetchPostComments, updateComment} from "../../redux/comments/action";
 import CenterInScreen from "../common/CenterInScreen";
 import List from "../common/list/List";
+import {fetchUserFollowings} from "../../redux/users/action";
 
 const CommentsList = ({postId}) => {
-    const {data: {username: authUser}} = useQuery({type: fetchProfile});
+    const {data: authUser} = useQuery({ type: fetchProfile });
+    const {data: followings} = useQuery({type: fetchUserFollowings, requestKey: authUser?.username})
     const {data: comments} = useQuery({type: fetchPostComments, requestKey: postId});
     const dispatch = useDispatch();
     const handleCommentRemove = (comment) => {
@@ -32,9 +34,10 @@ const CommentsList = ({postId}) => {
                 <List.Item key={comment.id}>
                     <Comment
                         comment={comment}
-                        showCommentControls={authUser === comment.author.username}
+                        showCommentControls={authUser?.username === comment.author.username}
                         onEdit={handleCommentEdit}
                         onRemove={handleCommentRemove}
+                        following={followings && followings.some(following => following.username === comment.author.username)}
                     />
                 </List.Item>
             ))}

@@ -14,12 +14,13 @@ import {fetchProfile} from "../../../redux/auth/action";
 import Loader from "../../../components/common/Loader";
 import MainContent from "../../../components/common/layout/content/MainContent";
 import CenterInScreen from "../../../components/common/CenterInScreen";
+import {fetchMentions, fetchUserFollowings} from "../../../redux/users/action";
 
 const PostPage = ({username, postId}) => {
     const router = useRouter();
     const {data: {username: authUser}} = useQuery({type: fetchProfile});
     const {data: post} = useQuery({type: fetchPost, requestKey: postId});
-    const {loading: loadingCreate} = useMutation({type: createComment, requestKey: postId})
+    const {loading: loadingCreate} = useMutation({type: createComment, requestKey: postId});
 
     if (!post) {
         router.push(`/${username}/posts`)
@@ -77,10 +78,12 @@ const PostPage = ({username, postId}) => {
     )
 }
 
-export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch) => {
+export const getServerSideProps = withRedux(withAuth(async (ctx, dispatch, auth) => {
     const {error: errorPost} = await dispatch(fetchPost(ctx.query.id));
-    const {error: errorComments} = await dispatch(fetchPostComments(ctx.query.id))
-    const error = errorPost || errorComments;
+    const {error: errorComments} = await dispatch(fetchPostComments(ctx.query.id));
+    const {error: errorUserFollowings} = await dispatch(fetchUserFollowings(auth.user.username));
+    const {error: errorMentions} = await dispatch(fetchMentions());
+    const error = errorPost || errorComments || errorUserFollowings || errorMentions;
     if (error?.response.status === 404) {
         return {
             notFound: true,

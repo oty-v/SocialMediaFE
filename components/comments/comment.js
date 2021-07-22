@@ -9,7 +9,7 @@ import Card from "../common/card/Card";
 import RemoveButton from "../common/buttons/RemoveButton";
 import MinEditButton from "../common/buttons/MinEditButton";
 
-const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
+const Comment = ({onRemove, onEdit, comment, showCommentControls, following}) => {
     const [editMode, setEditMode] = useState(false);
     const {loading: loadingUpdate} = useMutation({type: updateComment, requestKey: comment.id});
     const {loading: loadingDelete} = useMutation({type: deleteComment, requestKey: comment.id});
@@ -51,7 +51,10 @@ const Comment = ({onRemove, onEdit, comment, showCommentControls}) => {
         <>
             <Card.Header>
                 <h5 className="d-inline-flex">
-                    <User user={comment.author}/>
+                    <User
+                        user={comment.author}
+                        following={following}
+                    />
                     {editButton}
                 </h5>
             </Card.Header>

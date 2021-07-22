@@ -1,11 +1,11 @@
 import LoaderButton from "./LoaderButton";
 
-const SaveButton = ({loading, floatEnd}) => {
+const SaveButton = ({loading}) => {
     return loading ? (
         <LoaderButton/>
     ) : (
         <button
-            className={`btn btn-primary m-1 ${floatEnd&&'float-end'}`}
+            className="btn btn-primary m-1"
             type="submit"
         >
             Save
