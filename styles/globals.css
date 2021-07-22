@@ -74,3 +74,12 @@ main {
     border-color: rgba(0,0,0,0);
     box-shadow: 0 0 0 0 !important;
 }
+
+.mention {
+    height: 2.5rem;
+}
+
+.liked {
+    color: #dc3545;
+    fill: #dc3545;
+}

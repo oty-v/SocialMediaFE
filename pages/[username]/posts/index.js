@@ -10,6 +10,7 @@ import Loader from "../../../components/common/Loader";
 import {getCursorPosts} from "../../../redux/posts/selectors";
 import CenterInScreen from "../../../components/common/CenterInScreen";
 import MainContent from "../../../components/common/layout/content/MainContent";
+import {fetchMentions, fetchUserFollowings} from "../../../redux/users/action";
 
 function Posts({username}) {
     const {posts, cursorPosts, pending: loading} = useSelector(state => getCursorPosts(state, fetchUserPosts));
@@ -59,8 +60,11 @@ function Posts({username}) {
 }
 
 export const getServerSideProps = withRedux(withAuth(
-    async (ctx, dispatch) => {
-        const {error} = await dispatch(fetchUserPosts(ctx.query.username));
+    async (ctx, dispatch, auth) => {
+        const {error: errorUserPosts} = await dispatch(fetchUserPosts(ctx.query.username));
+        const {error: errorUserFollowings} = await dispatch(fetchUserFollowings(auth.user.username));
+        const {error: errorMentions} = await dispatch(fetchMentions());
+        const error = errorUserPosts || errorUserFollowings || errorMentions;
         if (error?.response.status === 404) {
             return {
                 notFound: true,

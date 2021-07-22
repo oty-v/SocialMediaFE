@@ -57,3 +57,39 @@ export const deleteComment = createAction('DELETE_COMMENT', (postId, commentId) 
         },
     },
 }));
+
+export const likeComment = createAction('LIKE_COMMENT', (commentId, postId) => ({
+    request: {
+        url: `/comments/${commentId}/like`,
+        method: 'post'
+    },
+    meta: {
+        requestKey: commentId,
+        mutations: {
+            [fetchPostComments + postId]: (data) => {
+                const comment = data.find(comment => comment.id === commentId)
+                const commentIndex = data.findIndex(comment => comment.id === commentId)
+                data.splice(commentIndex, 1, {...comment, userLiked: true, numberOfLikes: comment.numberOfLikes+1})
+                return [...data]
+            },
+        },
+    },
+}))
+
+export const unlikeComment = createAction('UNLIKE_COMMENT', (commentId, postId) => ({
+    request: {
+        url: `/comments/${commentId}/unlike`,
+        method: 'post'
+    },
+    meta: {
+        requestKey: commentId,
+        mutations: {
+            [fetchPostComments + postId]: (data) => {
+                const comment = data.find(comment => comment.id === commentId)
+                const commentIndex = data.findIndex(comment => comment.id === commentId)
+                data.splice(commentIndex, 1, {...comment, userLiked: false, numberOfLikes: comment.numberOfLikes-1})
+                return [...data]
+            },
+        },
+    },
+}))
